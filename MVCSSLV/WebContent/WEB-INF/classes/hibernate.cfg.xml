@@ -19,6 +19,7 @@
   <!-- Hibernate Annotations (and package-info.java)-->
   <mapping class="domain.loginpage.Users"/>
   <mapping class="domain.mainpage.Ads"/>
+  <mapping class="domain.addescpage.AdDesc" />
 
  </session-factory>
 </hibernate-configuration>
