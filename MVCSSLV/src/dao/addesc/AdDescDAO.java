@@ -6,6 +6,6 @@ import domain.addescpage.AdDesc;
 
 public interface AdDescDAO {
 
-	ArrayList<AdDesc> getFullAdDesc(int adId);
-	
+	ArrayList<AdDesc> getFullAdDesc(int adsId);
+	ArrayList<AdDesc> getFullAdDesc1(int adsId);
 }

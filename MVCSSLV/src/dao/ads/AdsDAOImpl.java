@@ -1,12 +1,16 @@
 package dao.ads;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import util.HibernateUtil;
+import domain.addescpage.AdDesc;
 import domain.mainpage.Ads;
 
 public class AdsDAOImpl implements AdsDAO {
@@ -74,6 +78,21 @@ public class AdsDAOImpl implements AdsDAO {
 		close(ses);
 
 		return ads;
+	}
+
+	@Override
+	public Ads getById(int adsId) {
+		final Session session = getSession();
+		try {
+			Criteria criteria = session.createCriteria(Ads.class).add(
+					Restrictions.eq("id", new Integer(adsId)));
+
+			Ads ads = (Ads) criteria.uniqueResult();
+
+			return ads;
+		} finally {
+			session.close();
+		}
 	}
 
 }

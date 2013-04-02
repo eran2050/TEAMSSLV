@@ -1,6 +1,7 @@
 package dao.ads;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import dao.BaseDAO;
 import domain.mainpage.Ads;
@@ -14,5 +15,7 @@ public interface AdsDAO extends BaseDAO {
 	int getCount();
 
 	int getCountByUser(String s);
+
+	Ads getById(int adsId);
 
 }
