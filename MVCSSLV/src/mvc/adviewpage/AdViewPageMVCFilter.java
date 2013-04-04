@@ -20,8 +20,6 @@ import mvc.IModel;
 import mvc.IModelCreator;
 import mvc.URIMapping;
 import mvc.URIMappingBuilder;
-import mvc.loginpage.LoginPageController;
-import mvc.loginpage.LoginPageModelCreator;
 
 @WebFilter("/AdViewPageMVCFilter")
 public class AdViewPageMVCFilter implements Filter {
