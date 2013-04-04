@@ -1,8 +1,6 @@
 package dao.ads;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import dao.BaseDAO;
 import domain.mainpage.Ads;
 

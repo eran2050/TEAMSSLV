@@ -1,16 +1,11 @@
 package dao.ads;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-
 import util.HibernateUtil;
-import domain.addescpage.AdDesc;
 import domain.mainpage.Ads;
 
 public class AdsDAOImpl implements AdsDAO {

@@ -1,14 +1,11 @@
 package mvc.adviewpage;
 
-import java.util.ArrayList;
-
 import mvc.IController;
 import mvc.IModel;
 import dao.addesc.AdDescDAO;
 import dao.addesc.AdDescDAOImpl;
 import dao.ads.AdsDAO;
 import dao.ads.AdsDAOImpl;
-import domain.mainpage.Ads;
 
 public class AdViewPageController implements IController {
 

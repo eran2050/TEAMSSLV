@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Java2 - "SS.LV": Main Page</title>
+<title>java2 - "SS.LV": Main Page</title>
 <link rel="stylesheet" type="text/css" href="/java2/css/global.css" />
 <meta charset="utf-8">
 <meta name="description" content="">
@@ -43,8 +43,8 @@
 						for (Ads ml : model.getListing()) {
 				%>
 				<tr>
-					<td width="5%"><%=ml.getId()%></td>
-					<td width="50%"><%=ml.getName()%></td>
+					<td width="5%"><a href="/java2/addesc?adsid=<%=ml.getId()%>"><%=ml.getId()%></a></td>
+					<td width="50%"><a href="/java2/addesc?adsid=<%=ml.getId()%>"><%=ml.getName()%></a></td>
 					<td width="18%"><%=ml.getCreated()%></td>
 					<td width="14%"><%=ml.getOwner()%></td>
 				</tr>

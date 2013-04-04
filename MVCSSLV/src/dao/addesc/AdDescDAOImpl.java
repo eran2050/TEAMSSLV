@@ -6,11 +6,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-
 import util.HibernateUtil;
-
 import domain.addescpage.AdDesc;
-import domain.mainpage.Ads;
 
 public class AdDescDAOImpl implements AdDescDAO {
 
@@ -59,6 +56,7 @@ public class AdDescDAOImpl implements AdDescDAO {
 			return fullAdDesc;
 		} finally {
 			session.close();
+			
 		}
 	}
 

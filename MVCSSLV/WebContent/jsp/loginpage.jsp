@@ -4,7 +4,7 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="/java2/css/global.css" />
-<title>Java2 - "SS.LV": Login Page</title>
+<title>java2 - "SS.LV": Login Page</title>
 </head>
 <body>
 	<div class="page">

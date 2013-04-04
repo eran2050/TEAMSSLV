@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 	<display-name>java2</display-name>
@@ -20,7 +20,12 @@
 		<filter-name>LoginPageMVCFilter</filter-name>
 		<url-pattern>/login/</url-pattern>
 	</filter-mapping>
-	<!-- <filter> <filter-name>AdViewPageMVCFilter</filter-name> <filter-class>mvc.adviewpage.AdViewPageMVCFilter</filter-class> 
-		</filter> <filter-mapping> <filter-name>AdViewPageMVCFilter</filter-name> 
-		<url-pattern>/adview/</url-pattern> </filter-mapping> -->
+	<filter>
+		<filter-name>AdViewPageMVCFilter</filter-name>
+		<filter-class>mvc.adviewpage.AdViewPageMVCFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AdViewPageMVCFilter</filter-name>
+		<url-pattern>/adview/</url-pattern>
+	</filter-mapping>
 </web-app>
