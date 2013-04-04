@@ -12,6 +12,7 @@ public class AdViewPageModel implements IModel {
 	private String userName;
 	private String loginStatus;
 	private boolean available;
+	private int adsId;	
 
 	public Ads getAds() {
 		return ads;
@@ -51,6 +52,14 @@ public class AdViewPageModel implements IModel {
 
 	public void setAvailable(boolean available) {
 		this.available = available;
+	}
+
+	public int getAdsId() {
+		return adsId;
+	}
+
+	public void setAdsId(int adsId) {
+		this.adsId = adsId;
 	}
 
 }

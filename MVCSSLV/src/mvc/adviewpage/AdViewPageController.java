@@ -16,8 +16,8 @@ public class AdViewPageController implements IController {
 		
 		AdViewPageModel adViewM = (AdViewPageModel) model;
 		
-		adViewM.setAds(ads.getById(5));
-		adViewM.setFullDesc(adDesc.getFullAdDesc(5));
+		adViewM.setAds(ads.getById(adViewM.getAdsId()));
+		adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
 
 		if (adViewM.getUserName() == null) {
 			adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(

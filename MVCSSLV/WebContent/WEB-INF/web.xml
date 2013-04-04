@@ -23,6 +23,6 @@
   </filter>
   <filter-mapping>
     <filter-name>AdViewPageMVCFilter</filter-name>
-    <url-pattern>/adview//</url-pattern>
+    <url-pattern>/adview/</url-pattern>
   </filter-mapping>
 </web-app>

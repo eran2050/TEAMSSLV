@@ -12,6 +12,12 @@ public class AdViewPageModelCreator implements IModelCreator {
 
 		AdViewPageModel model = new AdViewPageModel();
 
+		int adsId = 0;
+		if (request.getParameter("adsid") != null) {
+			adsId = Integer.parseInt(request.getParameter("adsid"));
+		}
+		model.setAdsId(adsId);
+
 		String userName = null;
 		if (request.getSession().getAttribute("username") != null) {
 			userName = (String) request.getSession().getAttribute("username");
