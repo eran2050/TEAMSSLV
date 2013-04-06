@@ -15,10 +15,10 @@
 		</p>
 		<table class="ml1">
 			<tr>
-				<th class="ml1">No</th>
-				<th class="ml1">Ads text</th>
+				<th class="ml1">Id</th>
+				<th class="ml1">Summary</th>
 				<th class="ml1">Date</th>
-				<th class="ml1">Owner</th>
+				<th class="ml1">User</th>
 			</tr>
 
 			<%
@@ -31,9 +31,9 @@
 				<td width="14%"><%=ads.getOwner()%></td>
 			</tr>
 		</table>
-		<br>
 		<p>
-			<b>Additional information</b> <br>
+			<b>Additional information</b>
+		</p>
 		<table class="ml2">
 			<tr>
 				<th class="ml2">Criteria</th>
@@ -51,8 +51,7 @@
 			%>
 		</table>
 
-
-
+		<br>
 		<div class="footer1">
 			<table class="footer1">
 				<tr>

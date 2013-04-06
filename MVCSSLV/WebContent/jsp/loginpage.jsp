@@ -58,16 +58,18 @@
 			%>
 			<table class="ml">
 				<tr>
-					<th class="ml">ID</th>
-					<th class="ml">Description</th>
+					<th class="ml">Id</th>
+					<th class="ml">Summary</th>
 					<th class="ml">Date</th>
 				</tr>
 				<%
 					for (Ads ml : model.getAds()) {
 				%>
 				<tr>
-					<td width="5%"><%=ml.getId()%></td>
-					<td width="50%"><%=ml.getName()%></td>
+					<td width="5%"><a href="/java2/adview?adsid=<%=ml.getId()%>"
+						target="_blank"><%=ml.getId()%></a></td>
+					<td width="50%"><a href="/java2/adview?adsid=<%=ml.getId()%>"
+						target="_blank"><%=ml.getName()%></a></td>
 					<td width="18%"><%=ml.getCreated()%></td>
 				</tr>
 
