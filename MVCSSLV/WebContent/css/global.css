@@ -65,6 +65,24 @@ th.ml {
 	color: white;
 }
 
+table.ml1 {
+	width: 75%;
+	text-align: left;
+}
+
+th.ml1 {
+	color: white;
+}
+
+table.ml2 {
+	width: 40%;
+	text-align: left;
+}
+
+th.ml2 {
+	color: white;
+}
+
 td.nm:hover {
 	background-color: #999933;
 }
@@ -79,6 +97,11 @@ td.nm3:hover {
 
 table.footer {
 	width: 98%;
+	text-align: right;
+	background-color: #99CC33;
+}
+table.footer1 {
+	width: 75%;
 	text-align: right;
 	background-color: #99CC33;
 }

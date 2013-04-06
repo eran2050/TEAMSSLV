@@ -10,13 +10,15 @@
 </head>
 <body>
 	<div class="body">
-		<p>Status:
-		<table class="ml">
+		<p align="left">
+			<a href="JavaScript:window.close()">Close</a>
+		</p>
+		<table class="ml1">
 			<tr>
-				<th class="ml">ID</th>
-				<th class="ml">Description</th>
-				<th class="ml">Date</th>
-				<th class="ml">User</th>
+				<th class="ml1">No</th>
+				<th class="ml1">Ads text</th>
+				<th class="ml1">Date</th>
+				<th class="ml1">Owner</th>
 			</tr>
 
 			<%
@@ -29,21 +31,20 @@
 				<td width="14%"><%=ads.getOwner()%></td>
 			</tr>
 		</table>
-<br>
-<br>
-<br>
-
-		<table class="ml" width="600">
+		<br>
+		<p>
+			<b>Additional information</b> <br>
+		<table class="ml2">
 			<tr>
-				<th class="ml">Criteria</th>
-				<th class="ml">Value</th>
+				<th class="ml2">Criteria</th>
+				<th class="ml2">Description</th>
 			</tr>
 			<%
 				for (AdDesc adsDesc : model.getFullDesc()) {
 			%>
 			<tr>
-				<td width="80"><%=adsDesc.getCriteria()%></td>
-				<td width="20"><%=adsDesc.getValue()%></td>
+				<td class="ml2"><%=adsDesc.getCriteria()%></td>
+				<td class="ml2"><%=adsDesc.getValue()%></td>
 			</tr>
 			<%
 				}
@@ -52,10 +53,10 @@
 
 
 
-		<div class="footer">
-			<table class="footer">
+		<div class="footer1">
+			<table class="footer1">
 				<tr>
-					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;</td>
+					<td class="footer1">T2CSupp Staff&nbsp;(c)&nbsp;</td>
 				</tr>
 			</table>
 		</div>
