@@ -61,6 +61,7 @@
 					<th class="ml">Id</th>
 					<th class="ml">Summary</th>
 					<th class="ml">Date</th>
+					<th class="ml">Action</th>
 				</tr>
 				<%
 					for (Ads ml : model.getAds()) {
@@ -71,6 +72,7 @@
 					<td width="50%"><a href="/java2/adview?adsid=<%=ml.getId()%>"
 						target="_blank"><%=ml.getName()%></a></td>
 					<td width="18%"><%=ml.getCreated()%></td>
+					<td width="10%" align="center"><a href="/java2/login?action=delete&adsid=<%=ml.getId()%>">DEL</a>&nbsp;|&nbsp;EDIT</td>
 				</tr>
 
 

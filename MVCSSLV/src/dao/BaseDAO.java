@@ -1,6 +1,7 @@
 package dao;
 
-public interface BaseDAO {
-	public static final int ADS_PER_PAGE = 10;
+import util.Config;
+
+public interface BaseDAO extends Config {
 
 }

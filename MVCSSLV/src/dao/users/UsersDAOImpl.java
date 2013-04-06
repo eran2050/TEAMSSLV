@@ -24,10 +24,16 @@ public class UsersDAOImpl implements UsersDAO {
 
 	@Override
 	public Users getUserById(String s1) {
-		
+
 		Session s = getSession();
-		Users u = (Users) s.get(Users.class, s1);
-		close(s);
+		Users u = null;
+		try {
+			u = (Users) s.get(Users.class, s1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(s);
+		}
 
 		return u;
 	}

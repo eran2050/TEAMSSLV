@@ -18,28 +18,30 @@ public class MainPageController implements IController {
 		m.setListing(dao.getMainListing(m.getCurrentPage()));
 
 		if (m.getUserName() == null) {
-			m.setLoginStatus("<a class=nm href=/java2/login>".concat(
-					NOT_LOGGED_IN).concat("</a>"));
+			m.setLoginStatus("<a class=nm href=".concat(CONTEXT_ROOT)
+					.concat("login>").concat(NOT_LOGGED_IN).concat("</a>"));
 		} else {
-			m.setLoginStatus("<a class=nm href=/java2/login>".concat(LOGGED_IN)
-					.concat(" as ").concat(m.getUserName()).concat("</a>"));
+			m.setLoginStatus("<a class=nm href=".concat(CONTEXT_ROOT)
+					.concat("login>").concat(LOGGED_IN).concat(" as ")
+					.concat(m.getUserName()).concat("</a>"));
 		}
 
 		// PageNumbers
 		ArrayList<String> list = new ArrayList<String>();
-		int cnt = Math.round(m.getListingSize() / 10);
+		int cnt = Math.round(m.getListingSize() / ADS_PER_MAIN_PAGE);
 		if (cnt > 0) {
 			int n;
 			for (n = 1; n <= cnt + 1; n++) {
 				if (n == m.getCurrentPage()) {
-					list.add("<a class=pages href=/java2/?page="
-							.concat(Integer.toString(n)).concat("><b><u>")
-							.concat(Integer.toString(n))
+					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+							.concat("?page=").concat(Integer.toString(n))
+							.concat("><b><u>").concat(Integer.toString(n))
 							.concat("</u></b></a>&nbsp;"));
 				} else {
-					list.add("<a class=pages href=/java2/?page="
-							.concat(Integer.toString(n)).concat(">")
-							.concat(Integer.toString(n)).concat("</a>&nbsp;"));
+					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+							.concat("?page=").concat(Integer.toString(n))
+							.concat(">").concat(Integer.toString(n))
+							.concat("</a>&nbsp;"));
 				}
 
 				if (n % PAGES_IN_LINE == 0)

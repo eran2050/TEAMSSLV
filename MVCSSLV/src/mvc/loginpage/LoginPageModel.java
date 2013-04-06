@@ -20,6 +20,8 @@ public class LoginPageModel implements IModel {
 	private List<String> pageNumbers;
 	private int currentPage;
 	private int listingSize;
+	private String action;
+	private Long adsId;
 
 	public String getUserName() {
 		return userName;
@@ -107,6 +109,22 @@ public class LoginPageModel implements IModel {
 
 	public void setListingSize(int listingSize) {
 		this.listingSize = listingSize;
+	}
+
+	public Long getAdsId() {
+		return adsId;
+	}
+
+	public void setAdsId(Long adsId) {
+		this.adsId = adsId;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 }

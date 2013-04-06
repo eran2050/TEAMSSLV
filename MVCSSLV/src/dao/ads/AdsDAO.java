@@ -15,5 +15,7 @@ public interface AdsDAO extends BaseDAO {
 	int getCountByUser(String s);
 
 	Ads getById(int adsId);
+	
+	void deleteById(int adsId);
 
 }

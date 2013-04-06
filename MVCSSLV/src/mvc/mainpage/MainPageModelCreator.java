@@ -14,8 +14,8 @@ public class MainPageModelCreator implements IModelCreator {
 		MainPageModel m = new MainPageModel();
 
 		String userName = null;
-		if (r.getSession().getAttribute("username") != null) {
-			userName = (String) r.getSession().getAttribute("username");
+		if (r.getSession().getAttribute(USERNAME) != null) {
+			userName = (String) r.getSession().getAttribute(USERNAME);
 		}
 		m.setUserName(userName);
 
@@ -41,7 +41,7 @@ public class MainPageModelCreator implements IModelCreator {
 		AdsDAO dao = new AdsDAOImpl();
 		int adsCount = dao.getCount();
 		m.setListingSize(adsCount);
-		int maxPage = Math.round((float) adsCount / (float) ADS_PER_PAGE) + 1;
+		int maxPage = Math.round((float) adsCount / (float) ADS_PER_MAIN_PAGE) + 1;
 		if (page > maxPage)
 			page = maxPage;
 		if (page <= 0)

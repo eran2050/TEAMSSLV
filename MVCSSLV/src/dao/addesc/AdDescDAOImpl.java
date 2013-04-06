@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
 import util.HibernateUtil;
 import domain.addescpage.AdDesc;
 
@@ -14,13 +15,12 @@ public class AdDescDAOImpl implements AdDescDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<AdDesc> getFullAdDesc(int adsId) {
-		// TODO Auto-generated method stub
 		ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
 		Session s = getSession();
 		Query query = s.createQuery("from AdDesc where adsId = :adsId ");
 		query.setParameter("adsId", adsId);
 		fullAdDesc = (ArrayList<AdDesc>) query.list();
-		
+
 		close(s);
 
 		return fullAdDesc;
@@ -51,12 +51,29 @@ public class AdDescDAOImpl implements AdDescDAO {
 			Criteria criteria = session.createCriteria(AdDesc.class).add(
 					Restrictions.eq("adsId", new Integer(adsId)));
 
-			fullAdDesc = (ArrayList<AdDesc>)  criteria.list();
+			fullAdDesc = (ArrayList<AdDesc>) criteria.list();
 
 			return fullAdDesc;
 		} finally {
 			session.close();
-			
+
+		}
+	}
+
+	@Override
+	public void deleteByAdsId(int adsId) {
+		Session s = getSession();
+		try {
+			s.beginTransaction();
+			String hql = "delete from ".concat(AdDesc.class.getName()).concat(
+					" where adsId = :adsId");
+			s.createQuery(hql)
+					.setString("adsId", new Integer(adsId).toString())
+					.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(s);
 		}
 	}
 
