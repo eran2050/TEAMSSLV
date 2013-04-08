@@ -1,7 +1,8 @@
 package mvc;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface IController extends IBase {
 
-    IModel execute(IModel model);
-
+    void execute(IModel model, HttpServletRequest request);
 }

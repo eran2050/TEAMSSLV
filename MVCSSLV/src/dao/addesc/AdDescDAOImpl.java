@@ -1,80 +1,63 @@
 package dao.addesc;
 
-import java.util.ArrayList;
-
+import dao.BaseDAO;
+import domain.addescpage.AdDesc;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import util.HibernateUtil;
-import domain.addescpage.AdDesc;
+import java.util.ArrayList;
 
-public class AdDescDAOImpl implements AdDescDAO {
+@Component
+@Transactional
+public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public ArrayList<AdDesc> getFullAdDesc(int adsId) {
-		ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
-		Session s = getSession();
-		Query query = s.createQuery("from AdDesc where adsId = :adsId ");
-		query.setParameter("adsId", adsId);
-		fullAdDesc = (ArrayList<AdDesc>) query.list();
+    @SuppressWarnings("unchecked")
+    @Override
+    public ArrayList<AdDesc> getFullAdDesc(int adsId) {
+        ArrayList<AdDesc> fullAdDesc;
+        Session s = getSession();
+        Query query = s.createQuery("from AdDesc where adsId = :adsId ");
+        query.setParameter("adsId", adsId);
+        fullAdDesc = (ArrayList<AdDesc>) query.list();
 
-		close(s);
+        return fullAdDesc;
+    }
 
-		return fullAdDesc;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public ArrayList<AdDesc> getFullAdDesc1(int adsId) {
+        ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
+        final Session session = getSession();
+        try {
+            Criteria criteria = session.createCriteria(AdDesc.class).add(
+                    Restrictions.eq("adsId", adsId));
 
-	private Session getSession() {
+            fullAdDesc = (ArrayList<AdDesc>) criteria.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		Session s = HibernateUtil.getSessionFactory().openSession();
-		if (!s.isConnected())
-			s.reconnect(null);
+        return fullAdDesc;
+    }
 
-		return s;
-	}
-
-	private void close(Session s) {
-
-		if (s != null && s.isOpen()) {
-			s.close();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public ArrayList<AdDesc> getFullAdDesc1(int adsId) {
-		ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
-		final Session session = getSession();
-		try {
-			Criteria criteria = session.createCriteria(AdDesc.class).add(
-					Restrictions.eq("adsId", new Integer(adsId)));
-
-			fullAdDesc = (ArrayList<AdDesc>) criteria.list();
-
-			return fullAdDesc;
-		} finally {
-			session.close();
-
-		}
-	}
-
-	@Override
-	public void deleteByAdsId(int adsId) {
-		Session s = getSession();
-		try {
-			s.beginTransaction();
-			String hql = "delete from ".concat(AdDesc.class.getName()).concat(
-					" where adsId = :adsId");
-			s.createQuery(hql)
-					.setString("adsId", new Integer(adsId).toString())
-					.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
-	}
+    @Override
+    public void deleteByAdsId(int adsId) {
+        Session s = getSession();
+        try {
+            s.beginTransaction();
+            StringBuilder hql = new StringBuilder();
+            hql.append("delete from ").append(AdDesc.class.getName()).append(
+                    " where adsId = :adsId");
+            s.createQuery(hql.toString())
+                    .setString("adsId", Integer.toString(adsId))
+                    .executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

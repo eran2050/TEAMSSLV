@@ -1,136 +1,102 @@
 package dao.ads;
 
-import java.util.ArrayList;
-
+import dao.BaseDAO;
+import domain.mainpage.Ads;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import util.HibernateUtil;
-import domain.mainpage.Ads;
+import java.util.ArrayList;
 
-public class AdsDAOImpl implements AdsDAO {
+@Component
+@Transactional
+public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
-	@SuppressWarnings("unchecked")
-	public ArrayList<Ads> getMainListing(int page) {
+    @SuppressWarnings("unchecked")
+    public ArrayList<Ads> getMainListing(int page) {
 
-		ArrayList<Ads> l = null;
-		Session s = getSession();
-		int first = ((page - 1) * ADS_PER_MAIN_PAGE);
+        ArrayList<Ads> l = null;
+        Session s = getSession();
+        int first = ((page - 1) * ADS_PER_MAIN_PAGE);
 
-		try {
-			l = (ArrayList<Ads>) s.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE)
-					.list();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
+        try {
+            l = (ArrayList<Ads>) s.createCriteria(Ads.class).setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		return l;
-	}
+        return l;
+    }
 
-	public int getCount() {
+    public int getCount() {
 
-		Session s = getSession();
-		Long cnt = (long) 0;
-		try {
-			cnt = (Long) s.createCriteria(Ads.class)
-					.setProjection(Projections.rowCount()).uniqueResult();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
+        Session s = getSession();
+        Long cnt = (long) 0;
+        try {
+            cnt = (Long) s.createCriteria(Ads.class).setProjection(Projections.rowCount()).uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		return cnt.intValue();
-	}
+        return cnt.intValue();
+    }
 
-	public int getCountByUser(String usr) {
+    public int getCountByUser(String usr) {
 
-		Long cnt = (long) 0;
-		Session s = getSession();
-		try {
-			cnt = (Long) s.createCriteria(Ads.class)
-					.add(Restrictions.eq("owner", usr))
-					.setProjection(Projections.rowCount()).uniqueResult();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
+        Long cnt = (long) 0;
+        Session s = getSession();
+        try {
+            cnt = (Long) s.createCriteria(Ads.class).add(Restrictions.eq("owner", usr)).setProjection(Projections.rowCount()).uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		return cnt.intValue();
-	}
+        return cnt.intValue();
+    }
 
-	private Session getSession() {
+    @SuppressWarnings("unchecked")
+    public ArrayList<Ads> getByUser(String usr, int page) {
 
-		Session s = HibernateUtil.getSessionFactory().openSession();
-		if (!s.isConnected())
-			s.reconnect(null);
-		return s;
-	}
+        Session ses = getSession();
+        ArrayList<Ads> ads = null;
+        int first = ((page - 1) * ADS_PER_LOGIN_PAGE);
 
-	private void close(Session s) {
+        try {
+            ads = (ArrayList<Ads>) ses.createCriteria(Ads.class).setFirstResult(first).setMaxResults(ADS_PER_LOGIN_PAGE).add(Restrictions.eq("owner", usr)).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		if (s != null && s.isOpen()) {
-			s.close();
-		}
-	}
+        return ads;
+    }
 
-	@SuppressWarnings("unchecked")
-	public ArrayList<Ads> getByUser(String usr, int page) {
+    @Override
+    public Ads getById(int adsId) {
+        final Session session = getSession();
+        Ads ads = null;
+        try {
+            Criteria criteria = session.createCriteria(Ads.class).add(Restrictions.eq("id", adsId));
+            ads = (Ads) criteria.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ads;
+    }
 
-		Session ses = getSession();
-		ArrayList<Ads> ads = null;
-		int first = ((page - 1) * ADS_PER_LOGIN_PAGE);
-
-		try {
-			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(ADS_PER_LOGIN_PAGE)
-					.add(Restrictions.eq("owner", usr)).list();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(ses);
-		}
-
-		return ads;
-	}
-
-	@Override
-	public Ads getById(int adsId) {
-		final Session session = getSession();
-		Ads ads = null;
-		try {
-			Criteria criteria = session.createCriteria(Ads.class).add(
-					Restrictions.eq("id", new Integer(adsId)));
-			ads = (Ads) criteria.uniqueResult();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
-		return ads;
-	}
-
-	@Override
-	public void deleteById(int adsId) {
-		Session s = getSession();
-		try {
-			s.beginTransaction();
-			String hql = "delete from ".concat(Ads.class.getName()).concat(
-					" where id = :adsId");
-			s.createQuery(hql)
-					.setString("adsId", new Integer(adsId).toString())
-					.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
-	}
+    @Override
+    public void deleteById(int adsId) {
+        Session s = getSession();
+        try {
+            s.beginTransaction();
+            StringBuilder hql = new StringBuilder();
+            hql.append("delete from ").append(Ads.class.getName()).append(" where id = :adsId");
+            s.createQuery(hql.toString()).setString("adsId", Integer.toString(adsId)).executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

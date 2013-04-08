@@ -1,21 +1,21 @@
 package dao.ads;
 
-import java.util.ArrayList;
-import dao.BaseDAO;
 import domain.mainpage.Ads;
 
-public interface AdsDAO extends BaseDAO {
+import java.util.ArrayList;
 
-	ArrayList<Ads> getMainListing(int page);
+public interface AdsDAO {
 
-	ArrayList<Ads> getByUser(String s, int page);
+    ArrayList<Ads> getMainListing(int page);
 
-	int getCount();
+    ArrayList<Ads> getByUser(String s, int page);
 
-	int getCountByUser(String s);
+    int getCount();
 
-	Ads getById(int adsId);
-	
-	void deleteById(int adsId);
+    int getCountByUser(String s);
+
+    Ads getById(int adsId);
+
+    void deleteById(int adsId);
 
 }

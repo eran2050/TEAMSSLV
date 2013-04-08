@@ -1,32 +1,36 @@
 package mvc.adviewpage;
 
+import dao.addesc.AdDescDAO;
+import dao.ads.AdsDAO;
 import mvc.IController;
 import mvc.IModel;
-import dao.addesc.AdDescDAO;
-import dao.addesc.AdDescDAOImpl;
-import dao.ads.AdsDAO;
-import dao.ads.AdsDAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+
+@Component
 public class AdViewPageController implements IController {
 
-	private final AdDescDAO adDesc = new AdDescDAOImpl();
-	private final AdsDAO ads = new AdsDAOImpl();
+    @Autowired
+    private AdDescDAO adDesc;
+    @Autowired
+    private AdsDAO ads;
 
-	public IModel execute(IModel model) {
-		
-		AdViewPageModel adViewM = (AdViewPageModel) model;
-		
-		adViewM.setAds(ads.getById(adViewM.getAdsId()));
-		adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
+    public void execute(IModel model, HttpServletRequest req) {
 
-		if (adViewM.getUserName() == null) {
-			adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(
-					NOT_LOGGED_IN).concat("</a>"));
-		} else {
-			adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(LOGGED_IN)
-					.concat(" as ").concat(adViewM.getUserName()).concat("</a>"));
-		}
+        AdViewPageModel adViewM = (AdViewPageModel) model;
 
-		return adViewM;
-	}
+        adViewM.setAds(ads.getById(adViewM.getAdsId()));
+        adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
+
+        if (adViewM.getUserName() == null) {
+            adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(
+                    NOT_LOGGED_IN).concat("</a>"));
+        } else {
+            adViewM.setLoginStatus("<a class=nm href=/java2/login>"
+                    .concat(LOGGED_IN).concat(" as ")
+                    .concat(adViewM.getUserName()).concat("</a>"));
+        }
+    }
 }

@@ -2,41 +2,47 @@ package mvc;
 
 public class URIMapping {
 
-	private String			uri;
-	private IModelCreator	modelCreator;
-	private IController		controller;
-	private String			view;
+    private String uri;
+    @SuppressWarnings("rawtypes")
+    private Class modelCreator;
+    @SuppressWarnings("rawtypes")
+    private Class controller;
+    private String view;
 
-	public String getUri() {
-		return uri;
-	}
+    public String getUri() {
+        return uri;
+    }
 
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-	public IModelCreator getModelCreator() {
-		return modelCreator;
-	}
+    @SuppressWarnings("rawtypes")
+    public Class getModelCreator() {
+        return modelCreator;
+    }
 
-	public void setModelCreator(IModelCreator modelCreator) {
-		this.modelCreator = modelCreator;
-	}
+    @SuppressWarnings("rawtypes")
+    public void setModelCreator(Class modelCreator) {
+        this.modelCreator = modelCreator;
+    }
 
-	public IController getController() {
-		return controller;
-	}
+    @SuppressWarnings("rawtypes")
+    public Class getController() {
+        return controller;
+    }
 
-	public void setController(IController controller) {
-		this.controller = controller;
-	}
+    @SuppressWarnings("rawtypes")
+    public void setController(Class controller) {
+        this.controller = controller;
+    }
 
-	public String getView() {
-		return view;
-	}
+    public String getView() {
+        return view;
+    }
 
-	public void setView(String view) {
-		this.view = view;
-	}
+    public void setView(String view) {
+        this.view = view;
+    }
 
 }

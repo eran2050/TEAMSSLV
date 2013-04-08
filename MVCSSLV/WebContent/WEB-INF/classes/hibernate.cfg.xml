@@ -2,24 +2,17 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
                                          "http://www.jboss.org/dtd/hibernate/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
- <session-factory>
-  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-  <property name="hibernate.connection.url">jdbc:mysql://voaideahost.net:3306/suxlv2_sslv</property>
-  <property name="hibernate.connection.username">suxlv2_sslv</property>
-  <property name="hibernate.connection.password">a26195359</property>
-  <property name="hibernate.connection.autocommit">true</property>
+	<session-factory>
+	
+		<!-- JDBC connection pool (use the built-in) -->
+		<property name="connection.pool_size">10</property>
 
-  <!-- JDBC connection pool (use the built-in) -->
-  <property name="connection.pool_size">10</property>
+		<!-- Echo all executed SQL to stdout -->
+		<property name="show_sql">true</property>
 
-  <!-- Echo all executed SQL to stdout -->
-  <property name="show_sql">true</property>
-
-  <!-- Hibernate Annotations (and package-info.java)-->
-  <mapping class="domain.loginpage.Users"/>
-  <mapping class="domain.mainpage.Ads"/>
-  <mapping class="domain.addescpage.AdDesc" />
-
- </session-factory>
+		<!-- Hibernate Annotations (and package-info.java)-->
+		<mapping class="domain.loginpage.Users"/>
+		<mapping class="domain.mainpage.Ads"/>
+		<mapping class="domain.addescpage.AdDesc" />
+	</session-factory>
 </hibernate-configuration>
