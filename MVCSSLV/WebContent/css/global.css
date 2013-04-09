@@ -100,6 +100,12 @@ table.footer {
 	text-align: right;
 	background-color: #99CC33;
 }
+
+table.header1 {
+	width: 75%;
+	background-color: #99CC33;
+}
+
 table.footer1 {
 	width: 75%;
 	text-align: right;

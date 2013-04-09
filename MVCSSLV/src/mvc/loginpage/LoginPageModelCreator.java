@@ -62,8 +62,7 @@ public class LoginPageModelCreator implements IModelCreator {
         if (lm.getAction().equals(ACTION_DELETE)) {
             lm.setStatusMessage(AD_DELETED);
             int adsId = Integer.parseInt(r.getParameter("adsid"));
-            adDesc.deleteByAdsId(adsId);
-            ads.deleteById(adsId);
+            lm.setAdsId((long) adsId);            
         }
 
         // Various checks and Status Setter

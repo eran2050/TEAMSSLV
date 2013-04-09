@@ -22,6 +22,7 @@ public class LoginPageModel implements IModel {
     private int listingSize;
     private String action;
     private Long adsId;
+    private String appVersion;
 
     public String getUserName() {
         return userName;
@@ -126,5 +127,13 @@ public class LoginPageModel implements IModel {
     public void setAction(String action) {
         this.action = action;
     }
+
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+	}
 
 }

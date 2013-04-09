@@ -10,8 +10,15 @@
 </head>
 <body>
 	<div class="body">
+		<div class="footer1">
+			<table class="footer1">
+				<tr>
+					<td class="footer">&nbsp;</td>
+				</tr>
+			</table>
+		</div>
 		<p align="left">
-			<a href="JavaScript:window.close()">Close</a>
+			<a href="JavaScript:window.close()"><b>Close this window</b></a>
 		</p>
 		<table class="ml1">
 			<tr>
@@ -55,7 +62,8 @@
 		<div class="footer1">
 			<table class="footer1">
 				<tr>
-					<td class="footer1">T2CSupp Staff&nbsp;(c)&nbsp;</td>
+					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=model.getAppVersion()%>&nbsp;
+					</td>
 				</tr>
 			</table>
 		</div>

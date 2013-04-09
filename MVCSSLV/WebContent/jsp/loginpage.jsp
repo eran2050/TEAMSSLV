@@ -72,7 +72,8 @@
 					<td width="50%"><a href="/java2/adview?adsid=<%=ml.getId()%>"
 						target="_blank"><%=ml.getName()%></a></td>
 					<td width="18%"><%=ml.getCreated()%></td>
-					<td width="10%" align="center"><a href="/java2/login?action=delete&adsid=<%=ml.getId()%>">DEL</a>&nbsp;|&nbsp;EDIT</td>
+					<td width="10%" align="center"><a
+						href="/java2/login?action=delete&adsid=<%=ml.getId()%>">DEL</a>&nbsp;|&nbsp;EDIT</td>
 				</tr>
 
 
@@ -108,7 +109,8 @@
 		<div class="footer">
 			<table class="footer">
 				<tr>
-					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;</td>
+					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=model.getAppVersion()%>&nbsp;
+					</td>
 				</tr>
 			</table>
 		</div>

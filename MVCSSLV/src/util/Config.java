@@ -1,9 +1,7 @@
 package util;
 
-// https://github.com/Byamba/chat/blob/master/chat/src/main/java/com/seventysevenagency/chat/mvc/controllers/ChatroomController.java
-
 public interface Config {
-    public static final String APP_VERSION = "v3.0.2";
+    public static final String APP_VERSION = "v3.0.3";
 	public static final String CONTEXT_ROOT = "/java2/";
     public static final String NOT_LOGGED_IN = "Not Logged In";
     public static final String LOGGED_IN = "Logged In";
@@ -18,4 +16,5 @@ public interface Config {
     public static final String ACTION_LOGIN = "login";
     public static final String ACTION_LOGOUT = "logout";
     public static final String ACTION_DELETE = "delete";
+    public static final String ACTION_NOT_AUTHORIZED = "Not Authorized!";
 }

@@ -14,6 +14,7 @@ public class AdViewPageModel implements IModel {
     private String loginStatus;
     private boolean available;
     private int adsId;
+    private String appVersion;
 
     public Ads getAds() {
         return ads;
@@ -62,5 +63,13 @@ public class AdViewPageModel implements IModel {
     public void setAdsId(int adsId) {
         this.adsId = adsId;
     }
+
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+	}
 
 }

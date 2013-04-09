@@ -21,12 +21,13 @@ public class AdViewPageController implements IController {
 
         AdViewPageModel adViewM = (AdViewPageModel) model;
 
+        adViewM.setAppVersion(APP_VERSION);
         adViewM.setAds(ads.getById(adViewM.getAdsId()));
         adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
 
         if (adViewM.getUserName() == null) {
             adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(
-                    NOT_LOGGED_IN).concat("</a>"));
+            		NOT_LOGGED_IN).concat("</a>"));
         } else {
             adViewM.setLoginStatus("<a class=nm href=/java2/login>"
                     .concat(LOGGED_IN).concat(" as ")
