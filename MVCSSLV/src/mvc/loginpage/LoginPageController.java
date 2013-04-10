@@ -1,15 +1,18 @@
 package mvc.loginpage;
 
-import dao.addesc.AdDescDAO;
-import dao.ads.AdsDAO;
-import domain.mainpage.Ads;
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+
 import mvc.IController;
 import mvc.IModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import dao.addesc.AdDescDAO;
+import dao.ads.AdsDAO;
+import domain.mainpage.Ads;
 
 @Component
 public class LoginPageController implements IController {
@@ -74,8 +77,6 @@ public class LoginPageController implements IController {
 			String logUser = lm.getUserName() == null ? EMPTY + EMPTY : lm
 					.getUserName();
 
-			System.out.println("ad.getOwner()=" + adsOwner.toUpperCase());
-			System.out.println("lm.getUserName()=" + logUser.toUpperCase());
 			if (logUser != null && !logUser.equals(EMPTY)
 					&& adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
 				adDesc.deleteByAdsId(lm.getAdsId().intValue());
@@ -122,22 +123,29 @@ public class LoginPageController implements IController {
 		int cnt = Math.round(lm.getListingSize() / ADS_PER_LOGIN_PAGE);
 		if (cnt > 0) {
 			int n;
-			for (n = 1; n <= cnt + 1; n++) {
-				if (n == lm.getCurrentPage()) {
-					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
-							.concat("login/?page=").concat(Integer.toString(n))
-							.concat("><b><u>").concat(Integer.toString(n))
-							.concat("</u></b></a>&nbsp;"));
-				} else {
-					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
-							.concat("login/?page=").concat(Integer.toString(n))
-							.concat(">").concat(Integer.toString(n))
-							.concat("</a>&nbsp;"));
-				}
+			if (cnt * ADS_PER_LOGIN_PAGE == lm.getListingSize())
+				cnt -= 1;
+			if (cnt > 0) {
+				for (n = 1; n <= cnt + 1; n++) {
+					if (n == lm.getCurrentPage()) {
+						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+								.concat("login/?page=")
+								.concat(Integer.toString(n)).concat("><b><u>")
+								.concat(Integer.toString(n))
+								.concat("</u></b></a>&nbsp;"));
+					} else {
+						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+								.concat("login/?page=")
+								.concat(Integer.toString(n)).concat(">")
+								.concat(Integer.toString(n))
+								.concat("</a>&nbsp;"));
+					}
 
-				if (n % PAGES_IN_LINE == 0)
-					list.add("<br>");
-			}
+					if (n % PAGES_IN_LINE == 0)
+						list.add("<br>");
+				}
+			} else
+				list = null;
 			lm.setPageNumbers(list);
 		}
 	}

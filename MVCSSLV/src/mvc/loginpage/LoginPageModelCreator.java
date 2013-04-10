@@ -1,17 +1,19 @@
 package mvc.loginpage;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import mvc.IModel;
+import mvc.IModelCreator;
+import net.voaideahost.Util;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
 import dao.users.UsersDAO;
 import domain.loginpage.Users;
-import mvc.IModel;
-import mvc.IModelCreator;
-import net.voaideahost.Util;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Component
 public class LoginPageModelCreator implements IModelCreator {
@@ -88,21 +90,12 @@ public class LoginPageModelCreator implements IModelCreator {
 
         // Pages
         int page = 1;
-        if (r.getSession().getAttribute("loginpage") != null)
-            page = Integer.parseInt(r.getSession().getAttribute("loginpage")
-                    .toString());
         if (r.getParameter("page") != null) {
             try {
                 page = Integer.parseInt(r.getParameter("page"));
             } catch (NumberFormatException e) {
-                if (r.getSession().getAttribute("loginpage") == null) {
-                    page = 1;
-                } else {
-                    page = Integer.parseInt(r.getSession()
-                            .getAttribute("loginpage").toString());
-                }
+                page = 1;
             }
-            r.getSession().setAttribute("loginpage", page);
         }
 
         if (lm.getUserName() != null) {

@@ -4,6 +4,7 @@ import dao.BaseDAO;
 import domain.mainpage.Ads;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 		try {
 			l = (ArrayList<Ads>) s.createCriteria(Ads.class)
 					.setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE)
-					.list();
+					.addOrder(Order.asc("created")).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,6 +73,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 		try {
 			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
 					.setFirstResult(first).setMaxResults(ADS_PER_LOGIN_PAGE)
+					.addOrder(Order.asc("created"))
 					.add(Restrictions.eq("owner", usr)).list();
 		} catch (Exception e) {
 			e.printStackTrace();
