@@ -54,7 +54,8 @@ public class LoginPageModelCreator implements IModelCreator {
             ru = r.getParameter(USERNAME);
             // Check User
             if (ru != null) {
-                Users u = users.getUserById(ru);
+            	System.out.println("LOGIN: Authorizing User [1]..");
+            	Users u = users.getUserById(ru);
                 lm.setUser(u);
                 userChecked = u != null;
             }
@@ -76,7 +77,8 @@ public class LoginPageModelCreator implements IModelCreator {
                     ru.concat(ru))));
             lm.setStatusMessage(LOGGED_IN);
         } else if ((ru == null && su != null) || (ru != null && su != null)) {
-            Users u = users.getUserById(su);
+        	System.out.println("LOGIN: Authorizing User [2]..");
+        	Users u = users.getUserById(su);
             lm.setUser(u);
             lm.setUserName(su);
             lm.setPassword("P-hash: ".concat(new Util().getSha(su,
@@ -87,31 +89,6 @@ public class LoginPageModelCreator implements IModelCreator {
         } else if (ru == null && su == null && lm.getAction().equals(EMPTY)) {
             lm.setStatusMessage(NOT_LOGGED_IN);
         }
-
-        // Pages
-        int page = 1;
-        if (r.getParameter("page") != null) {
-            try {
-                page = Integer.parseInt(r.getParameter("page"));
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
-
-        if (lm.getUserName() != null) {
-            int adsCount = ads.getCountByUser(lm.getUserName());
-            lm.setListingSize(adsCount);
-
-            int maxPage = Math.round((float) adsCount
-                    / (float) ADS_PER_LOGIN_PAGE) + 1;
-            if (page > maxPage)
-                page = maxPage;
-            if (page <= 0)
-                page = 1;
-        } else {
-            page = 1;
-        }
-        lm.setCurrentPage(page);
 
         // Return Model to Controller
         return lm;

@@ -53,6 +53,17 @@ public class LoginPageController implements IController {
 		lm.setAds(null);
 		lm.setValid(false);
 
+		// Pages
+		int page = 1;
+		if (req.getParameter("page") != null) {
+			try {
+				page = Integer.parseInt(req.getParameter("page"));
+			} catch (NumberFormatException e) {
+				page = 1;
+			}
+		}
+		lm.setCurrentPage(page);
+
 		// User not found
 		if (lm.getStatusMessage().equals(NO_SUCH_USER)) {
 			lm.setStatusMessage(NO_SUCH_USER);
@@ -67,11 +78,30 @@ public class LoginPageController implements IController {
 			lm.setStatusMessage(LOGGED_IN);
 			lm.setHtmlForm(sLogoutForm.toString());
 			lm.setStatus(LOGGED_IN + " as ");
+
+			if (lm.getUserName() != null) {
+				System.out.println("LOGIN: Getting count of Ads by User..");
+				int adsCount = ads.getCountByUser(lm.getUserName());
+				lm.setListingSize(adsCount);
+
+				int maxPage = Math.round((float) adsCount
+						/ (float) ADS_PER_LOGIN_PAGE) + 1;
+				if (page > maxPage)
+					page = maxPage;
+				if (page <= 0)
+					page = 1;
+			} else {
+				page = 1;
+			}
+			lm.setCurrentPage(page);
+			
+			System.out.println("LOGIN: Getting Ads for showing up the list..");
 			lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 		} else
 
 		// Delete Ad
 		if (lm.getAction().equals(ACTION_DELETE)) {
+			System.out.println("LOGIN: Getting authorization for Deletion..");
 			Ads ad = ads.getById(lm.getAdsId().intValue());
 			String adsOwner = ad == null ? EMPTY : ad.getOwner();
 			String logUser = lm.getUserName() == null ? EMPTY + EMPTY : lm
@@ -79,17 +109,55 @@ public class LoginPageController implements IController {
 
 			if (logUser != null && !logUser.equals(EMPTY)
 					&& adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
+				System.out.println("LOGIN: Deleting Ad..");
 				adDesc.deleteByAdsId(lm.getAdsId().intValue());
 				ads.deleteById(lm.getAdsId().intValue());
 				lm.setStatusMessage(AD_DELETED);
 				lm.setHtmlForm(sLogoutForm.toString());
 				lm.setStatus(LOGGED_IN + " as ");
+
+				if (lm.getUserName() != null) {
+					System.out.println("LOGIN: Getting count of Ads by User..");
+					int adsCount = ads.getCountByUser(lm.getUserName());
+					lm.setListingSize(adsCount);
+
+					int maxPage = Math.round((float) adsCount
+							/ (float) ADS_PER_LOGIN_PAGE) + 1;
+					if (page > maxPage)
+						page = maxPage;
+					if (page <= 0)
+						page = 1;
+				} else {
+					page = 1;
+				}
+				lm.setCurrentPage(page);
+
+				System.out.println("LOGIN: Getting Ads after Deletion..");
 				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 			} else if (logUser != null && !logUser.equals(EMPTY)
 					&& !adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
 				lm.setHtmlForm(sLogoutForm.toString());
 				lm.setStatus(LOGGED_IN + " as ");
+
+				if (lm.getUserName() != null) {
+					System.out.println("LOGIN: Getting count of Ads by User..");
+					int adsCount = ads.getCountByUser(lm.getUserName());
+					lm.setListingSize(adsCount);
+
+					int maxPage = Math.round((float) adsCount
+							/ (float) ADS_PER_LOGIN_PAGE) + 1;
+					if (page > maxPage)
+						page = maxPage;
+					if (page <= 0)
+						page = 1;
+				} else {
+					page = 1;
+				}
+				lm.setCurrentPage(page);
+
+				System.out
+						.println("LOGIN: Getting ads after not authorized Deletion..");
 				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 			} else {
 				lm.setHtmlForm(sLoginForm.toString());
@@ -108,14 +176,6 @@ public class LoginPageController implements IController {
 			lm.setStatusMessage(NOT_LOGGED_IN);
 			lm.setHtmlForm(sLoginForm.toString());
 			lm.setStatus(NOT_LOGGED_IN);
-		}
-
-		// Giving model to View
-		if (lm.getUserName() == null) {
-			lm.setPassword(EMPTY);
-			lm.setUserName(EMPTY);
-		} else {
-			lm.setValid(true);
 		}
 
 		// PageNumbers
@@ -147,6 +207,14 @@ public class LoginPageController implements IController {
 			} else
 				list = null;
 			lm.setPageNumbers(list);
+		}
+
+		// Giving model to View
+		if (lm.getUserName() == null) {
+			lm.setPassword(EMPTY);
+			lm.setUserName(EMPTY);
+		} else {
+			lm.setValid(true);
 		}
 	}
 }
