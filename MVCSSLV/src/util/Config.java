@@ -16,5 +16,8 @@ public interface Config {
     public static final String ACTION_LOGIN = "login";
     public static final String ACTION_LOGOUT = "logout";
     public static final String ACTION_DELETE = "delete";
+    public static final String ACTION_UPDATE = "update";
+    public static final String ACTION_VIEW = "view";
+    public static final String ACTION_EDIT = "edit";
     public static final String ACTION_NOT_AUTHORIZED = "Not Authorized!";
 }

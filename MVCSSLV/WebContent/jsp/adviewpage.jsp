@@ -1,3 +1,4 @@
+<%@page import="com.sun.corba.se.spi.orbutil.fsm.Action"%>
 <%@page import="domain.mainpage.Ads"%>
 <%@page import="mvc.adviewpage.AdViewPageModel"%>
 <%@page import="domain.addescpage.AdDesc"%>
@@ -41,23 +42,10 @@
 		<p>
 			<b>Additional information</b>
 		</p>
-		<table class="ml2">
-			<tr>
-				<th class="ml2">Criteria</th>
-				<th class="ml2">Description</th>
-			</tr>
-			<%
-				for (AdDesc adsDesc : model.getFullDesc()) {
-			%>
-			<tr>
-				<td class="ml2"><%=adsDesc.getCriteria()%></td>
-				<td class="ml2"><%=adsDesc.getValue()%></td>
-			</tr>
-			<%
-				}
-			%>
-		</table>
 
+		<%
+			out.println(model.getForm());
+		%>
 		<br>
 		<div class="footer1">
 			<table class="footer1">

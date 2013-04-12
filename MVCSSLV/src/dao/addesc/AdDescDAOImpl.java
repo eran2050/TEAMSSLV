@@ -59,4 +59,28 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 		}
 	}
 
+	@Override
+	public void updateAdDesc(ArrayList<AdDesc> fullDesc) {
+		// TODO Auto-generated method stub
+		Session s = getSession();
+		try {
+			StringBuilder hql = new StringBuilder();
+
+			for (AdDesc adDesc : fullDesc) {
+
+				hql.setLength(0);
+				hql.append("update ").append(AdDesc.class.getName())
+						.append(" set criteria = :criteria, value=:value")
+						.append(" where id = :id");
+				s.createQuery(hql.toString()).setInteger("id", adDesc.getId())
+						.setString("criteria", adDesc.getCriteria())
+						.setString("value", adDesc.getValue()).executeUpdate();
+				System.out.println("id" + adDesc.getId() + "criteria"+
+						adDesc.getCriteria() + "value"+ adDesc.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 }

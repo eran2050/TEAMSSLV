@@ -11,4 +11,5 @@ public interface AdDescDAO {
     ArrayList<AdDesc> getFullAdDesc1(int adsId);
 
     void deleteByAdsId(int adsId);
+    void updateAdDesc(ArrayList<AdDesc> fullDesc);
 }

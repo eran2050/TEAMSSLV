@@ -15,6 +15,8 @@ public class AdViewPageModel implements IModel {
     private boolean available;
     private int adsId;
     private String appVersion;
+    private String action;
+    private String form;
 
     public Ads getAds() {
         return ads;
@@ -72,4 +74,19 @@ public class AdViewPageModel implements IModel {
 		this.appVersion = appVersion;
 	}
 
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getForm() {
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.form = form;
+	}
 }
