@@ -20,6 +20,8 @@
   <mapping class="domain.loginpage.Users"/>
   <mapping class="domain.mainpage.Ads"/>
   <mapping class="domain.addescpage.AdDesc" />
+  <mapping class="domain.newad.NewAd"/>
+  <mapping class="domain.newaddesc.NewAdDesc"/>
 
  </session-factory>
 </hibernate-configuration>

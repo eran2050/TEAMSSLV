@@ -25,4 +25,12 @@
     <filter-name>AdViewPageMVCFilter</filter-name>
     <url-pattern>/adview/</url-pattern>
   </filter-mapping>
+    <filter>
+    <filter-name>NewAdPageMVCFilter</filter-name>
+    <filter-class>mvc.newad.NewAdPageMVCFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>NewAdPageMVCFilter</filter-name>
+    <url-pattern>/add/</url-pattern>
+  </filter-mapping>
 </web-app>
