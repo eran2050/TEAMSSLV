@@ -21,28 +21,6 @@
 		<p align="left">
 			<a href="JavaScript:window.close()"><b>Close this window</b></a>
 		</p>
-		<table class="ml1">
-			<tr>
-				<th class="ml1">Id</th>
-				<th class="ml1">Summary</th>
-				<th class="ml1">Date</th>
-				<th class="ml1">User</th>
-			</tr>
-
-			<%
-				Ads ads = model.getAds();
-			%>
-			<tr>
-				<td width="5%"><%=ads.getId()%></td>
-				<td width="50%"><%=ads.getName()%></td>
-				<td width="18%"><%=ads.getCreated()%></td>
-				<td width="14%"><%=ads.getOwner()%></td>
-			</tr>
-		</table>
-		<p>
-			<b>Additional information</b>
-		</p>
-
 		<%
 			out.println(model.getForm());
 		%>
