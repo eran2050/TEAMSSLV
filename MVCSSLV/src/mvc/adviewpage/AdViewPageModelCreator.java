@@ -52,21 +52,22 @@ public class AdViewPageModelCreator implements IModelCreator {
 
 		if (model.getAction().equals(ACTION_UPDATE)) {
 // todo 
-			AdDesc adDesc = new AdDesc();
+
 			ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 			for (int i = 0; i < adDescId.length; i++) {
+				AdDesc adDesc = new AdDesc();
 				adDesc.setId(Integer.parseInt(adDescId[i]));
 				adDesc.setAdsId(adsId);
 				adDesc.setCriteria(criteria[i]);
 				adDesc.setValue(value[i]);
 				fullDesc.add(adDesc);
-				System.out.println(adDescId[i] + adsId + criteria[i]);
+//				System.out.println(adDescId[i] + adsId + criteria[i]);
 			}
 			model.setFullDesc(fullDesc);
-			for (AdDesc z : model.getFullDesc()) {
-				System.out.println("id" + z.getId() + "criteria"+
-						z.getCriteria() + "value"+ z.getValue());
-			}
+//			for (AdDesc z : model.getFullDesc()) {
+//				System.out.println("id" + z.getId() + "criteria"+
+//						z.getCriteria() + "value"+ z.getValue());
+//			}
 		}
 
 		return model;
