@@ -1,40 +1,26 @@
 package dao.users;
 
-import org.hibernate.Session;
-
-import util.HibernateUtil;
+import dao.BaseDAO;
 import domain.loginpage.Users;
+import org.hibernate.Session;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-public class UsersDAOImpl implements UsersDAO {
+@Component
+@Transactional
+public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 
-	private Session getSession() {
-		Session s = HibernateUtil.getSessionFactory().openSession();
-		if (!s.isConnected())
-			s.reconnect(null);
+    @Override
+    public Users getUserById(String s1) {
 
-		return s;
-	}
+        Session s = getSession();
+        Users u = null;
+        try {
+            u = (Users) s.get(Users.class, s1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	private void close(Session s) {
-
-		if (s != null && s.isOpen()) {
-			s.close();
-		}
-	}
-
-	@Override
-	public Users getUserById(String s1) {
-
-		Session s = getSession();
-		Users u = null;
-		try {
-			u = (Users) s.get(Users.class, s1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
-
-		return u;
-	}
+        return u;
+    }
 }

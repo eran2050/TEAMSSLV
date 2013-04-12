@@ -1,21 +1,26 @@
 package mvc.mainpage;
 
-import java.util.ArrayList;
-
+import dao.ads.AdsDAO;
 import mvc.IController;
 import mvc.IModel;
-import dao.ads.AdsDAO;
-import dao.ads.AdsDAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+
+@Component
 public class MainPageController implements IController {
 
-	private final AdsDAO dao = new AdsDAOImpl();
+	@Autowired
+	private AdsDAO ads;
 
-	public IModel execute(IModel model) {
+	public void execute(IModel model, HttpServletRequest req) {
 		MainPageModel m = (MainPageModel) model;
 
+		m.setAppVersion(APP_VERSION);
 		m.setAvailable(m.getListingSize() > 0);
-		m.setListing(dao.getMainListing(m.getCurrentPage()));
+		m.setListing(ads.getMainListing(m.getCurrentPage()));
 
 		if (m.getUserName() == null) {
 			m.setLoginStatus("<a class=nm href=".concat(CONTEXT_ROOT)
@@ -31,24 +36,28 @@ public class MainPageController implements IController {
 		int cnt = Math.round(m.getListingSize() / ADS_PER_MAIN_PAGE);
 		if (cnt > 0) {
 			int n;
-			for (n = 1; n <= cnt + 1; n++) {
-				if (n == m.getCurrentPage()) {
-					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
-							.concat("?page=").concat(Integer.toString(n))
-							.concat("><b><u>").concat(Integer.toString(n))
-							.concat("</u></b></a>&nbsp;"));
-				} else {
-					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
-							.concat("?page=").concat(Integer.toString(n))
-							.concat(">").concat(Integer.toString(n))
-							.concat("</a>&nbsp;"));
-				}
+			if (cnt * ADS_PER_MAIN_PAGE == m.getListingSize())
+				cnt -= 1;
+			if (cnt > 0) {
+				for (n = 1; n <= cnt + 1; n++) {
+					if (n == m.getCurrentPage()) {
+						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+								.concat("?page=").concat(Integer.toString(n))
+								.concat("><b><u>").concat(Integer.toString(n))
+								.concat("</u></b></a>&nbsp;"));
+					} else {
+						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+								.concat("?page=").concat(Integer.toString(n))
+								.concat(">").concat(Integer.toString(n))
+								.concat("</a>&nbsp;"));
+					}
 
-				if (n % PAGES_IN_LINE == 0)
-					list.add("<br />");
-			}
+					if (n % PAGES_IN_LINE == 0)
+						list.add("<br />");
+				}
+			} else
+				list = null;
 			m.setPageNumbers(list);
 		}
-		return m;
 	}
 }

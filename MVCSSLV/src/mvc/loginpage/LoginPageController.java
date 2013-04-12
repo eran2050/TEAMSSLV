@@ -2,82 +2,211 @@ package mvc.loginpage;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+
 import mvc.IController;
 import mvc.IModel;
-import dao.ads.AdsDAO;
-import dao.ads.AdsDAOImpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import dao.addesc.AdDescDAO;
+import dao.ads.AdsDAO;
+import domain.mainpage.Ads;
+
+@Component
 public class LoginPageController implements IController {
 
-	public IModel execute(IModel model) {
+	@Autowired
+	private AdsDAO ads;
+
+	@Autowired
+	private AdDescDAO adDesc;
+
+	public void execute(IModel model, HttpServletRequest req) {
+
+		StringBuilder sLoginForm = new StringBuilder();
+		sLoginForm
+				.append("<form action=")
+				.append(CONTEXT_ROOT)
+				.append("login/ method=post>")
+				.append("Input: <input type=text align=center name=username />")
+				.append("<input type=hidden name=action value=login />")
+				.append("<input type=image src=")
+				.append(CONTEXT_ROOT)
+				.append("images/login.jpg HEIGHT=23 align=center border=0 alt=Go />")
+				.append("</form>");
+
+		StringBuilder sLogoutForm = new StringBuilder();
+		sLogoutForm
+				.append("<a href=")
+				.append(CONTEXT_ROOT)
+				.append("login?action=logout>")
+				.append("Log Out:&nbsp;<input type=hidden align=center name=logoff value=logout />")
+				.append("<img src=")
+				.append(CONTEXT_ROOT)
+				.append("images/logout.jpg HEIGHT=23 align=center border=0 alt=Go />")
+				.append("</a>");
 
 		LoginPageModel lm = (LoginPageModel) model;
-		AdsDAO adsDao = new AdsDAOImpl();
+		lm.setAppVersion(APP_VERSION);
 		lm.setAds(null);
 		lm.setValid(false);
 
+		// Pages
+		int page = 1;
+		if (req.getParameter("page") != null) {
+			try {
+				page = Integer.parseInt(req.getParameter("page"));
+			} catch (NumberFormatException e) {
+				page = 1;
+			}
+		}
+		lm.setCurrentPage(page);
+
+		// User not found
 		if (lm.getStatusMessage().equals(NO_SUCH_USER)) {
 			lm.setStatusMessage(NO_SUCH_USER);
-			lm.setHtmlForm("<form action="
-					.concat(CONTEXT_ROOT)
-					.concat("login/ method=post>")
-					.concat("Input: <input type=text align=center name=username />")
-					.concat("<input type=hidden name=action value=login />")
-					.concat("<input type=image src=")
-					.concat(CONTEXT_ROOT)
-					.concat("images/login.jpg HEIGHT=23 align=center border=0 alt=Go />")
-					.concat("</form>"));
+			lm.setHtmlForm(sLoginForm.toString());
 			lm.setStatus(NOT_LOGGED_IN);
-		} else if (lm.getStatusMessage().equals(LOGGED_IN)
+		} else
+
+		// After Log In or refresh
+		if (lm.getStatusMessage().equals(LOGGED_IN)
 				&& (lm.getAction().equals(ACTION_LOGIN) || lm.getAction()
 						.equals(EMPTY))) {
 			lm.setStatusMessage(LOGGED_IN);
-			lm.setHtmlForm("<a href="
-					.concat(CONTEXT_ROOT)
-					.concat("login?action=logout>")
-					.concat("Log Out:&nbsp;<input type=hidden align=center name=logoff value=logout />")
-					.concat("<img src=")
-					.concat(CONTEXT_ROOT)
-					.concat("images/logout.jpg HEIGHT=23 align=center border=0 alt=Go />")
-					.concat("</a>"));
+			lm.setHtmlForm(sLogoutForm.toString());
 			lm.setStatus(LOGGED_IN + " as ");
-			lm.setAds(adsDao.getByUser(lm.getUserName(), lm.getCurrentPage()));
-		} else if (lm.getAction().equals(ACTION_DELETE)) {
-			lm.setStatusMessage(AD_DELETED);
-			lm.setHtmlForm("<a href="
-					.concat(CONTEXT_ROOT)
-					.concat("login?action=logout>")
-					.concat("Log Out:&nbsp;<input type=hidden align=center name=logoff value=logout />")
-					.concat("<img src=")
-					.concat(CONTEXT_ROOT)
-					.concat("images/logout.jpg HEIGHT=23 align=center border=0 alt=Go />")
-					.concat("</a>"));
-			lm.setStatus(LOGGED_IN + " as ");
-			lm.setAds(adsDao.getByUser(lm.getUserName(), lm.getCurrentPage()));
-		} else if (lm.getStatusMessage().equals(LOGGED_OUT)) {
+
+			if (lm.getUserName() != null) {
+				System.out.println("LOGIN: Getting count of Ads by User..");
+				int adsCount = ads.getCountByUser(lm.getUserName());
+				lm.setListingSize(adsCount);
+
+				int maxPage = Math.round((float) adsCount
+						/ (float) ADS_PER_LOGIN_PAGE) + 1;
+				if (page > maxPage)
+					page = maxPage;
+				if (page <= 0)
+					page = 1;
+			} else {
+				page = 1;
+			}
+			lm.setCurrentPage(page);
+			
+			System.out.println("LOGIN: Getting Ads for showing up the list..");
+			lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
+		} else
+
+		// Delete Ad
+		if (lm.getAction().equals(ACTION_DELETE)) {
+			System.out.println("LOGIN: Getting authorization for Deletion..");
+			Ads ad = ads.getById(lm.getAdsId().intValue());
+			String adsOwner = ad == null ? EMPTY : ad.getOwner();
+			String logUser = lm.getUserName() == null ? EMPTY + EMPTY : lm
+					.getUserName();
+
+			if (logUser != null && !logUser.equals(EMPTY)
+					&& adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
+				System.out.println("LOGIN: Deleting Ad..");
+				adDesc.deleteByAdsId(lm.getAdsId().intValue());
+				ads.deleteById(lm.getAdsId().intValue());
+				lm.setStatusMessage(AD_DELETED);
+				lm.setHtmlForm(sLogoutForm.toString());
+				lm.setStatus(LOGGED_IN + " as ");
+
+				if (lm.getUserName() != null) {
+					System.out.println("LOGIN: Getting count of Ads by User..");
+					int adsCount = ads.getCountByUser(lm.getUserName());
+					lm.setListingSize(adsCount);
+
+					int maxPage = Math.round((float) adsCount
+							/ (float) ADS_PER_LOGIN_PAGE) + 1;
+					if (page > maxPage)
+						page = maxPage;
+					if (page <= 0)
+						page = 1;
+				} else {
+					page = 1;
+				}
+				lm.setCurrentPage(page);
+
+				System.out.println("LOGIN: Getting Ads after Deletion..");
+				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
+			} else if (logUser != null && !logUser.equals(EMPTY)
+					&& !adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
+				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
+				lm.setHtmlForm(sLogoutForm.toString());
+				lm.setStatus(LOGGED_IN + " as ");
+
+				if (lm.getUserName() != null) {
+					System.out.println("LOGIN: Getting count of Ads by User..");
+					int adsCount = ads.getCountByUser(lm.getUserName());
+					lm.setListingSize(adsCount);
+
+					int maxPage = Math.round((float) adsCount
+							/ (float) ADS_PER_LOGIN_PAGE) + 1;
+					if (page > maxPage)
+						page = maxPage;
+					if (page <= 0)
+						page = 1;
+				} else {
+					page = 1;
+				}
+				lm.setCurrentPage(page);
+
+				System.out
+						.println("LOGIN: Getting ads after not authorized Deletion..");
+				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
+			} else {
+				lm.setHtmlForm(sLoginForm.toString());
+				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
+				lm.setStatus(NOT_LOGGED_IN);
+			}
+		} else
+
+		// After Log Out
+		if (lm.getStatusMessage().equals(LOGGED_OUT)) {
 			lm.setStatusMessage(LOGGED_OUT);
-			lm.setHtmlForm("<form action="
-					.concat(CONTEXT_ROOT)
-					.concat("login/ method=post>")
-					.concat("Input: <input type=text align=center name=username />")
-					.concat("<input type=hidden name=action value=login />")
-					.concat("<input type=image src=")
-					.concat(CONTEXT_ROOT)
-					.concat("images/login.jpg HEIGHT=23 align=center border=0 alt=Go />")
-					.concat("</form>"));
+			lm.setHtmlForm(sLoginForm.toString());
 			lm.setStatus(NOT_LOGGED_IN);
 		} else {
+			// Default
 			lm.setStatusMessage(NOT_LOGGED_IN);
-			lm.setHtmlForm("<form action="
-					.concat(CONTEXT_ROOT)
-					.concat("login/ method=post>")
-					.concat("Input: <input type=text align=center name=username />")
-					.concat("<input type=hidden name=action value=login />")
-					.concat("<input type=image src=")
-					.concat(CONTEXT_ROOT)
-					.concat("images/login.jpg HEIGHT=23 align=center border=0 alt=Go />")
-					.concat("</form>"));
+			lm.setHtmlForm(sLoginForm.toString());
 			lm.setStatus(NOT_LOGGED_IN);
+		}
+
+		// PageNumbers
+		ArrayList<String> list = new ArrayList<String>();
+		int cnt = Math.round(lm.getListingSize() / ADS_PER_LOGIN_PAGE);
+		if (cnt > 0) {
+			int n;
+			if (cnt * ADS_PER_LOGIN_PAGE == lm.getListingSize())
+				cnt -= 1;
+			if (cnt > 0) {
+				for (n = 1; n <= cnt + 1; n++) {
+					if (n == lm.getCurrentPage()) {
+						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+								.concat("login/?page=")
+								.concat(Integer.toString(n)).concat("><b><u>")
+								.concat(Integer.toString(n))
+								.concat("</u></b></a>&nbsp;"));
+					} else {
+						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+								.concat("login/?page=")
+								.concat(Integer.toString(n)).concat(">")
+								.concat(Integer.toString(n))
+								.concat("</a>&nbsp;"));
+					}
+
+					if (n % PAGES_IN_LINE == 0)
+						list.add("<br>");
+				}
+			} else
+				list = null;
+			lm.setPageNumbers(list);
 		}
 
 		// Giving model to View
@@ -87,31 +216,5 @@ public class LoginPageController implements IController {
 		} else {
 			lm.setValid(true);
 		}
-
-		// PageNumbers
-		ArrayList<String> list = new ArrayList<String>();
-		int cnt = Math.round(lm.getListingSize() / ADS_PER_LOGIN_PAGE);
-		if (cnt > 0) {
-			int n;
-			for (n = 1; n <= cnt + 1; n++) {
-				if (n == lm.getCurrentPage()) {
-					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
-							.concat("login/?page=").concat(Integer.toString(n))
-							.concat("><b><u>").concat(Integer.toString(n))
-							.concat("</u></b></a>&nbsp;"));
-				} else {
-					list.add("<a class=pages href=".concat(CONTEXT_ROOT)
-							.concat("login/?page=").concat(Integer.toString(n))
-							.concat(">").concat(Integer.toString(n))
-							.concat("</a>&nbsp;"));
-				}
-
-				if (n % PAGES_IN_LINE == 0)
-					list.add("<br>");
-			}
-			lm.setPageNumbers(list);
-		}
-
-		return lm;
 	}
 }

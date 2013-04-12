@@ -1,16 +1,20 @@
 package dao.ads;
 
-import java.util.ArrayList;
-
+import dao.BaseDAO;
+import domain.mainpage.Ads;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import util.HibernateUtil;
-import domain.mainpage.Ads;
+import java.util.ArrayList;
 
-public class AdsDAOImpl implements AdsDAO {
+@Component
+@Transactional
+public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Ads> getMainListing(int page) {
@@ -22,11 +26,9 @@ public class AdsDAOImpl implements AdsDAO {
 		try {
 			l = (ArrayList<Ads>) s.createCriteria(Ads.class)
 					.setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE)
-					.list();
+					.addOrder(Order.asc("created")).list();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			close(s);
 		}
 
 		return l;
@@ -41,8 +43,6 @@ public class AdsDAOImpl implements AdsDAO {
 					.setProjection(Projections.rowCount()).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			close(s);
 		}
 
 		return cnt.intValue();
@@ -58,26 +58,9 @@ public class AdsDAOImpl implements AdsDAO {
 					.setProjection(Projections.rowCount()).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			close(s);
 		}
 
 		return cnt.intValue();
-	}
-
-	private Session getSession() {
-
-		Session s = HibernateUtil.getSessionFactory().openSession();
-		if (!s.isConnected())
-			s.reconnect(null);
-		return s;
-	}
-
-	private void close(Session s) {
-
-		if (s != null && s.isOpen()) {
-			s.close();
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -90,11 +73,10 @@ public class AdsDAOImpl implements AdsDAO {
 		try {
 			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
 					.setFirstResult(first).setMaxResults(ADS_PER_LOGIN_PAGE)
+					.addOrder(Order.asc("created"))
 					.add(Restrictions.eq("owner", usr)).list();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			close(ses);
 		}
 
 		return ads;
@@ -106,12 +88,10 @@ public class AdsDAOImpl implements AdsDAO {
 		Ads ads = null;
 		try {
 			Criteria criteria = session.createCriteria(Ads.class).add(
-					Restrictions.eq("id", new Integer(adsId)));
+					Restrictions.eq("id", adsId));
 			ads = (Ads) criteria.uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			session.close();
 		}
 		return ads;
 	}
@@ -120,16 +100,14 @@ public class AdsDAOImpl implements AdsDAO {
 	public void deleteById(int adsId) {
 		Session s = getSession();
 		try {
-			s.beginTransaction();
-			String hql = "delete from ".concat(Ads.class.getName()).concat(
-					" where id = :adsId");
-			s.createQuery(hql)
-					.setString("adsId", new Integer(adsId).toString())
+			StringBuilder hql = new StringBuilder();
+			hql.append("delete from ").append(Ads.class.getName())
+					.append(" where id = :adsId");
+			s.createQuery(hql.toString())
+					.setString("adsId", Integer.toString(adsId))
 					.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			close(s);
 		}
 	}
 
