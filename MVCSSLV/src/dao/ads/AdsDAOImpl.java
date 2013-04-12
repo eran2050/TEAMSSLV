@@ -1,6 +1,7 @@
 package dao.ads;
 
 import dao.BaseDAO;
+import domain.addescpage.AdDesc;
 import domain.mainpage.Ads;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -106,6 +107,27 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 			s.createQuery(hql.toString())
 					.setString("adsId", Integer.toString(adsId))
 					.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void updateAds(Ads ads) {
+		// TODO Auto-generated method stub
+		Session s = getSession();
+		try {
+			StringBuilder hql = new StringBuilder();
+
+			hql.setLength(0);
+			hql.append("update ").append(Ads.class.getName())
+					.append(" set name = :name")
+					.append(" where id = :id");
+			s.createQuery(hql.toString()).setInteger("id", ads.getId())
+					.setString("name", ads.getName()).executeUpdate();
+			System.out.println("id" + ads.getId() + "name"
+					+ ads.getName());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

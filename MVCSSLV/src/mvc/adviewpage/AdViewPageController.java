@@ -68,9 +68,12 @@ public class AdViewPageController implements IController {
 		if (adViewM.getAction().equals(ACTION_UPDATE)) {
 			ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 			
-			Ads ads = new Ads();
+			Ads ad = new Ads();
 //			adDesc.updateAdDesc(fullDesc);
-			ads.setName(adName);
+			ad.setName(adName);
+			ad.setId(adsId);
+			ads.updateAds(ad);
+			adViewM.setAds(ads.getById(adViewM.getAdsId()));
 			
 			for (int i = 0; i < adDescId.length; i++) {
 		
