@@ -21,10 +21,14 @@ import mvc.IModelCreator;
 import mvc.URIMapping;
 import mvc.URIMappingBuilder;
 
-@WebFilter ("/NewAdPageMVCFilter")
-public class NewAdPageMVCFilter  implements Filter {
+import org.springframework.context.ApplicationContext;
 
-	private Map<String, URIMapping>	mapping;
+import util.ApplicationContextSingleton;
+
+@WebFilter("/NewAdPageMVCFilter")
+public class NewAdPageMVCFilter implements Filter {
+
+	private Map<String, URIMapping> mapping;
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -40,21 +44,26 @@ public class NewAdPageMVCFilter  implements Filter {
 		if (uriMapping == null) {
 			httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
-		else
-		{
+
 		assert uriMapping != null;
-		IModelCreator modelCreator = uriMapping.getModelCreator();
+		ApplicationContext ctx = ApplicationContextSingleton.get();
+
+		@SuppressWarnings("unchecked")
+		IModelCreator modelCreator = (IModelCreator) ctx.getBean(uriMapping
+				.getModelCreator()); // uriMapping.getModelCreator();
 		IModel model = modelCreator.createModel(httpRequest);
 
-		IController controller = uriMapping.getController();
-		model = controller.execute(model);
+		@SuppressWarnings("unchecked")
+		IController controller = (IController) ctx.getBean(uriMapping
+				.getController());
+		controller.execute(model, httpRequest);
 
 		httpRequest.setAttribute("model", model);
 
 		String view = uriMapping.getView();
 		RequestDispatcher dispatcher = httpRequest.getRequestDispatcher(view);
 		dispatcher.forward(httpRequest, httpResponse);
-		}
+
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {
@@ -63,7 +72,7 @@ public class NewAdPageMVCFilter  implements Filter {
 
 		// Main Page
 		URIMapping NewAdPageMapping = new URIMappingBuilder().build("/add/",
-				new NewAdModelCreator(), new NewAdPageController(),
+				NewAdModelCreator.class, NewAdPageController.class,
 				"/jsp/newpage.jsp");
 
 		// Fill Mapping
@@ -72,5 +81,5 @@ public class NewAdPageMVCFilter  implements Filter {
 
 	public void destroy() {
 	}
-	
+
 }

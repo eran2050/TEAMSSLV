@@ -3,30 +3,27 @@
                                          "http://www.jboss.org/dtd/hibernate/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
 	<session-factory>
-	
+
 		<!-- JDBC connection pool (use the built-in) -->
 		<property name="connection.pool_size">10</property>
 
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">true</property>
 
-<<<<<<< HEAD
-  <!-- Echo all executed SQL to stdout -->
-  <property name="show_sql">true</property>
+		<!-- Echo all executed SQL to stdout -->
+		<property name="show_sql">true</property>
 
-  <!-- Hibernate Annotations (and package-info.java)-->
-  <mapping class="domain.loginpage.Users"/>
-  <mapping class="domain.mainpage.Ads"/>
-  <mapping class="domain.addescpage.AdDesc" />
-  <mapping class="domain.newad.NewAd"/>
-  <mapping class="domain.newaddesc.NewAdDesc"/>
+		<!-- Hibernate Annotations (and package-info.java) -->
+		<mapping class="domain.loginpage.Users" />
+		<mapping class="domain.mainpage.Ads" />
+		<mapping class="domain.addescpage.AdDesc" />
+		<mapping class="domain.newad.NewAd" />
+		<mapping class="domain.newaddesc.NewAdDesc" />
 
- </session-factory>
-=======
-		<!-- Hibernate Annotations (and package-info.java)-->
-		<mapping class="domain.loginpage.Users"/>
-		<mapping class="domain.mainpage.Ads"/>
+		<!-- Hibernate Annotations (and package-info.java) -->
+		<mapping class="domain.loginpage.Users" />
+		<mapping class="domain.mainpage.Ads" />
 		<mapping class="domain.addescpage.AdDesc" />
 	</session-factory>
->>>>>>> origin/Sasha-Spring-2
+
 </hibernate-configuration>

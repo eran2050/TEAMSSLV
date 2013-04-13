@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Component;
+
 
 import mvc.IModel;
 import mvc.IModelCreator;
 
-
+@Component
 public class NewAdModelCreator implements IModelCreator{
 
 	private HttpSession hs;
