@@ -10,9 +10,6 @@
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">true</property>
 
-		<!-- Echo all executed SQL to stdout -->
-		<property name="show_sql">true</property>
-
 		<!-- Hibernate Annotations (and package-info.java) -->
 		<mapping class="domain.loginpage.Users" />
 		<mapping class="domain.mainpage.Ads" />
@@ -20,10 +17,6 @@
 		<mapping class="domain.newad.NewAd" />
 		<mapping class="domain.newaddesc.NewAdDesc" />
 
-		<!-- Hibernate Annotations (and package-info.java) -->
-		<mapping class="domain.loginpage.Users" />
-		<mapping class="domain.mainpage.Ads" />
-		<mapping class="domain.addescpage.AdDesc" />
 	</session-factory>
 
 </hibernate-configuration>
