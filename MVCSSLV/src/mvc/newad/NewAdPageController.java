@@ -16,7 +16,6 @@ public class NewAdPageController implements IController {
 	@Autowired
 	private NewAdDAO dao;
 
-	@Override
 	public void execute(IModel model, HttpServletRequest req) {
 		String outStringStart = "";
 		String outStringFinish = "";

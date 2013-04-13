@@ -83,7 +83,6 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 		return ads;
 	}
 
-	@Override
 	public Ads getById(int adsId) {
 		final Session session = getSession();
 		Ads ads = null;
@@ -97,7 +96,6 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 		return ads;
 	}
 
-	@Override
 	public void deleteById(int adsId) {
 		Session s = getSession();
 		try {
@@ -112,7 +110,6 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 		}
 	}
 
-	@Override
 	public void updateAds(Ads ads) {
 		// TODO Auto-generated method stub
 		Session s = getSession();

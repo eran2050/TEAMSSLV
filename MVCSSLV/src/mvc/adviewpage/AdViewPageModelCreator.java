@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdViewPageModelCreator implements IModelCreator {
 
-	@Override
 	public IModel createModel(HttpServletRequest request) {
 
 		AdViewPageModel model = new AdViewPageModel();

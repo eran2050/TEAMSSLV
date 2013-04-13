@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 
-    @Override
     public Users getUserById(String s1) {
 
         Session s = getSession();

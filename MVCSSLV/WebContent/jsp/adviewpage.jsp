@@ -1,4 +1,3 @@
-<%@page import="com.sun.corba.se.spi.orbutil.fsm.Action"%>
 <%@page import="domain.mainpage.Ads"%>
 <%@page import="mvc.adviewpage.AdViewPageModel"%>
 <%@page import="domain.addescpage.AdDesc"%>

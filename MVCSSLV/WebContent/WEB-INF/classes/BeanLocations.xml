@@ -8,7 +8,7 @@
 
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="properties/jdbc.properties" />
+		<property name="location" value="/WEB-INF/classes/properties/jdbc.properties" />
 	</bean>
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">

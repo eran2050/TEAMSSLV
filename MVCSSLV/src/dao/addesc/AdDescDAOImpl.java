@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public ArrayList<AdDesc> getFullAdDesc(int adsId) {
 		ArrayList<AdDesc> fullAdDesc;
 		Session s = getSession();
@@ -28,7 +27,6 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public ArrayList<AdDesc> getFullAdDesc1(int adsId) {
 		ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
 		final Session session = getSession();
@@ -44,7 +42,6 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 		return fullAdDesc;
 	}
 
-	@Override
 	public void deleteByAdsId(int adsId) {
 		Session s = getSession();
 		try {
@@ -59,7 +56,6 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 		}
 	}
 
-	@Override
 	public void updateAdDesc(ArrayList<AdDesc> fullDesc) {
 		// TODO Auto-generated method stub
 		Session s = getSession();

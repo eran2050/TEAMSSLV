@@ -16,7 +16,6 @@ public class NewAdModelCreator implements IModelCreator{
 
 	private HttpSession hs;
 
-	@Override
 	public IModel createModel(HttpServletRequest r) {
 
 		NewAdPageModel m = new NewAdPageModel();
