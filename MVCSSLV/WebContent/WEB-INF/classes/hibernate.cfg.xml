@@ -11,11 +11,11 @@
 		<property name="show_sql">true</property>
 
 		<!-- Hibernate Annotations (and package-info.java) -->
-		<mapping class="domain.loginpage.Users" />
-		<mapping class="domain.mainpage.Ads" />
-		<mapping class="domain.addescpage.AdDesc" />
-		<mapping class="domain.newad.NewAd" />
-		<mapping class="domain.newaddesc.NewAdDesc" />
+		<mapping class="domain.users.Users" />
+		<mapping class="domain.ads.Ads" />
+		<mapping class="domain.addesc.AdDesc" />
+		<mapping class="domain.ads.NewAd" />
+		<mapping class="domain.addesc.NewAdDesc" />
 
 	</session-factory>
 

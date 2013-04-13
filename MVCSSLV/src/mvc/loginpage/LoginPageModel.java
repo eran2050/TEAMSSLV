@@ -1,11 +1,11 @@
 package mvc.loginpage;
 
-import domain.loginpage.Users;
-import domain.mainpage.Ads;
-import mvc.IModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import mvc.IModel;
+import domain.ads.Ads;
+import domain.users.Users;
 
 public class LoginPageModel implements IModel {
 

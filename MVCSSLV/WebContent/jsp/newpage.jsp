@@ -1,6 +1,6 @@
-<%@page import="domain.newad.NewAd"%>
-<jsp:useBean id="model" type="mvc.newad.NewAdPageModel"
-	class="mvc.newad.NewAdPageModel" scope="request"></jsp:useBean>
+<%@page import="domain.ads.NewAd"%>
+<jsp:useBean id="model" type="mvc.newadpage.NewAdPageModel"
+	class="mvc.newadpage.NewAdPageModel" scope="request"></jsp:useBean>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>

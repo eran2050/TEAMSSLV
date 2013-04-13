@@ -1,4 +1,4 @@
-package domain.addescpage;
+package domain.addesc;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

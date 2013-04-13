@@ -1,4 +1,4 @@
-package net.voaideahost;
+package util;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

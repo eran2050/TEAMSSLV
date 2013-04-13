@@ -1,8 +1,8 @@
 package dao.addesc;
 
-import domain.addescpage.AdDesc;
-
 import java.util.ArrayList;
+
+import domain.addesc.AdDesc;
 
 public interface AdDescDAO {
 

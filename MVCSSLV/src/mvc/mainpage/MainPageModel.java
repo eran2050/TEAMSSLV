@@ -1,10 +1,10 @@
 package mvc.mainpage;
 
-import domain.mainpage.Ads;
-import mvc.IModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import mvc.IModel;
+import domain.ads.Ads;
 
 public class MainPageModel implements IModel {
 

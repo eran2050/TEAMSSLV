@@ -1,5 +1,5 @@
-<%@page import="domain.mainpage.Ads"%>
-<jsp:useBean id="model" type="mvc.loginpage.LoginPageModel"
+<%@page import="domain.ads.Ads"%>
+<jsp:useBean id="modelLoginPage" type="mvc.loginpage.LoginPageModel"
 	class="mvc.loginpage.LoginPageModel" scope="request"></jsp:useBean>
 <html>
 <head>
@@ -15,8 +15,7 @@
 					<td class="nm"><a class="nm" href="/java2/add">Add </a></td>
 					<td class="nm"><a class="nm" href="/java2/admin">Admin</a></td>
 					<td class="nm3" style="background-color: #999933">Status:&nbsp;
-						<jsp:getProperty name="model" property="status" /><jsp:getProperty
-							name="model" property="userName" /></td>
+						<%=modelLoginPage.getStatus()%><%=modelLoginPage.getUserName()%></td>
 
 				</tr>
 			</table>
@@ -25,10 +24,10 @@
 
 			<p>
 				Status:
-				<jsp:getProperty name="model" property="statusMessage" /></p>
+				<%=modelLoginPage.getStatusMessage()%></p>
 
 			<%
-				if (model.isValid()) {
+				if (modelLoginPage.isValid()) {
 			%>
 			<table class="ml">
 				<tr>
@@ -40,11 +39,11 @@
 				</tr>
 
 				<tr>
-					<td><%=model.getUser().getId()%></td>
-					<td><%=model.getUser().getName()%></td>
-					<td><%=model.getUser().getSurName()%></td>
-					<td><%=model.getUser().geteMail()%></td>
-					<td><%=model.getUser().getPhone()%></td>
+					<td><%=modelLoginPage.getUser().getId()%></td>
+					<td><%=modelLoginPage.getUser().getName()%></td>
+					<td><%=modelLoginPage.getUser().getSurName()%></td>
+					<td><%=modelLoginPage.getUser().geteMail()%></td>
+					<td><%=modelLoginPage.getUser().getPhone()%></td>
 				</tr>
 				<%
 					}
@@ -52,9 +51,9 @@
 			</table>
 
 			<p>
-				<jsp:getProperty name="model" property="userPassword" /></p>
+				<%=modelLoginPage.getUserPassword()%></p>
 			<%
-				if (model.isValid() && model.getAds().size() > 0) {
+				if (modelLoginPage.isValid() && modelLoginPage.getAds().size() > 0) {
 			%>
 			<table class="ml">
 				<tr>
@@ -64,7 +63,7 @@
 					<th class="ml">Action</th>
 				</tr>
 				<%
-					for (Ads ml : model.getAds()) {
+					for (Ads ml : modelLoginPage.getAds()) {
 				%>
 				<tr>
 					<td width="5%"><a href="/java2/adview?adsid=<%=ml.getId()%>"
@@ -82,12 +81,12 @@
 				%>
 			</table>
 			<%
-				if (model.getPageNumbers() != null) {
+				if (modelLoginPage.getPageNumbers() != null) {
 			%>
 			<p>
 				Pages:&nbsp;
 				<%
-					for (String pn : model.getPageNumbers()) {
+					for (String pn : modelLoginPage.getPageNumbers()) {
 				%>
 
 				<%=pn%>
@@ -100,16 +99,16 @@
 				}
 			%>
 			<%
-				} // if
+				}
 			%>
 
-			<p><jsp:getProperty name="model" property="htmlForm" />
+			<p><%=modelLoginPage.getHtmlForm()%>
 			</p>
 		</div>
 		<div class="footer">
 			<table class="footer">
 				<tr>
-					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=model.getAppVersion()%>&nbsp;
+					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=modelLoginPage.getAppVersion()%>&nbsp;
 					</td>
 				</tr>
 			</table>

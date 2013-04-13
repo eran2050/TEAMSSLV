@@ -1,4 +1,4 @@
-package domain.mainpage;
+package domain.ads;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

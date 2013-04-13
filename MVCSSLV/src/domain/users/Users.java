@@ -1,4 +1,4 @@
-package domain.loginpage;
+package domain.users;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

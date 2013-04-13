@@ -2,16 +2,18 @@ package mvc.adviewpage;
 
 import java.util.ArrayList;
 
-import dao.addesc.AdDescDAO;
-import dao.ads.AdsDAO;
-import domain.addescpage.AdDesc;
-import domain.mainpage.Ads;
+import javax.servlet.http.HttpServletRequest;
+
 import mvc.IController;
 import mvc.IModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import dao.addesc.AdDescDAO;
+import dao.ads.AdsDAO;
+import domain.addesc.AdDesc;
+import domain.ads.Ads;
 
 @Component
 public class AdViewPageController implements IController {

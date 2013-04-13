@@ -6,14 +6,6 @@
 	<display-name>java2</display-name>
 	
 	<filter>
-		<filter-name>LoginPageMVCFilter</filter-name>
-		<filter-class>mvc.loginpage.LoginPageMVCFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>LoginPageMVCFilter</filter-name>
-		<url-pattern>/login/</url-pattern>
-	</filter-mapping>
-	<filter>
 		<filter-name>AdViewPageMVCFilter</filter-name>
 		<filter-class>mvc.adviewpage.AdViewPageMVCFilter</filter-class>
 	</filter>
@@ -23,7 +15,7 @@
 	</filter-mapping>
 	<filter>
 		<filter-name>NewAdPageMVCFilter</filter-name>
-		<filter-class>mvc.newad.NewAdPageMVCFilter</filter-class>
+		<filter-class>mvc.newadpage.NewAdPageMVCFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>NewAdPageMVCFilter</filter-name>

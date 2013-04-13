@@ -1,8 +1,8 @@
 package dao.ads;
 
-import domain.mainpage.Ads;
-
 import java.util.ArrayList;
+
+import domain.ads.Ads;
 
 public interface AdsDAO {
 

@@ -15,7 +15,7 @@ import util.Config;
 import dao.ads.AdsDAO;
 
 @Component
-@Controller(value="/")
+@Controller(value = "/")
 public class MainPageController extends AbstractController implements Config {
 
 	@Autowired
@@ -97,7 +97,7 @@ public class MainPageController extends AbstractController implements Config {
 				list = null;
 			m.setPageNumbers(list);
 		}
-		model.addObject("model", m);
+		model.addObject("modelMainPage", m);
 		return model;
 	}
 }

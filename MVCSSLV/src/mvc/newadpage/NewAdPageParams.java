@@ -1,4 +1,4 @@
-package mvc.newad;
+package mvc.newadpage;
 
 public class NewAdPageParams {
 

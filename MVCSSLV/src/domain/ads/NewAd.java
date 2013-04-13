@@ -1,18 +1,17 @@
-package domain.newad;
+package domain.ads;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.FetchType;
-import java.util.HashSet;
-//import java.util.Set;
 
-import domain.newaddesc.NewAdDesc;
+import domain.addesc.NewAdDesc;
 
 @Entity
 @Table(name = "ads")

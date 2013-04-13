@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dao.BaseDAO;
-import domain.mainpage.Ads;
+import domain.ads.Ads;
 
 @Component
 @Transactional

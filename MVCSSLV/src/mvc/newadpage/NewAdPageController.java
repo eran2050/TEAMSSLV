@@ -1,4 +1,4 @@
-package mvc.newad;
+package mvc.newadpage;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,7 +8,7 @@ import mvc.IModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import dao.newad.NewAdDAO;
+import dao.ads.NewAdDAO;
 
 @Component
 public class NewAdPageController implements IController {

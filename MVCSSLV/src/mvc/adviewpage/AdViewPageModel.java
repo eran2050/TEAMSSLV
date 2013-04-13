@@ -1,10 +1,10 @@
 package mvc.adviewpage;
 
-import domain.addescpage.AdDesc;
-import domain.mainpage.Ads;
-import mvc.IModel;
-
 import java.util.ArrayList;
+
+import mvc.IModel;
+import domain.addesc.AdDesc;
+import domain.ads.Ads;
 
 public class AdViewPageModel implements IModel {
 

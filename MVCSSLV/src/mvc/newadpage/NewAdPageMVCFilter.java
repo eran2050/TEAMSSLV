@@ -1,4 +1,4 @@
-package mvc.newad;
+package mvc.newadpage;
 
 import java.io.IOException;
 import java.util.HashMap;

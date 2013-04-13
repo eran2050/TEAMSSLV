@@ -1,6 +1,6 @@
-<%@page import="domain.mainpage.Ads"%>
+<%@page import="domain.ads.Ads"%>
 <%@page import="mvc.adviewpage.AdViewPageModel"%>
-<%@page import="domain.addescpage.AdDesc"%>
+<%@page import="domain.addesc.AdDesc"%>
 <jsp:useBean id="model" type="mvc.adviewpage.AdViewPageModel"
 	class="mvc.adviewpage.AdViewPageModel" scope="request"></jsp:useBean>
 <html>

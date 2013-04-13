@@ -1,10 +1,11 @@
 package dao.users;
 
-import dao.BaseDAO;
-import domain.loginpage.Users;
 import org.hibernate.Session;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import dao.BaseDAO;
+import domain.users.Users;
 
 @Component
 @Transactional

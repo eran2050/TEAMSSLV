@@ -1,8 +1,8 @@
-package dao.newad;
+package dao.ads;
 
 import java.util.ArrayList;
 
-import mvc.newad.NewAdPageParams;
+import mvc.newadpage.NewAdPageParams;
 
 public interface NewAdDAO {
 

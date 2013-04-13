@@ -3,28 +3,105 @@ package mvc.loginpage;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
-
-import mvc.IController;
-import mvc.IModel;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
+import util.Config;
+import util.Util;
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
-import domain.mainpage.Ads;
+import dao.users.UsersDAO;
+import domain.ads.Ads;
+import domain.users.Users;
 
 @Component
-public class LoginPageController implements IController {
+@Controller(value = "/login/")
+public class LoginPageController extends AbstractController implements Config {
 
 	@Autowired
 	private AdsDAO ads;
-
 	@Autowired
 	private AdDescDAO adDesc;
+	@Autowired
+	private UsersDAO users;
 
-	public void execute(IModel model, HttpServletRequest req) {
+	@Override
+	protected ModelAndView handleRequestInternal(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
+		ModelAndView model = new ModelAndView("loginpage");
+
+		// Model Creator
+		LoginPageModel lm = new LoginPageModel();
+		lm.setStatusMessage(EMPTY);
+		HttpSession hs = request.getSession();
+
+		// Actions
+		String action = request.getParameter("action");
+		if (action == null) {
+			action = EMPTY;
+		}
+		lm.setAction(action);
+
+		// Log out
+		if (lm.getAction().equals(ACTION_LOGOUT)) {
+			lm.setStatusMessage(LOGGED_OUT);
+			lm.setUserName(null);
+			lm.setPassword(null);
+			hs.removeAttribute(USERNAME);
+		}
+
+		// Log In
+		String ru = null;
+		String su = (String) hs.getAttribute(USERNAME);
+		boolean userChecked = false;
+		if (lm.getAction().equals(ACTION_LOGIN)) {
+			ru = request.getParameter(USERNAME);
+			// Check User
+			if (ru != null) {
+				System.out.println("LOGIN: Authorizing User [1]..");
+				Users u = users.getUserById(ru);
+				lm.setUser(u);
+				userChecked = u != null;
+			}
+		}
+
+		// Delete ad
+		if (lm.getAction().equals(ACTION_DELETE)) {
+			lm.setStatusMessage(AD_DELETED);
+			int adsId = Integer.parseInt(request.getParameter("adsid"));
+			lm.setAdsId((long) adsId);
+		}
+
+		// Various checks and Status Setter
+		if (su == null && userChecked) {
+			hs.setAttribute(USERNAME, ru);
+
+			lm.setUserName(ru);
+			lm.setPassword("P-hash: ".concat(new Util().getSha(ru,
+					ru.concat(ru))));
+			lm.setStatusMessage(LOGGED_IN);
+		} else if ((ru == null && su != null) || (ru != null && su != null)) {
+			System.out.println("LOGIN: Authorizing User [2]..");
+			Users u = users.getUserById(su);
+			lm.setUser(u);
+			lm.setUserName(su);
+			lm.setPassword("P-hash: ".concat(new Util().getSha(su,
+					su.concat(su))));
+			lm.setStatusMessage(LOGGED_IN);
+		} else if (ru != null && !userChecked && su == null) {
+			lm.setStatusMessage(NO_SUCH_USER);
+		} else if (ru == null && su == null && lm.getAction().equals(EMPTY)) {
+			lm.setStatusMessage(NOT_LOGGED_IN);
+		}
+
+		// Controller
 		StringBuilder sLoginForm = new StringBuilder();
 		sLoginForm
 				.append("<form action=")
@@ -48,16 +125,15 @@ public class LoginPageController implements IController {
 				.append("images/logout.jpg HEIGHT=23 align=center border=0 alt=Go />")
 				.append("</a>");
 
-		LoginPageModel lm = (LoginPageModel) model;
 		lm.setAppVersion(APP_VERSION);
 		lm.setAds(null);
 		lm.setValid(false);
 
 		// Pages
 		int page = 1;
-		if (req.getParameter("page") != null) {
+		if (request.getParameter("page") != null) {
 			try {
-				page = Integer.parseInt(req.getParameter("page"));
+				page = Integer.parseInt(request.getParameter("page"));
 			} catch (NumberFormatException e) {
 				page = 1;
 			}
@@ -94,7 +170,7 @@ public class LoginPageController implements IController {
 				page = 1;
 			}
 			lm.setCurrentPage(page);
-			
+
 			System.out.println("LOGIN: Getting Ads for showing up the list..");
 			lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 		} else
@@ -216,5 +292,8 @@ public class LoginPageController implements IController {
 		} else {
 			lm.setValid(true);
 		}
+
+		model.addObject("modelLoginPage", lm);
+		return model;
 	}
 }

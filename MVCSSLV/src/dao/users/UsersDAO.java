@@ -1,6 +1,6 @@
 package dao.users;
 
-import domain.loginpage.Users;
+import domain.users.Users;
 
 public interface UsersDAO {
 

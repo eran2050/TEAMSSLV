@@ -1,16 +1,16 @@
-package dao.newad;
+package dao.ads;
 
 import java.util.ArrayList;
 
-import mvc.newad.NewAdPageParams;
+import mvc.newadpage.NewAdPageParams;
 
 import org.hibernate.Session;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import dao.BaseDAO;
-import domain.newad.NewAd;
-import domain.newaddesc.NewAdDesc;
+import domain.addesc.NewAdDesc;
+import domain.ads.NewAd;
 
 @Component
 @Transactional
