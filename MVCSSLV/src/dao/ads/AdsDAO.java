@@ -17,5 +17,7 @@ public interface AdsDAO {
     Ads getById(int adsId);
 
     void deleteById(int adsId);
+    
+    void updateAds(Ads ads);
 
 }
