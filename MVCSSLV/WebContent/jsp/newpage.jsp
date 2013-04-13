@@ -28,7 +28,7 @@
 			</table>
 		</div>
 		<div class="body">
-		<br>
+			<br>
 			<%
 				if (model.getMsgOut() != null) {
 			%>
@@ -40,7 +40,8 @@
 		<div class="footer">
 			<table class="footer">
 				<tr>
-					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;</td>
+					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=model.getAppVer()%>&nbsp;
+					</td>
 				</tr>
 			</table>
 		</div>

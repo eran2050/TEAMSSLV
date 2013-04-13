@@ -21,8 +21,9 @@ public class NewAdPageController implements IController {
 		String outStringStart = "";
 		String outStringFinish = "";
 		String outStringMiddle = "";
-		// TODO Auto-generated method stub
+
 		NewAdPageModel m = (NewAdPageModel) model;
+		m.setAppVer(APP_VERSION);
 
 		if (m.getUserName() == null) {
 			m.setLoginStatus("<a class=nm href=/java2/login>".concat(

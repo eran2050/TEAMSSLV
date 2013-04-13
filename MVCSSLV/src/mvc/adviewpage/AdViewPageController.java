@@ -147,7 +147,7 @@ public class AdViewPageController implements IController {
 				form.append("</tr>");
 			}
 			form.append("</table>");
-			form.append("<input type=\"submit\" name=\"edit\" value=\"Edit\">");
+			form.append("<br><input type=\"submit\" name=\"edit\" value=\"Edit\">");
 			form.append("</form>");
 		} else if (adViewM.getAction().equals(ACTION_EDIT)) {
 
@@ -195,7 +195,7 @@ public class AdViewPageController implements IController {
 				form.append("</tr>");
 			}
 			form.append("</table>");
-			form.append("<input type=\"submit\" name=\"update\" value=\"Update\">");
+			form.append("<br><input type=\"submit\" name=\"update\" value=\"Update\">");
 			form.append("</form>");
 		}
 		adViewM.setForm(form.toString());

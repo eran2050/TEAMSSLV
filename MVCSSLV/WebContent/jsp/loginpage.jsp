@@ -73,7 +73,7 @@
 						target="_blank"><%=ml.getName()%></a></td>
 					<td width="18%"><%=ml.getCreated()%></td>
 					<td width="10%" align="center"><a
-						href="/java2/login?action=delete&adsid=<%=ml.getId()%>">DEL</a>&nbsp;|&nbsp;EDIT</td>
+						href="/java2/login?action=delete&adsid=<%=ml.getId()%>">DEL</a></td>
 				</tr>
 
 
