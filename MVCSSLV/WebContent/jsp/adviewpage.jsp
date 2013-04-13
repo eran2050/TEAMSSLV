@@ -21,9 +21,7 @@
 		<p align="left">
 			<a href="JavaScript:window.close()"><b>Close this window</b></a>
 		</p>
-		<%
-			out.println(model.getForm());
-		%>
+		<%=model.getForm()%>
 		<br>
 		<div class="footer1">
 			<table class="footer1">

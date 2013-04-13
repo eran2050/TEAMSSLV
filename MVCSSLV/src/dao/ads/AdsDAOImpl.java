@@ -1,8 +1,7 @@
 package dao.ads;
 
-import dao.BaseDAO;
-import domain.addescpage.AdDesc;
-import domain.mainpage.Ads;
+import java.util.ArrayList;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -11,7 +10,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import dao.BaseDAO;
+import domain.mainpage.Ads;
 
 @Component
 @Transactional

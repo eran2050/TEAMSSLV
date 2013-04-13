@@ -45,12 +45,11 @@ public class NewAdPageController implements IController {
 			m.setSavedStatus("SAVED");
 			outStringStart = "<table class='ml'>" + "<tr>"
 					+ "<th class='ml'>User</th>"
-					+ "<th class='ml'>Subject(Name)</th>"
+					+ "<th class='ml'>Subject&nbsp;(Name)</th>"
 					+ "<th class='ml'>Status</th>" + "</tr>" + "<tr>" + "<td>"
 					+ m.getUserName() + "</td>" + "<td>" + m.getName()
 					+ "</td>" + "<td>" + m.getSavedStatus() + "</td>"
-					+ "</table>" + "<BR>";
-			// m.setMsgOut( );
+					+ "</table>";
 
 			outStringMiddle = "<p>" + "<b>Additional information</b>"
 					+ "</p><table class='ml2'><tr>"
@@ -63,7 +62,7 @@ public class NewAdPageController implements IController {
 						+ c.getParamName() + "</td>" + "<td class='ml2'>"
 						+ c.getParamValue() + "</td></tr>";
 			}
-			outStringMiddle = outStringMiddle + "</table>";
+			outStringMiddle = outStringMiddle + "</table><br>";
 
 			m.setMsgOut(outStringStart + outStringMiddle);
 			m.setSavedStatus(null);
@@ -78,22 +77,22 @@ public class NewAdPageController implements IController {
 				m.setSavedStatus(null);
 
 				outStringStart = "<form action='/java2/add/' method=post>"
-						+ "<fieldset>"
-						+ "<legend>Advertisement header (name):</legend>"
-						+ "<input type=text name='name' value='' />"
+						+ "<fieldset style='width: 95%; border: 0px;'>"
+						+ "<legend>Advertisement header (name)</legend>"
+						+ "<input type=text name='name' value='' style='width: 30%;'/>"
 						+ "</fieldset>";
 
 				for (NewAdPageParams c : m.getParamList()) {
 					System.out.println(c);
-					outStringMiddle = outStringMiddle + "<fieldset>"
-							+ "<legend>" + c.getParamName() + ":</legend>"
-							+ "<textarea rows='0' cols='70' name='"
+					outStringMiddle = outStringMiddle
+							+ "<fieldset style='width: 95%; ; border: 0px;'>"
+							+ "<legend>" + c.getParamName() + "</legend>"
+							+ "<textarea rows='0' cols='90' name='"
 							+ c.getParamName() + "'>"
 							+ "</textarea></fieldset>";
-
 				}
 
-				outStringFinish = "<input type='submit' value='Submit'>"
+				outStringFinish = "<br><input type='submit' value='Submit'>"
 						+ "</form>" + "<br>";
 				m.setMsgOut(outStringStart + outStringMiddle + outStringFinish);
 

@@ -32,12 +32,12 @@ public class AdViewPageController implements IController {
 		if (req.getParameter("adsid") != null) {
 			adsId = Integer.parseInt(req.getParameter("adsid"));
 		}
-		
+
 		String adName = null;
 		if (req.getParameter("name") != null) {
 			adName = req.getParameter("name");
 		}
-		
+
 		String adDescId[] = null;
 		if (req.getParameter("addescid") != null) {
 			adDescId = req.getParameterValues("addescid");
@@ -67,16 +67,16 @@ public class AdViewPageController implements IController {
 		// Complete action
 		if (adViewM.getAction().equals(ACTION_UPDATE)) {
 			ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
-			
+
 			Ads ad = new Ads();
-//			adDesc.updateAdDesc(fullDesc);
+			// adDesc.updateAdDesc(fullDesc);
 			ad.setName(adName);
 			ad.setId(adsId);
 			ads.updateAds(ad);
 			adViewM.setAds(ads.getById(adViewM.getAdsId()));
-			
+
 			for (int i = 0; i < adDescId.length; i++) {
-		
+
 				AdDesc adDesc = new AdDesc();
 				adDesc.setId(Integer.parseInt(adDescId[i]));
 				adDesc.setAdsId(adsId);
@@ -138,18 +138,13 @@ public class AdViewPageController implements IController {
 			form.append("</tr>");
 
 			for (AdDesc adDesc : adViewM.getFullDesc()) {
-				int index = 0;
 				form.append("<tr>");
 				form.append("<td class=\"ml2\"><input type=\"hidden\" name=\"action\" value=\"edit\">");
 				form.append("<input type=\"hidden\" name=\"addescid\" value="
 						+ adDesc.getId() + ">");
 				form.append(adDesc.getCriteria() + "</td>");
 				form.append("<td class=\"ml2\">" + adDesc.getValue() + "</td>");
-				// todo
-				// form.append("<td><input type=\"checkbox\" name=\"check" +
-				// index + "\" value=\"" + adDesc.getId() + "\"></td>");
 				form.append("</tr>");
-				index++;
 			}
 			form.append("</table>");
 			form.append("<input type=\"submit\" name=\"edit\" value=\"Edit\">");
