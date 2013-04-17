@@ -6,14 +6,6 @@
 	<display-name>java2</display-name>
 	
 	<filter>
-		<filter-name>AdViewPageMVCFilter</filter-name>
-		<filter-class>mvc.adviewpage.AdViewPageMVCFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>AdViewPageMVCFilter</filter-name>
-		<url-pattern>/adview/</url-pattern>
-	</filter-mapping>
-	<filter>
 		<filter-name>NewAdPageMVCFilter</filter-name>
 		<filter-class>mvc.newadpage.NewAdPageMVCFilter</filter-class>
 	</filter>

@@ -3,12 +3,16 @@ package mvc.adviewpage;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
-
-import mvc.IController;
-import mvc.IModel;
+import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+
+import util.Config;
 
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
@@ -16,49 +20,55 @@ import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
 @Component
-public class AdViewPageController implements IController {
+@Controller(value = "/adview/")
+public class AdViewPageController extends AbstractController implements Config {
 
 	@Autowired
 	private AdDescDAO adDesc;
 	@Autowired
 	private AdsDAO ads;
 
-	public void execute(IModel model, HttpServletRequest req) {
+	protected ModelAndView handleRequestInternal(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		ModelAndView model = new ModelAndView("adviewpage");
+
+		// HttpSession httpSession = request.getSession();
 
 		// Process request
 		String userName = null;
-		if (req.getSession().getAttribute("username") != null) {
-			userName = (String) req.getSession().getAttribute("username");
+		if (request.getSession().getAttribute("username") != null) {
+			userName = (String) request.getSession().getAttribute("username");
 		}
 		int adsId = 0;
-		if (req.getParameter("adsid") != null) {
-			adsId = Integer.parseInt(req.getParameter("adsid"));
+		if (request.getParameter("adsid") != null) {
+			adsId = Integer.parseInt(request.getParameter("adsid"));
 		}
 
 		String adName = null;
-		if (req.getParameter("name") != null) {
-			adName = req.getParameter("name");
+		if (request.getParameter("name") != null) {
+			adName = request.getParameter("name");
 		}
 
 		String adDescId[] = null;
-		if (req.getParameter("addescid") != null) {
-			adDescId = req.getParameterValues("addescid");
+		if (request.getParameter("addescid") != null) {
+			adDescId = request.getParameterValues("addescid");
 		}
 		String criteria[] = null;
-		if (req.getParameterValues("criteria") != null) {
-			criteria = req.getParameterValues("criteria");
+		if (request.getParameterValues("criteria") != null) {
+			criteria = request.getParameterValues("criteria");
 		}
 		String value[] = null;
-		if (req.getParameter("value") != null) {
-			value = req.getParameterValues("value");
+		if (request.getParameter("value") != null) {
+			value = request.getParameterValues("value");
 		}
 
-		String action = req.getParameter("action");
+		String action = request.getParameter("action");
 		if (action == null) {
 			action = EMPTY;
 		}
 		// Initialize model
-		AdViewPageModel adViewM = (AdViewPageModel) model;
+		AdViewPageModel adViewM = new AdViewPageModel();
 		adViewM.setAdsId(adsId);
 		adViewM.setUserName(userName);
 		adViewM.setAction(action);
@@ -201,6 +211,11 @@ public class AdViewPageController implements IController {
 			form.append("</form>");
 		}
 		adViewM.setForm(form.toString());
+
+		// Giving model to View
+
+		model.addObject("model", adViewM);
+		return model;
 
 	}
 }

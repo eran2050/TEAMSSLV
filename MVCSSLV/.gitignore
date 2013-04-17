@@ -9,3 +9,4 @@ bin/
 *.war
 *.ear
 *.iws
+/target
