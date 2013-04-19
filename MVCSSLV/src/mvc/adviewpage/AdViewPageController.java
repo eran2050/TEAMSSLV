@@ -77,29 +77,31 @@ public class AdViewPageController extends AbstractController implements Config {
 		adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
 
 		// Complete action
-		if (adViewM.getAction().equals(ACTION_UPDATE)) {
-			ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
+		if (adViewM.getAds().getOwner().equals(
+				(String) request.getSession().getAttribute("username"))) {
+			if (adViewM.getAction().equals(ACTION_UPDATE)) {
+				ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 
-			Ads ad = new Ads();
-			ad.setName(adName);
-			ad.setId(adsId);
-			ads.updateAds(ad);
-			adViewM.setAds(ads.getById(adViewM.getAdsId()));
+				Ads ad = new Ads();
+				ad.setName(adName);
+				ad.setId(adsId);
+				ads.updateAds(ad);
+				adViewM.setAds(ads.getById(adViewM.getAdsId()));
 
-			for (int i = 0; i < adDescId.length; i++) {
+				for (int i = 0; i < adDescId.length; i++) {
 
-				AdDesc adDesc = new AdDesc();
-				adDesc.setId(Integer.parseInt(adDescId[i]));
-				adDesc.setAdsId(adsId);
-				adDesc.setCriteria(criteria[i]);
-				adDesc.setValue(value[i]);
-				fullDesc.add(adDesc);
+					AdDesc adDesc = new AdDesc();
+					adDesc.setId(Integer.parseInt(adDescId[i]));
+					adDesc.setAdsId(adsId);
+					adDesc.setCriteria(criteria[i]);
+					adDesc.setValue(value[i]);
+					fullDesc.add(adDesc);
 
+				}
+				adDesc.updateAdDesc(fullDesc);
+				adViewM.setFullDesc(fullDesc);
 			}
-			adDesc.updateAdDesc(fullDesc);
-			adViewM.setFullDesc(fullDesc);
 		}
-
 		// Create http elements
 		if (adViewM.getUserName() == null) {
 			adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(
@@ -139,7 +141,7 @@ public class AdViewPageController extends AbstractController implements Config {
 			form.append("<b>Additional information</b>");
 			form.append("</p>");
 			// ///
-			if (adViewM.getFullDesc().size() != 0 ) {
+			if (adViewM.getFullDesc().size() != 0) {
 				form.append("<input type=\"hidden\" name=\"adsid\" value="
 						+ adViewM.getAds().getId() + ">");
 				form.append("<table class=\"ml2\">");
@@ -159,11 +161,15 @@ public class AdViewPageController extends AbstractController implements Config {
 					form.append("</tr>");
 				}
 				form.append("</table>");
-				form.append("<br><input type=\"submit\" name=\"edit\" value=\"Edit\">");
+
+				if (ads.getOwner().equals(
+						(String) request.getSession().getAttribute("username"))) {
+					form.append("<br><input type=\"submit\" name=\"edit\" value=\"Edit\">");
+				}
 				form.append("</form>");
-			}
-			else form.append("<p>Description not found</p>");
-			
+			} else
+				form.append("<p>Description not found</p>");
+
 		} else if (adViewM.getAction().equals(ACTION_EDIT)) {
 
 			form.append("<form name=updateaddesc method=post action=\"/java2/adview/\">");
