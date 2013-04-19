@@ -81,7 +81,6 @@ public class AdViewPageController extends AbstractController implements Config {
 			ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 
 			Ads ad = new Ads();
-			// adDesc.updateAdDesc(fullDesc);
 			ad.setName(adName);
 			ad.setId(adsId);
 			ads.updateAds(ad);
@@ -140,27 +139,31 @@ public class AdViewPageController extends AbstractController implements Config {
 			form.append("<b>Additional information</b>");
 			form.append("</p>");
 			// ///
-
-			form.append("<input type=\"hidden\" name=\"adsid\" value="
-					+ adViewM.getAds().getId() + ">");
-			form.append("<table class=\"ml2\">");
-			form.append("<tr>");
-			form.append("<th class=\"ml2\">Criteria</th>");
-			form.append("<th class=\"ml2\">Description</th>");
-			form.append("</tr>");
-
-			for (AdDesc adDesc : adViewM.getFullDesc()) {
+			if (adViewM.getFullDesc().size() != 0 ) {
+				form.append("<input type=\"hidden\" name=\"adsid\" value="
+						+ adViewM.getAds().getId() + ">");
+				form.append("<table class=\"ml2\">");
 				form.append("<tr>");
-				form.append("<td class=\"ml2\"><input type=\"hidden\" name=\"action\" value=\"edit\">");
-				form.append("<input type=\"hidden\" name=\"addescid\" value="
-						+ adDesc.getId() + ">");
-				form.append(adDesc.getCriteria() + "</td>");
-				form.append("<td class=\"ml2\">" + adDesc.getValue() + "</td>");
+				form.append("<th class=\"ml2\">Criteria</th>");
+				form.append("<th class=\"ml2\">Description</th>");
 				form.append("</tr>");
+
+				for (AdDesc adDesc : adViewM.getFullDesc()) {
+					form.append("<tr>");
+					form.append("<td class=\"ml2\"><input type=\"hidden\" name=\"action\" value=\"edit\">");
+					form.append("<input type=\"hidden\" name=\"addescid\" value="
+							+ adDesc.getId() + ">");
+					form.append(adDesc.getCriteria() + "</td>");
+					form.append("<td class=\"ml2\">" + adDesc.getValue()
+							+ "</td>");
+					form.append("</tr>");
+				}
+				form.append("</table>");
+				form.append("<br><input type=\"submit\" name=\"edit\" value=\"Edit\">");
+				form.append("</form>");
 			}
-			form.append("</table>");
-			form.append("<br><input type=\"submit\" name=\"edit\" value=\"Edit\">");
-			form.append("</form>");
+			else form.append("<p>Description not found</p>");
+			
 		} else if (adViewM.getAction().equals(ACTION_EDIT)) {
 
 			form.append("<form name=updateaddesc method=post action=\"/java2/adview/\">");
@@ -177,8 +180,8 @@ public class AdViewPageController extends AbstractController implements Config {
 
 			form.append("<tr>");
 			form.append("<td width=\"5%\">" + ads.getId() + "</td>");
-			form.append("<td width=\"50%\"><input type=\"text\" name=\"name\" value="
-					+ ads.getName() + "></td>");
+			form.append("<td width=\"50%\"><input type=\"text\" name=\"name\" value=\""
+					+ ads.getName() + "\"></td>");
 			form.append("<td width=\"18%\">" + ads.getCreated() + "</td>");
 			form.append("<td width=\"14%\">" + ads.getOwner() + "</td>");
 			form.append("</tr>");
@@ -200,10 +203,10 @@ public class AdViewPageController extends AbstractController implements Config {
 				form.append("<td class=\"ml2\"><input type=\"hidden\" name=\"action\" value=\"update\">");
 				form.append("<input type=\"hidden\" name=\"addescid\" value="
 						+ adDesc.getId() + ">");
-				form.append("<input type=\"text\" name=\"criteria\" value="
-						+ adDesc.getCriteria() + "></td>");
-				form.append("<td class=\"ml2\"><input type=\"text\" name=\"value\"	value="
-						+ adDesc.getValue() + "></td>");
+				form.append("<input type=\"text\" name=\"criteria\" value=\""
+						+ adDesc.getCriteria() + "\"></td>");
+				form.append("<td class=\"ml2\"><input type=\"text\" name=\"value\"	value=\""
+						+ adDesc.getValue() + "\"></td>");
 				form.append("</tr>");
 			}
 			form.append("</table>");
