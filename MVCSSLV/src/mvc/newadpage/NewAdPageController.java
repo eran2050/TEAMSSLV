@@ -78,7 +78,7 @@ public class NewAdPageController extends AbstractController implements Config {
 					.concat(" as ").concat(m.getUserName()).concat("</a>"));
 		}
 
-		if (m.getName().equals(EMPTY))
+		if (m.getName() != null && m.getName().equals(EMPTY))
 			m.setName(null);
 		if ((m.getName() != null) && (m.getUserName() != null)
 				&& (m.getSavedStatus() == null)) {
