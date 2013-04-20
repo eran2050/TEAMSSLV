@@ -43,7 +43,6 @@ public class NewAdDAOImpl extends BaseDAO implements NewAdDAO {
 	@Override
 	public boolean adExists(String name, String userName,
 			ArrayList<NewAdPageParams> paramList) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }
