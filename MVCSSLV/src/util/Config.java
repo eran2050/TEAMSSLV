@@ -1,7 +1,7 @@
 package util;
 
 public interface Config {
-	public static final String APP_VERSION = "v4.0.1";
+	public static final String APP_VERSION = "v4.1.0";
 	public static final String CONTEXT_ROOT = "/java2/";
 	public static final String NOT_LOGGED_IN = "Not Logged In";
 	public static final String LOGGED_IN = "Logged In";

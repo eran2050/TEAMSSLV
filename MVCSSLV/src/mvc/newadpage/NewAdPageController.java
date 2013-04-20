@@ -94,7 +94,7 @@ public class NewAdPageController extends AbstractController implements Config {
 			//System.out.println("1.Controller: " + m.getName());
 			//System.out.println("1.Controller: " + m.getUserName());
 			//System.out.println("1.Controller: " + m.getSavedStatus());
-			if  (m.getSavedStatus()!="SAVED") {
+			if  (!m.getSavedStatus().equals("SAVED")) {
 			if (hs.getAttribute("BLOCKED") == null) {
 				hs.setAttribute("BLOCKED", "1");
 			dao.setNewAd(m.getName(), m.getUserName(), m.getParamList());}
