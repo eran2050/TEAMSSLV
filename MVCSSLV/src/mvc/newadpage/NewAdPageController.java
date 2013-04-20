@@ -24,60 +24,52 @@ public class NewAdPageController extends AbstractController implements Config {
 	@Autowired
 	private NewAdDAO dao;
 
-	//public void execute(IModel model, HttpServletRequest req) {
-
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-		HttpServletResponse response) throws Exception {
+			HttpServletResponse response) throws Exception {
 
 		ModelAndView model = new ModelAndView("newadpage");
 
 		HttpSession hs = request.getSession();
 
-		String outStringStart = "";
-		String outStringFinish = "";
-		String outStringMiddle = "";
+		String outStringStart = EMPTY;
+		String outStringFinish = EMPTY;
+		String outStringMiddle = EMPTY;
 
 		NewAdPageModel m = new NewAdPageModel();
 		m.setAppVer(APP_VERSION);
-		// Model Creator
-		//LoginPageModel lm = new LoginPageModel();
-		//lm.setStatusMessage(EMPTY);
 
-//////////////////////////////////////////////////////////////////////////////////
-		
 		String userName = null;
 		if (hs.getAttribute("username") != null) {
 			userName = (String) hs.getAttribute("username");
 		}
 		m.setUserName(userName);
-				
-		String name=null;
-		name=request.getParameter("name");
-		System.out.println("Creator :"+name);
+
+		String name = null;
+		name = request.getParameter("name");
+		System.out.println("Creator :" + name);
 		m.setName(name);
-		
+
 		ArrayList<NewAdPageParams> paramList1 = new ArrayList<NewAdPageParams>();
 
-		NewAdPageParams Param1=new NewAdPageParams();
+		NewAdPageParams Param1 = new NewAdPageParams();
 		Param1.setParamName("PRICE");
 		Param1.setParamValue(request.getParameter("PRICE"));
 		paramList1.add(Param1);
-		
-		NewAdPageParams Param2=new NewAdPageParams();
+
+		NewAdPageParams Param2 = new NewAdPageParams();
 		Param2.setParamName("CONDITION");
 		Param2.setParamValue(request.getParameter("CONDITION"));
 		paramList1.add(Param2);
-		
-		NewAdPageParams Param3=new NewAdPageParams();
+
+		NewAdPageParams Param3 = new NewAdPageParams();
 		Param3.setParamName("OTHER");
 		Param3.setParamValue(request.getParameter("OTHER"));
 		paramList1.add(Param3);
-		
-		m.setParamList(paramList1);		
-		
-		
-//////////////////////////////////////////////////////////////////////////////////		
+
+		m.setParamList(paramList1);
+
+		// ////////////////////////////////////////////////////////////////////////////////
 		if (m.getUserName() == null) {
 			m.setLoginStatus("<a class=nm href=/java2/login>".concat(
 					NOT_LOGGED_IN).concat("</a>"));
@@ -86,19 +78,22 @@ public class NewAdPageController extends AbstractController implements Config {
 					.concat(" as ").concat(m.getUserName()).concat("</a>"));
 		}
 
-		if (m.getName() == "")
+		if (m.getName().equals(EMPTY))
 			m.setName(null);
 		if ((m.getName() != null) && (m.getUserName() != null)
 				&& (m.getSavedStatus() == null)) {
-			//System.out.println("1.Controller: " + m.getLoginStatus());
-			//System.out.println("1.Controller: " + m.getName());
-			//System.out.println("1.Controller: " + m.getUserName());
-			//System.out.println("1.Controller: " + m.getSavedStatus());
-			if  (!m.getSavedStatus().equals("SAVED")) {
-			if (hs.getAttribute("BLOCKED") == null) {
-				hs.setAttribute("BLOCKED", "1");
-			dao.setNewAd(m.getName(), m.getUserName(), m.getParamList());}
-			m.setSavedStatus("SAVED");}
+			// System.out.println("1.Controller: " + m.getLoginStatus());
+			// System.out.println("1.Controller: " + m.getName());
+			// System.out.println("1.Controller: " + m.getUserName());
+			// System.out.println("1.Controller: " + m.getSavedStatus());
+			if (m.getSavedStatus() != null
+					&& !m.getSavedStatus().equals("SAVED")) {
+				if (hs.getAttribute("BLOCKED") == null) {
+					hs.setAttribute("BLOCKED", "1");
+					dao.setNewAd(m.getName(), m.getUserName(), m.getParamList());
+				}
+				m.setSavedStatus("SAVED");
+			}
 			outStringStart = "<table class='ml'>" + "<tr>"
 					+ "<th class='ml'>User</th>"
 					+ "<th class='ml'>Subject&nbsp;(Name)</th>"
@@ -135,8 +130,8 @@ public class NewAdPageController extends AbstractController implements Config {
 				outStringStart = "<form action='/java2/add/' method=post>"
 						+ "<fieldset style='width: 100%; border: 0px;'>"
 						+ "<legend>Advertisement header</legend>"
-						+ "<textarea rows='0' cols='90' name='name'/>"+"</textarea>"
-						+ "</fieldset>";
+						+ "<textarea rows='0' cols='90' name='name'/>"
+						+ "</textarea>" + "</fieldset>";
 
 				for (NewAdPageParams c : m.getParamList()) {
 					System.out.println(c);
@@ -151,14 +146,14 @@ public class NewAdPageController extends AbstractController implements Config {
 				outStringFinish = "<br><input type='submit' value='Submit'>"
 						+ "</form>" + "<br>";
 				m.setMsgOut(outStringStart + outStringMiddle + outStringFinish);
-				hs.setAttribute("BLOCKED",null);
+				hs.setAttribute("BLOCKED", null);
 			}
 		}
 		System.out.println("Controller: " + m.getLoginStatus());
 		System.out.println("Controller: " + m.getName());
 		System.out.println("Controller: " + m.getUserName());
 		System.out.println("Controller: " + m.getSavedStatus());
-		
+
 		model.addObject("modelAddNew", m);
 		return model;
 	}

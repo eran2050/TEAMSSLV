@@ -40,7 +40,6 @@ public class NewAdDAOImpl extends BaseDAO implements NewAdDAO {
 		System.out.println("Saved2: " + na.getId());
 	}
 
-	@Override
 	public boolean adExists(String name, String userName,
 			ArrayList<NewAdPageParams> paramList) {
 		return false;
