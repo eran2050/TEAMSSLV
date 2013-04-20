@@ -64,6 +64,7 @@ public class NewAd {
 	}
 
 	public void setId(Long adid) {
+		// TODO Auto-generated method stub
 		this.id = adid;
 	}
 
