@@ -111,7 +111,6 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 	}
 
 	public void updateAds(Ads ads) {
-		// TODO Auto-generated method stub
 		Session s = getSession();
 		try {
 			StringBuilder hql = new StringBuilder();

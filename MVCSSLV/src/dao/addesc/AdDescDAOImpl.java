@@ -58,7 +58,6 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 	}
 
 	public void updateAdDesc(ArrayList<AdDesc> fullDesc) {
-		// TODO Auto-generated method stub
 		Session s = getSession();
 		try {
 			StringBuilder hql = new StringBuilder();
