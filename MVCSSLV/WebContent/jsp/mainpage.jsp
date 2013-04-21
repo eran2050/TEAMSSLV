@@ -84,6 +84,11 @@
 					</td>
 				</tr>
 			</table>
+			<p style="align: center;">
+				Page generated in
+				<%=modelMainPage.getLoadingTime() %>
+				msec
+			</p>
 		</div>
 	</div>
 </body>

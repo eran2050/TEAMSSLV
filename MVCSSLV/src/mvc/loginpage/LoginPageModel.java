@@ -23,6 +23,7 @@ public class LoginPageModel implements IModel {
     private String action;
     private Long adsId;
     private String appVersion;
+    private long loadingTime;
 
     public String getUserName() {
         return userName;
@@ -136,4 +137,11 @@ public class LoginPageModel implements IModel {
 		this.appVersion = appVersion;
 	}
 
+	public long getLoadingTime() {
+		return loadingTime;
+	}
+
+	public void setLoadingTime(long loadingTime) {
+		this.loadingTime = loadingTime;
+	}
 }

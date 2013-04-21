@@ -112,6 +112,11 @@
 					</td>
 				</tr>
 			</table>
+			<p style="align: center;">
+				Page generated in
+				<%=modelLoginPage.getLoadingTime() %>
+				msec
+			</p>
 		</div>
 	</div>
 </body>

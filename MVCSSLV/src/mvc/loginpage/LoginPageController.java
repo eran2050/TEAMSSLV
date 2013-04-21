@@ -35,6 +35,7 @@ public class LoginPageController extends AbstractController implements Config {
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
+		long loadStart = System.nanoTime();
 		ModelAndView model = new ModelAndView("loginpage");
 
 		// Model Creator
@@ -292,7 +293,11 @@ public class LoginPageController extends AbstractController implements Config {
 		} else {
 			lm.setValid(true);
 		}
-
+		// Elapsed loading time calculations
+		long loadEnd = System.nanoTime();
+		double loadElapsedTime = (double) (loadEnd - loadStart) / 1000000.0;
+		lm.setLoadingTime(Math.round(loadElapsedTime));
+		//
 		model.addObject("modelLoginPage", lm);
 		return model;
 	}

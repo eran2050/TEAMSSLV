@@ -25,6 +25,7 @@ public class MainPageController extends AbstractController implements Config {
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
+		long loadStart = System.nanoTime();
 		ModelAndView model = new ModelAndView("mainpage");
 		MainPageModel m = new MainPageModel();
 
@@ -97,6 +98,11 @@ public class MainPageController extends AbstractController implements Config {
 				list = null;
 			m.setPageNumbers(list);
 		}
+		// Elapsed loading time calculations
+		long loadEnd = System.nanoTime();
+		double loadElapsedTime = (double) (loadEnd - loadStart) / 1000000.0;
+		m.setLoadingTime(Math.round(loadElapsedTime));
+		//
 		model.addObject("modelMainPage", m);
 		return model;
 	}
