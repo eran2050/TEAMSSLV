@@ -6,9 +6,7 @@ import mvc.newadpage.NewAdPageParams;
 
 public interface NewAdDAO {
 
-	void setNewAd(String name, String userName,
+	boolean setNewAd(String name, String userName,
 			ArrayList<NewAdPageParams> paramList);
 	
-	boolean adExists(String name, String userName,
-			ArrayList<NewAdPageParams> paramList);
 }
