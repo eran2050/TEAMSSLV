@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,8 @@ import domain.ads.Ads;
 @Component
 @Transactional
 public class AdsDAOImpl extends BaseDAO implements AdsDAO {
+
+	private final static Logger logger = LoggerFactory.getLogger(AdsDAO.class);
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Ads> getMainListing(int page) {
@@ -29,7 +33,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					.setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE)
 					.addOrder(Order.asc("created")).list();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		return l;
@@ -58,7 +62,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					.add(Restrictions.eq("owner", usr))
 					.setProjection(Projections.rowCount()).uniqueResult();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		return cnt.intValue();
@@ -77,7 +81,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					.addOrder(Order.asc("created"))
 					.add(Restrictions.eq("owner", usr)).list();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		return ads;
@@ -91,12 +95,12 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					Restrictions.eq("id", adsId));
 			ads = (Ads) criteria.uniqueResult();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return ads;
 	}
 
-	public void deleteById(int adsId) {
+	public boolean deleteById(int adsId) {
 		Session s = getSession();
 		try {
 			StringBuilder hql = new StringBuilder();
@@ -105,9 +109,11 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 			s.createQuery(hql.toString())
 					.setString("adsId", Integer.toString(adsId))
 					.executeUpdate();
+			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
+		return false;
 	}
 
 	public void updateAds(Ads ads) {
@@ -117,15 +123,13 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			hql.setLength(0);
 			hql.append("update ").append(Ads.class.getName())
-					.append(" set name = :name")
-					.append(" where id = :id");
+					.append(" set name = :name").append(" where id = :id");
 			s.createQuery(hql.toString()).setInteger("id", ads.getId())
 					.setString("name", ads.getName()).executeUpdate();
-			System.out.println("id" + ads.getId() + "name"
-					+ ads.getName());
+			logger.debug("id" + ads.getId() + "name" + ads.getName());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 

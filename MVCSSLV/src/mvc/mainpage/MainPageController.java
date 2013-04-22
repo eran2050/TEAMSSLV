@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,9 @@ import dao.ads.AdsDAO;
 @Controller(value = "/")
 public class MainPageController extends AbstractController implements Config {
 
+	private final Logger logger = LoggerFactory
+			.getLogger(MainPageController.class);
+
 	@Autowired
 	private AdsDAO ads;
 
@@ -30,11 +35,12 @@ public class MainPageController extends AbstractController implements Config {
 		MainPageModel m = new MainPageModel();
 
 		// Model Creator
-		String userName = null;
+		String userName = EMPTY;
 		if (request.getSession().getAttribute(USERNAME) != null) {
 			userName = (String) request.getSession().getAttribute(USERNAME);
 		}
 		m.setUserName(userName);
+		logger.info("userName is: ".concat(userName));
 
 		// Pages
 		int page = 1;
@@ -48,6 +54,7 @@ public class MainPageController extends AbstractController implements Config {
 
 		int adsCount = ads.getCount();
 		m.setListingSize(adsCount);
+		logger.debug("adsCount = " + Integer.toString(adsCount));
 
 		int maxPage = Math.round((float) adsCount / (float) ADS_PER_MAIN_PAGE) + 1;
 		if (page > maxPage)
@@ -55,6 +62,7 @@ public class MainPageController extends AbstractController implements Config {
 		if (page <= 0)
 			page = 1;
 		m.setCurrentPage(page);
+		logger.debug("currentPage = " + Integer.toString(page));
 
 		// Controller
 		m.setAppVersion(APP_VERSION);

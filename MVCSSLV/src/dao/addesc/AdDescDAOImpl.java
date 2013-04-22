@@ -43,7 +43,7 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 		return fullAdDesc;
 	}
 
-	public void deleteByAdsId(int adsId) {
+	public boolean deleteByAdsId(int adsId) {
 		Session s = getSession();
 		try {
 			StringBuilder hql = new StringBuilder();
@@ -52,9 +52,11 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 			s.createQuery(hql.toString())
 					.setString("adsId", Integer.toString(adsId))
 					.executeUpdate();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	public void updateAdDesc(ArrayList<AdDesc> fullDesc) {

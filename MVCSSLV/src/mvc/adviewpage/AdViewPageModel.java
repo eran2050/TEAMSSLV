@@ -17,7 +17,6 @@ public class AdViewPageModel implements IModel {
     private String appVersion;
     private String action;
     private String form;
-    private String statusMessage;
 
     public Ads getAds() {
         return ads;
@@ -90,13 +89,4 @@ public class AdViewPageModel implements IModel {
 	public void setForm(String form) {
 		this.form = form;
 	}
-
-	public String getStatusMessage() {
-		return statusMessage;
-	}
-
-	public void setStatusMessage(String statusMessage) {
-		this.statusMessage = statusMessage;
-	}
-
 }

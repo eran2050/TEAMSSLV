@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -24,10 +26,14 @@ import domain.users.Users;
 @Controller(value = "/login/")
 public class LoginPageController extends AbstractController implements Config {
 
+	private final Logger logger = LoggerFactory.getLogger(LoginPageController.class);
+	
 	@Autowired
 	private AdsDAO ads;
+	
 	@Autowired
 	private AdDescDAO adDesc;
+	
 	@Autowired
 	private UsersDAO users;
 
@@ -49,6 +55,7 @@ public class LoginPageController extends AbstractController implements Config {
 			action = EMPTY;
 		}
 		lm.setAction(action);
+		logger.debug("action = ".concat(lm.getAction()));
 
 		// Log out
 		if (lm.getAction().equals(ACTION_LOGOUT)) {
@@ -66,7 +73,7 @@ public class LoginPageController extends AbstractController implements Config {
 			ru = request.getParameter(USERNAME);
 			// Check User
 			if (ru != null) {
-				System.out.println("LOGIN: Authorizing User [1]..");
+				logger.debug("Authorizing User [1]..");
 				Users u = users.getUserById(ru);
 				lm.setUser(u);
 				userChecked = u != null;
@@ -78,6 +85,7 @@ public class LoginPageController extends AbstractController implements Config {
 			lm.setStatusMessage(AD_DELETED);
 			int adsId = Integer.parseInt(request.getParameter("adsid"));
 			lm.setAdsId((long) adsId);
+			logger.debug("adsId for deletion: " + lm.getAdsId().toString());
 		}
 
 		// Various checks and Status Setter
@@ -88,18 +96,22 @@ public class LoginPageController extends AbstractController implements Config {
 			lm.setPassword("P-hash: ".concat(new Util().getSha(ru,
 					ru.concat(ru))));
 			lm.setStatusMessage(LOGGED_IN);
+			logger.info(LOGGED_IN);
 		} else if ((ru == null && su != null) || (ru != null && su != null)) {
-			System.out.println("LOGIN: Authorizing User [2]..");
+			logger.debug("LOGIN: Authorizing User [2]..");
 			Users u = users.getUserById(su);
 			lm.setUser(u);
 			lm.setUserName(su);
 			lm.setPassword("P-hash: ".concat(new Util().getSha(su,
 					su.concat(su))));
 			lm.setStatusMessage(LOGGED_IN);
+			logger.info(LOGGED_IN);
 		} else if (ru != null && !userChecked && su == null) {
 			lm.setStatusMessage(NO_SUCH_USER);
+			logger.warn(NO_SUCH_USER);
 		} else if (ru == null && su == null && lm.getAction().equals(EMPTY)) {
 			lm.setStatusMessage(NOT_LOGGED_IN);
+			logger.info(NOT_LOGGED_IN);
 		}
 
 		// Controller
@@ -157,7 +169,7 @@ public class LoginPageController extends AbstractController implements Config {
 			lm.setStatus(LOGGED_IN + " as ");
 
 			if (lm.getUserName() != null) {
-				System.out.println("LOGIN: Getting count of Ads by User..");
+				logger.debug("Getting count of Ads by User..");
 				int adsCount = ads.getCountByUser(lm.getUserName());
 				lm.setListingSize(adsCount);
 
@@ -172,13 +184,13 @@ public class LoginPageController extends AbstractController implements Config {
 			}
 			lm.setCurrentPage(page);
 
-			System.out.println("LOGIN: Getting Ads for showing up the list..");
+			logger.debug("Getting Ads for showing up the list..");
 			lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 		} else
 
 		// Delete Ad
 		if (lm.getAction().equals(ACTION_DELETE)) {
-			System.out.println("LOGIN: Getting authorization for Deletion..");
+			logger.debug("Getting authorization for Deletion..");
 			Ads ad = ads.getById(lm.getAdsId().intValue());
 			String adsOwner = ad == null ? EMPTY : ad.getOwner();
 			String logUser = lm.getUserName() == null ? EMPTY + EMPTY : lm
@@ -186,7 +198,7 @@ public class LoginPageController extends AbstractController implements Config {
 
 			if (logUser != null && !logUser.equals(EMPTY)
 					&& adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
-				System.out.println("LOGIN: Deleting Ad..");
+				logger.debug("Deleting Ad..");
 				adDesc.deleteByAdsId(lm.getAdsId().intValue());
 				ads.deleteById(lm.getAdsId().intValue());
 				lm.setStatusMessage(AD_DELETED);
@@ -194,7 +206,7 @@ public class LoginPageController extends AbstractController implements Config {
 				lm.setStatus(LOGGED_IN + " as ");
 
 				if (lm.getUserName() != null) {
-					System.out.println("LOGIN: Getting count of Ads by User..");
+					logger.debug("Getting count of Ads by User..");
 					int adsCount = ads.getCountByUser(lm.getUserName());
 					lm.setListingSize(adsCount);
 
@@ -209,16 +221,17 @@ public class LoginPageController extends AbstractController implements Config {
 				}
 				lm.setCurrentPage(page);
 
-				System.out.println("LOGIN: Getting Ads after Deletion..");
+				logger.debug("Getting Ads after Deletion..");
 				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 			} else if (logUser != null && !logUser.equals(EMPTY)
 					&& !adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
+				logger.warn(ACTION_NOT_AUTHORIZED);
 				lm.setHtmlForm(sLogoutForm.toString());
 				lm.setStatus(LOGGED_IN + " as ");
 
 				if (lm.getUserName() != null) {
-					System.out.println("LOGIN: Getting count of Ads by User..");
+					logger.debug("Getting count of Ads by User..");
 					int adsCount = ads.getCountByUser(lm.getUserName());
 					lm.setListingSize(adsCount);
 
@@ -233,26 +246,30 @@ public class LoginPageController extends AbstractController implements Config {
 				}
 				lm.setCurrentPage(page);
 
-				System.out
-						.println("LOGIN: Getting ads after not authorized Deletion..");
+				logger.debug("Getting ads after not authorized Deletion..");
 				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
 			} else {
 				lm.setHtmlForm(sLoginForm.toString());
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
+				logger.warn(ACTION_NOT_AUTHORIZED);
 				lm.setStatus(NOT_LOGGED_IN);
+				logger.info(NOT_LOGGED_IN);
 			}
 		} else
 
 		// After Log Out
 		if (lm.getStatusMessage().equals(LOGGED_OUT)) {
 			lm.setStatusMessage(LOGGED_OUT);
+			logger.info(LOGGED_OUT);
 			lm.setHtmlForm(sLoginForm.toString());
 			lm.setStatus(NOT_LOGGED_IN);
+			logger.info(NOT_LOGGED_IN);
 		} else {
 			// Default
 			lm.setStatusMessage(NOT_LOGGED_IN);
 			lm.setHtmlForm(sLoginForm.toString());
 			lm.setStatus(NOT_LOGGED_IN);
+			logger.info(NOT_LOGGED_IN);
 		}
 
 		// PageNumbers

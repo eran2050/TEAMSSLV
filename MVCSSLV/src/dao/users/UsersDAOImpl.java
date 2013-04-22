@@ -1,6 +1,8 @@
 package dao.users;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,16 +13,18 @@ import domain.users.Users;
 @Transactional
 public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 
-    public Users getUserById(String s1) {
+	private final Logger logger = LoggerFactory.getLogger(UsersDAO.class);
 
-        Session s = getSession();
-        Users u = null;
-        try {
-            u = (Users) s.get(Users.class, s1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	public Users getUserById(String s1) {
 
-        return u;
-    }
+		Session s = getSession();
+		Users u = null;
+		try {
+			u = (Users) s.get(Users.class, s1);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
+		return u;
+	}
 }

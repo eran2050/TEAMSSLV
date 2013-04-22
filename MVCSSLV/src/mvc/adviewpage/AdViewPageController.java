@@ -16,7 +16,6 @@ import util.Config;
 
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
-import dao.users.UsersDAO;
 import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
@@ -28,8 +27,6 @@ public class AdViewPageController extends AbstractController implements Config {
 	private AdDescDAO adDesc;
 	@Autowired
 	private AdsDAO ads;
-	@Autowired
-	private UsersDAO users;
 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

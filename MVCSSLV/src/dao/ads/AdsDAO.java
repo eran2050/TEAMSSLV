@@ -6,18 +6,18 @@ import domain.ads.Ads;
 
 public interface AdsDAO {
 
-    ArrayList<Ads> getMainListing(int page);
+	ArrayList<Ads> getMainListing(int page);
 
-    ArrayList<Ads> getByUser(String s, int page);
+	ArrayList<Ads> getByUser(String s, int page);
 
-    int getCount();
+	int getCount();
 
-    int getCountByUser(String s);
+	int getCountByUser(String s);
 
-    Ads getById(int adsId);
+	Ads getById(int adsId);
 
-    void deleteById(int adsId);
-    
-    void updateAds(Ads ads);
+	boolean deleteById(int adsId);
+
+	void updateAds(Ads ads);
 
 }
