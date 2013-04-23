@@ -43,6 +43,7 @@
 	<context:annotation-config />
 	<context:component-scan base-package="dao" />
 	<context:component-scan base-package="mvc" />
+	<context:component-scan base-package="util" />
 	
 	<aop:aspectj-autoproxy />
 

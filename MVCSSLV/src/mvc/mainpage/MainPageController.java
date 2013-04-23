@@ -54,7 +54,7 @@ public class MainPageController extends AbstractController implements Config {
 
 		int adsCount = ads.getCount();
 		m.setListingSize(adsCount);
-		logger.debug("adsCount = " + Integer.toString(adsCount));
+		logger.info("adsCount = " + Integer.toString(adsCount));
 
 		int maxPage = Math.round((float) adsCount / (float) ADS_PER_MAIN_PAGE) + 1;
 		if (page > maxPage)
@@ -62,7 +62,7 @@ public class MainPageController extends AbstractController implements Config {
 		if (page <= 0)
 			page = 1;
 		m.setCurrentPage(page);
-		logger.debug("currentPage = " + Integer.toString(page));
+		logger.info("currentPage = " + Integer.toString(page));
 
 		// Controller
 		m.setAppVersion(APP_VERSION);

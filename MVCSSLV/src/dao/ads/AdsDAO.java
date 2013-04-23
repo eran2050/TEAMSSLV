@@ -9,6 +9,8 @@ public interface AdsDAO {
 	ArrayList<Ads> getMainListing(int page);
 
 	ArrayList<Ads> getByUser(String s, int page);
+	
+	ArrayList<Ads> getByUser(String s);
 
 	int getCount();
 

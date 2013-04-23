@@ -19,7 +19,7 @@ import domain.ads.Ads;
 @Transactional
 public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
-	private final static Logger logger = LoggerFactory.getLogger(AdsDAO.class);
+	private Logger logger = LoggerFactory.getLogger(AdsDAO.class);
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Ads> getMainListing(int page) {
@@ -126,11 +126,28 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					.append(" set name = :name").append(" where id = :id");
 			s.createQuery(hql.toString()).setInteger("id", ads.getId())
 					.setString("name", ads.getName()).executeUpdate();
-			logger.debug("id" + ads.getId() + "name" + ads.getName());
+			logger.info("id" + ads.getId() + "name" + ads.getName());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<Ads> getByUser(String usr) {
+		Session ses = getSession();
+		ArrayList<Ads> ads = null;
+
+		try {
+			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
+					.addOrder(Order.asc("created"))
+					.add(Restrictions.eq("owner", usr)).list();
+			return ads;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
+		return null;
+	}
 }

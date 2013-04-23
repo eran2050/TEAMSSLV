@@ -1,5 +1,7 @@
 package dao.users;
 
+import java.util.ArrayList;
+
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,7 @@ import domain.users.Users;
 @Transactional
 public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 
-	private final Logger logger = LoggerFactory.getLogger(UsersDAO.class);
+	private Logger logger = LoggerFactory.getLogger(UsersDAO.class);
 
 	public Users getUserById(String s1) {
 
@@ -21,10 +23,24 @@ public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 		Users u = null;
 		try {
 			u = (Users) s.get(Users.class, s1);
+			return u;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
+		return null;
+	}
 
-		return u;
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<Users> getAllUsers() {
+		Session s = getSession();
+		ArrayList<Users> list = null;
+		try {
+			list = (ArrayList<Users>) s.createCriteria(Users.class).list();
+			return list;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 }
