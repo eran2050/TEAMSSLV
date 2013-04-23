@@ -69,7 +69,7 @@ public class MainPageController extends AbstractController implements Config {
 		m.setAvailable(m.getListingSize() > 0);
 		m.setListing(ads.getMainListing(m.getCurrentPage()));
 
-		if (m.getUserName() == null) {
+		if (m.getUserName().equals(EMPTY)) {
 			m.setLoginStatus("<a class=nm href=".concat(CONTEXT_ROOT)
 					.concat("login>").concat(NOT_LOGGED_IN).concat("</a>"));
 		} else {
