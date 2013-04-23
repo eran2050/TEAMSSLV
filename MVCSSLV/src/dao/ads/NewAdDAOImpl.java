@@ -16,32 +16,28 @@ import domain.ads.NewAd;
 @Transactional
 public class NewAdDAOImpl extends BaseDAO implements NewAdDAO {
 
-	public void setNewAd(String name, String userName,
+	public boolean setNewAd(String name, String userName,
 			ArrayList<NewAdPageParams> paramList) {
-
-		Session s = getSession();
-		NewAd na = new NewAd();
-		na.setName(name);
-		na.setOwner(userName);
-
-		s.save(na);
-
-		for (NewAdPageParams c : paramList) {
-			NewAdDesc na1 = new NewAdDesc();
-			System.out.println("Savex: " + c.getParamName());
-			na1.setCriteria1(c.getParamName());
-			na1.setValue1(c.getParamValue());
-			na1.setNewAd(na);
-			s.save(na1);
-			na1 = null;
+				try {
+			Session s = getSession();
+			//Processing main text of advertisement to table
+			NewAd na = new NewAd();
+			na.setName(name);
+			na.setOwner(userName);
+			s.save(na);
+			//processing additional parameters to table
+			for (NewAdPageParams c : paramList) {
+				NewAdDesc na1 = new NewAdDesc();
+				na1.setCriteria1(c.getParamName());
+				na1.setValue1(c.getParamValue());
+				na1.setNewAd(na);
+				s.save(na1);
+				na1 = null;
+			}
+			return true;
+		} catch (Exception e) {
+		    return false;
 		}
-
-		System.out.println("Saved1: " + na.getId() + na.getCreated());
-		System.out.println("Saved2: " + na.getId());
-	}
-
-	public boolean adExists(String name, String userName,
-			ArrayList<NewAdPageParams> paramList) {
-		return false;
-	}
+		
+}
 }
