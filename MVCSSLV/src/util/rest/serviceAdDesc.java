@@ -17,7 +17,7 @@ import dao.addesc.AdDescDAO;
 import domain.addesc.AdDesc;
 
 @Controller
-@RequestMapping("/serviceAdDesc")
+@RequestMapping("/service/addesc")
 public class serviceAdDesc {
 
 	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);

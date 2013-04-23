@@ -17,7 +17,7 @@ import dao.users.UsersDAO;
 import domain.users.Users;
 
 @Controller
-@RequestMapping("/serviceUsers")
+@RequestMapping("/service/users")
 public class serviceUsers {
 
 	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);

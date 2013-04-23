@@ -17,7 +17,7 @@ import dao.ads.AdsDAO;
 import domain.ads.Ads;
 
 @Controller
-@RequestMapping("/serviceAds")
+@RequestMapping("/service/ads")
 public class serviceAds {
 
 	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
