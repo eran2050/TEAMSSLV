@@ -111,7 +111,6 @@ public class LoginPageController extends AbstractController implements Config {
 			logger.warn(NO_SUCH_USER);
 		} else if (ru == null && su == null && lm.getAction().equals(EMPTY)) {
 			lm.setStatusMessage(NOT_LOGGED_IN);
-			logger.info(NOT_LOGGED_IN);
 		}
 
 		// Controller

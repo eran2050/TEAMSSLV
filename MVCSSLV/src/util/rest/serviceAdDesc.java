@@ -27,12 +27,12 @@ public class serviceAdDesc {
 
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getUserById(@PathVariable String id) {
+	String getAdDescByAdsId(@PathVariable String id) {
 
 		ArrayList<AdDesc> ads = adsDao.getFullAdDesc(Integer.parseInt(id));
 		Gson json = new Gson();
 		String gson = json.toJson(ads);
-		logger.info("getFullAdDesc(" + id + ") : " + gson);
+		logger.info("getAdDescByAdsId(" + id + ") : " + gson);
 
 		return gson;
 	}
