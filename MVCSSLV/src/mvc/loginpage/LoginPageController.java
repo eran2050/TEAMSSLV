@@ -23,7 +23,7 @@ import domain.ads.Ads;
 import domain.users.Users;
 
 @Component
-@Controller (value = "/login**")
+@Controller (value = "/login")
 public class LoginPageController extends AbstractController implements Config {
 
 	private final Logger	logger	= LoggerFactory

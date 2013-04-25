@@ -16,7 +16,7 @@ import util.Config;
 import dao.ads.NewAdDAO;
 
 @Component
-@Controller (value = "/add**")
+@Controller (value = "/add")
 public class NewAdPageController extends AbstractController implements Config {
 
 	@Autowired

@@ -18,7 +18,7 @@ import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
 @Component
-@Controller (value = "/adview**")
+@Controller (value = "/adview")
 public class AdViewPageController extends AbstractController implements Config {
 
 	@Autowired
