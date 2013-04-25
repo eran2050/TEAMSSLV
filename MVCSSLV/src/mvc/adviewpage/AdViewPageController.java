@@ -16,7 +16,6 @@ import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
 import domain.addesc.AdDesc;
 import domain.ads.Ads;
-//import javax.servlet.http.HttpSession;
 
 @Component
 @Controller (value = "/adview**")
@@ -24,6 +23,7 @@ public class AdViewPageController extends AbstractController implements Config {
 
 	@Autowired
 	private AdDescDAO	adDesc;
+
 	@Autowired
 	private AdsDAO		ads;
 
@@ -31,8 +31,6 @@ public class AdViewPageController extends AbstractController implements Config {
 			HttpServletResponse response) throws Exception {
 
 		ModelAndView model = new ModelAndView("adviewpage");
-
-		// HttpSession httpSession = request.getSession();
 
 		// Process request
 		String userName = null;
@@ -116,7 +114,7 @@ public class AdViewPageController extends AbstractController implements Config {
 				|| adViewM.getAction().equals(ACTION_VIEW)
 				|| adViewM.getAction().equals(ACTION_UPDATE)) {
 
-			form.append("<form name=editaddesc method=post action=\"/java2/adview/\">");
+			form.append("<form name=editaddesc method=post action=\"/java2/adview\">");
 
 			// ///
 			form.append("<table class=\"ml1\">");

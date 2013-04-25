@@ -119,7 +119,7 @@ public class LoginPageController extends AbstractController implements Config {
 		sLoginForm
 				.append("<form action=")
 				.append(VAL_CONTEXT_ROOT)
-				.append("login/ method=post>")
+				.append("login method=post>")
 				.append("Input: <input type=text align=center name=username />")
 				.append("<input type=hidden name=action value=login />")
 				.append("<input type=image src=")
@@ -283,15 +283,13 @@ public class LoginPageController extends AbstractController implements Config {
 				for (n = 1; n <= cnt + 1; n++) {
 					if (n == lm.getCurrentPage()) {
 						list.add("<a class=pages href="
-								.concat(VAL_CONTEXT_ROOT)
-								.concat("login/?page=")
+								.concat(VAL_CONTEXT_ROOT).concat("login?page=")
 								.concat(Integer.toString(n)).concat("><b><u>")
 								.concat(Integer.toString(n))
 								.concat("</u></b></a>&nbsp;"));
 					} else {
 						list.add("<a class=pages href="
-								.concat(VAL_CONTEXT_ROOT)
-								.concat("login/?page=")
+								.concat(VAL_CONTEXT_ROOT).concat("login?page=")
 								.concat(Integer.toString(n)).concat(">")
 								.concat(Integer.toString(n))
 								.concat("</a>&nbsp;"));

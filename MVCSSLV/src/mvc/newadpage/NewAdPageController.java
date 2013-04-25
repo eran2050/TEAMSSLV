@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import util.Config;
 import dao.ads.NewAdDAO;
-//import dao.ads.AdsDAO;
 
 @Component
 @Controller (value = "/add**")
@@ -90,16 +89,17 @@ public class NewAdPageController extends AbstractController implements Config {
 			//
 
 			System.out.println("NewAdpageController.line81");
-			m.setLoginStatus("<a class=nm href=/java2/login>".concat(
-					STATUS_NOT_LOGGED_IN).concat("</a>"));
+			m.setLoginStatus("<a class=nm href=" + VAL_CONTEXT_ROOT
+					+ "login>".concat(STATUS_NOT_LOGGED_IN).concat("</a>"));
 			m.setMsgOut("<h2>Please login before inserting advertisement!</h2>");
 
 		} else {
 
 			// If cusstomer is logged in
-			m.setLoginStatus("<a class=nm href=/java2/login>"
-					.concat(STATUS_LOGGED_IN).concat(" as ")
-					.concat(m.getUserName()).concat("</a>"));
+			m.setLoginStatus("<a class=nm href="
+					+ VAL_CONTEXT_ROOT
+					+ "login>".concat(STATUS_LOGGED_IN).concat(" as ")
+							.concat(m.getUserName()).concat("</a>"));
 
 			//
 			// checking if main advertisement data exists
@@ -181,7 +181,8 @@ public class NewAdPageController extends AbstractController implements Config {
 				m.setSavedStatus(null);
 				hs.setAttribute("BLOCKED", null);
 				// Filling up empty HTML form layout
-				outStringStart = "<form action='/java2/add/' method=post>"
+				outStringStart = "<form action='" + VAL_CONTEXT_ROOT
+						+ "add' method=post>"
 						+ "<fieldset style='width: 100%; border: 0px;'>"
 						+ "<legend>Advertisement header</legend>"
 						+ "<textarea rows='0' cols='90' name='name'/>"
