@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,20 +12,20 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import util.Config;
-
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
 import domain.addesc.AdDesc;
 import domain.ads.Ads;
+//import javax.servlet.http.HttpSession;
 
 @Component
-@Controller(value = "/adview/")
+@Controller (value = "/adview**")
 public class AdViewPageController extends AbstractController implements Config {
 
 	@Autowired
-	private AdDescDAO adDesc;
+	private AdDescDAO	adDesc;
 	@Autowired
-	private AdsDAO ads;
+	private AdsDAO		ads;
 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -65,7 +64,7 @@ public class AdViewPageController extends AbstractController implements Config {
 
 		String action = request.getParameter("action");
 		if (action == null) {
-			action = EMPTY;
+			action = VAL_EMPTY;
 		}
 		// Initialize model
 		AdViewPageModel adViewM = new AdViewPageModel();
@@ -73,12 +72,12 @@ public class AdViewPageController extends AbstractController implements Config {
 		adViewM.setUserName(userName);
 		adViewM.setAction(action);
 		adViewM.setAds(ads.getById(adViewM.getAdsId()));
-		adViewM.setAppVersion(APP_VERSION);
+		adViewM.setAppVersion(VAL_APP_VERSION);
 		adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
 
 		// Complete action
-		if (adViewM.getAds().getOwner().equals(
-				(String) request.getSession().getAttribute("username"))) {
+		if (adViewM.getAds().getOwner()
+				.equals((String) request.getSession().getAttribute("username"))) {
 			if (adViewM.getAction().equals(ACTION_UPDATE)) {
 				ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 
@@ -105,15 +104,15 @@ public class AdViewPageController extends AbstractController implements Config {
 		// Create http elements
 		if (adViewM.getUserName() == null) {
 			adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(
-					NOT_LOGGED_IN).concat("</a>"));
+					STATUS_NOT_LOGGED_IN).concat("</a>"));
 		} else {
 			adViewM.setLoginStatus("<a class=nm href=/java2/login>"
-					.concat(LOGGED_IN).concat(" as ")
+					.concat(STATUS_LOGGED_IN).concat(" as ")
 					.concat(adViewM.getUserName()).concat("</a>"));
 		}
 
 		StringBuilder form = new StringBuilder();
-		if (adViewM.getAction().equals(EMPTY)
+		if (adViewM.getAction().equals(VAL_EMPTY)
 				|| adViewM.getAction().equals(ACTION_VIEW)
 				|| adViewM.getAction().equals(ACTION_UPDATE)) {
 

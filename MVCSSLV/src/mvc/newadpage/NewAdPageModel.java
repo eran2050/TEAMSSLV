@@ -2,17 +2,15 @@ package mvc.newadpage;
 
 import java.util.ArrayList;
 
-import mvc.IModel;
+public class NewAdPageModel {
 
-public class NewAdPageModel implements IModel {
-
-	private String userName;
-	private String loginStatus;
-	private String name;
-	private String savedStatus;
-	private String msgOut;
-	private ArrayList<NewAdPageParams> paramList = new ArrayList<NewAdPageParams>();
-	private String appVer;
+	private String						userName;
+	private String						loginStatus;
+	private String						name;
+	private String						savedStatus;
+	private String						msgOut;
+	private ArrayList<NewAdPageParams>	paramList	= new ArrayList<NewAdPageParams>();
+	private String						appVer;
 
 	public String getLoginStatus() {
 		return loginStatus;

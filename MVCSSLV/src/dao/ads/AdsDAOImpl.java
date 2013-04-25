@@ -26,11 +26,11 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 		ArrayList<Ads> l = null;
 		Session s = getSession();
-		int first = ((page - 1) * ADS_PER_MAIN_PAGE);
+		int first = ((page - 1) * VAL_ADS_PER_MAIN_PAGE);
 
 		try {
 			l = (ArrayList<Ads>) s.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE)
+					.setFirstResult(first).setMaxResults(VAL_ADS_PER_MAIN_PAGE)
 					.addOrder(Order.asc("created")).list();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -73,11 +73,11 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 		Session ses = getSession();
 		ArrayList<Ads> ads = null;
-		int first = ((page - 1) * ADS_PER_LOGIN_PAGE);
+		int first = ((page - 1) * VAL_ADS_PER_LOGIN_PAGE);
 
 		try {
 			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(ADS_PER_LOGIN_PAGE)
+					.setFirstResult(first).setMaxResults(VAL_ADS_PER_LOGIN_PAGE)
 					.addOrder(Order.asc("created"))
 					.add(Restrictions.eq("owner", usr)).list();
 		} catch (Exception e) {

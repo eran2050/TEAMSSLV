@@ -17,17 +17,17 @@ import dao.users.UsersDAO;
 import domain.users.Users;
 
 @Controller
-@RequestMapping("/service/users")
+@RequestMapping ("/service/users")
 public class serviceUsers {
 
-	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
+	private Logger	logger	= LoggerFactory.getLogger(serviceUsers.class);
 
 	@Autowired
-	UsersDAO usersDao;
+	UsersDAO		usersDao;
 
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getUserById(@PathVariable String id) {
+	String getUserById(@PathVariable ("id") String id) {
 
 		Users user = usersDao.getUserById(id);
 		Gson json = new Gson();
@@ -37,7 +37,7 @@ public class serviceUsers {
 		return gson;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping (method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsers() {
 

@@ -17,17 +17,17 @@ import dao.ads.AdsDAO;
 import domain.ads.Ads;
 
 @Controller
-@RequestMapping("/service/ads")
+@RequestMapping ("/service/ads")
 public class serviceAds {
 
-	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
+	private Logger	logger	= LoggerFactory.getLogger(serviceUsers.class);
 
 	@Autowired
-	AdsDAO adsDao;
+	AdsDAO			adsDao;
 
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getAdsByUserId(@PathVariable String id) {
+	String getAdsByUserId(@PathVariable ("id") String id) {
 
 		ArrayList<Ads> ads = adsDao.getByUser(id);
 		Gson json = new Gson();

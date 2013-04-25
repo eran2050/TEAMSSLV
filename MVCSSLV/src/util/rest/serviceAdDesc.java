@@ -17,17 +17,17 @@ import dao.addesc.AdDescDAO;
 import domain.addesc.AdDesc;
 
 @Controller
-@RequestMapping("/service/addesc")
+@RequestMapping ("/service/addesc")
 public class serviceAdDesc {
 
-	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
+	private Logger	logger	= LoggerFactory.getLogger(serviceUsers.class);
 
 	@Autowired
-	AdDescDAO adsDao;
+	AdDescDAO		adsDao;
 
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getAdDescByAdsId(@PathVariable String id) {
+	String getAdDescByAdsId(@PathVariable ("id") String id) {
 
 		ArrayList<AdDesc> ads = adsDao.getFullAdDesc(Integer.parseInt(id));
 		Gson json = new Gson();
