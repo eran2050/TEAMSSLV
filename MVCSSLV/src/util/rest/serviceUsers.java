@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import util.Util;
+
 import com.google.gson.Gson;
 
 import dao.users.UsersDAO;
@@ -44,7 +46,8 @@ public class serviceUsers {
 		ArrayList<Users> users = usersDao.getAllUsers();
 		ArrayList<String> list = new ArrayList<String>();
 		for (Users user : users) {
-			list.add(user.getId());
+			String fixed = new String(user.getId().replace("\u0026", "&"));
+			list.add(fixed);
 		}
 		Gson json = new Gson();
 		String gson = json.toJson(list);
@@ -58,6 +61,19 @@ public class serviceUsers {
 	String getAllUsersLong() {
 
 		ArrayList<Users> users = usersDao.getAllUsers();
+
+		int i = 0;
+		for (Users user : users) {
+			String fixedId = Util.toUTF8(user.getId());
+			String fixedName = Util.toUTF8(user.getName());
+			String fixedSurName = Util.toUTF8(user.getSurName());
+			Users userFixed = user;
+			userFixed.setId(fixedId);
+			userFixed.setName(fixedName);
+			userFixed.setSurName(fixedSurName);
+			users.set(i++, userFixed);
+		}
+
 		Gson json = new Gson();
 		String gson = json.toJson(users);
 		logger.info("getAllUsers() : " + gson);

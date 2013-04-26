@@ -94,8 +94,7 @@ public class LoginPageController extends AbstractController implements Config {
 			hs.setAttribute(VAL_USERNAME, ru);
 
 			lm.setUserName(ru);
-			lm.setPassword("P-hash: ".concat(new Util().getSha(ru,
-					ru.concat(ru))));
+			lm.setPassword("P-hash: ".concat(Util.getSha(ru, ru.concat(ru))));
 			lm.setStatusMessage(STATUS_LOGGED_IN);
 			logger.info(STATUS_LOGGED_IN);
 		} else if ((ru == null && su != null) || (ru != null && su != null)) {
@@ -103,8 +102,7 @@ public class LoginPageController extends AbstractController implements Config {
 			Users u = users.getUserById(su);
 			lm.setUser(u);
 			lm.setUserName(su);
-			lm.setPassword("P-hash: ".concat(new Util().getSha(su,
-					su.concat(su))));
+			lm.setPassword("P-hash: ".concat(Util.getSha(su, su.concat(su))));
 			lm.setStatusMessage(STATUS_LOGGED_IN);
 			logger.info(STATUS_LOGGED_IN);
 		} else if (ru != null && !userChecked && su == null) {

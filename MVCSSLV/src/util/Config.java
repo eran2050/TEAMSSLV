@@ -1,7 +1,7 @@
 package util;
 
 public interface Config {
-	public static final String	VAL_APP_VERSION			= "v4.3.0_2";
+	public static final String	VAL_APP_VERSION			= "v4.3.1_6";
 	public static final String	VAL_CONTEXT_ROOT		= "/java2/";
 	public static final String	VAL_EMPTY				= "";
 	public static final String	VAL_USERNAME			= "username";

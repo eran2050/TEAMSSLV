@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import util.Util;
+
 import com.google.gson.Gson;
 
 import dao.addesc.AdDescDAO;
@@ -30,6 +32,17 @@ public class serviceAdDesc {
 	String getAdDescByAdsId(@PathVariable ("id") String id) {
 
 		ArrayList<AdDesc> ads = adsDao.getFullAdDesc(Integer.parseInt(id));
+
+		int i = 0;
+		for (AdDesc ad : ads) {
+			String fixedCriteria = Util.toUTF8(ad.getCriteria());
+			String fixedValue = Util.toUTF8(ad.getValue());
+			AdDesc adFixed = ad;
+			adFixed.setCriteria(fixedCriteria);
+			adFixed.setValue(fixedValue);
+			ads.set(i++, adFixed);
+		}
+
 		Gson json = new Gson();
 		String gson = json.toJson(ads);
 		logger.info("getAdDescByAdsId(" + id + ") : " + gson);

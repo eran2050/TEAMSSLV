@@ -169,7 +169,7 @@ public class AdViewPageController extends AbstractController implements Config {
 
 		} else if (adViewM.getAction().equals(ACTION_EDIT)) {
 
-			form.append("<form name=updateaddesc method=post action=\"/java2/adview/\">");
+			form.append("<form name=updateaddesc method=post action=\"/java2/adview\">");
 			// ///
 			form.append("<table class=\"ml1\">");
 			form.append("<tr>");
