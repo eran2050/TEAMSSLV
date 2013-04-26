@@ -25,7 +25,7 @@ public class serviceUsers {
 	@Autowired
 	UsersDAO		usersDao;
 
-	@RequestMapping (value = "/{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
 	String getUserById(@PathVariable ("id") String id) {
 
@@ -37,9 +37,9 @@ public class serviceUsers {
 		return gson;
 	}
 
-	@RequestMapping (method = RequestMethod.GET)
+	@RequestMapping (value = "/short", method = RequestMethod.GET)
 	public @ResponseBody
-	String getAllUsers() {
+	String getAllUsersShort() {
 
 		ArrayList<Users> users = usersDao.getAllUsers();
 		ArrayList<String> list = new ArrayList<String>();
@@ -48,6 +48,18 @@ public class serviceUsers {
 		}
 		Gson json = new Gson();
 		String gson = json.toJson(list);
+		logger.info("getAllUsers() : " + gson);
+
+		return gson;
+	}
+
+	@RequestMapping (value = "/long", method = RequestMethod.GET)
+	public @ResponseBody
+	String getAllUsersLong() {
+
+		ArrayList<Users> users = usersDao.getAllUsers();
+		Gson json = new Gson();
+		String gson = json.toJson(users);
 		logger.info("getAllUsers() : " + gson);
 
 		return gson;

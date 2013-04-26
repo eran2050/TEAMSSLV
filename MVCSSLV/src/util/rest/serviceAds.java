@@ -25,7 +25,7 @@ public class serviceAds {
 	@Autowired
 	AdsDAO			adsDao;
 
-	@RequestMapping (value = "/{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAdsByUserId(@PathVariable ("id") String id) {
 

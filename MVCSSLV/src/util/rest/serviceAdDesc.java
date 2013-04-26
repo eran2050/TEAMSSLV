@@ -25,7 +25,7 @@ public class serviceAdDesc {
 	@Autowired
 	AdDescDAO		adsDao;
 
-	@RequestMapping (value = "/{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/ads/{id}", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAdDescByAdsId(@PathVariable ("id") String id) {
 
