@@ -21,6 +21,21 @@ public class serviceUsers {
 	@Autowired
 	UsersDAO usersDao;
 
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+	public @ResponseBody
+	String getUserById(@PathVariable("id") String id) {
+		try {
+			Users user = usersDao.getUserById(id);
+			Gson json = new Gson();
+			String gson = json.toJson(user);
+
+			return gson;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return null;
+	}
+
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersShort() {
