@@ -23,7 +23,7 @@ public class serviceUsers {
 	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
 
 	@Autowired
-	UsersDAO usersDao;
+	UsersDAO usersDao;	
 
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	public @ResponseBody
@@ -36,18 +36,14 @@ public class serviceUsers {
 
 		return gson;
 	}
-
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsers() {
 
 		ArrayList<Users> users = usersDao.getAllUsers();
-		ArrayList<String> list = new ArrayList<String>();
-		for (Users user : users) {
-			list.add(user.getId());
-		}
 		Gson json = new Gson();
-		String gson = json.toJson(list);
+		String gson = json.toJson(users);
 		logger.info("getAllUsers() : " + gson);
 
 		return gson;
