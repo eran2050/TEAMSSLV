@@ -36,7 +36,7 @@ public class serviceUsers {
 		return null;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/short", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersShort() {
 
@@ -44,8 +44,7 @@ public class serviceUsers {
 			ArrayList<Users> users = usersDao.getAllUsers();
 			ArrayList<String> list = new ArrayList<String>();
 			for (Users user : users) {
-				String fixed = new String(user.getId().replace("\u0026", "&"));
-				list.add(fixed);
+				list.add(user.getId());
 			}
 			Gson json = new Gson();
 			String gson = json.toJson(list);
