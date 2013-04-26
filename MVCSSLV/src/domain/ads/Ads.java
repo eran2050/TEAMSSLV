@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
-@SuppressWarnings("all")
 @Entity
 @Table(name = "ads")
 public class Ads {

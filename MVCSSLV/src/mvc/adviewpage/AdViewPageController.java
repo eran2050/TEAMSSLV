@@ -26,13 +26,10 @@ public class AdViewPageController extends AbstractController implements Config {
 	private AdDescDAO	adDesc;
 
 	@Autowired
-<<<<<<< HEAD
 	private AdsDAO ads;
+	
 	@Autowired
 	private UsersDAO users;
-=======
-	private AdsDAO		ads;
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

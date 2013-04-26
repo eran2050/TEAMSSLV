@@ -23,16 +23,6 @@ public class serviceAds {
 
 	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-<<<<<<< HEAD
-	String getUserById(@PathVariable String id) {
-
-		ArrayList<Ads> ads = adsDao.getByUser(id);
-		Gson json = new Gson();
-		String gson = json.toJson(ads);
-		logger.info("getByUser(" + id + ") : " + gson);
-
-		return gson;
-=======
 	String getAdsByUserId(@PathVariable ("id") String id) {
 
 		try {
@@ -45,6 +35,5 @@ public class serviceAds {
 			// handled by aspect
 		}
 		return null;
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
 	}
 }
