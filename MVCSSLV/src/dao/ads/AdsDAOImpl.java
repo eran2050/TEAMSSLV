@@ -4,133 +4,163 @@ import java.util.ArrayList;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import util.HibernateUtil;
-import domain.mainpage.Ads;
+import dao.BaseDAO;
+import domain.ads.Ads;
 
-public class AdsDAOImpl implements AdsDAO {
+@Component
+@Transactional
+public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
-	@SuppressWarnings("unchecked")
+	@Override
+	@SuppressWarnings ("unchecked")
 	public ArrayList<Ads> getMainListing(int page) {
 
-		ArrayList<Ads> l = null;
-		Session s = getSession();
-		int first = ((page - 1) * ADS_PER_MAIN_PAGE);
-
 		try {
+			ArrayList<Ads> l = null;
+			Session s = getSession();
+			int first = ((page - 1) * VAL_ADS_PER_MAIN_PAGE);
 			l = (ArrayList<Ads>) s.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(ADS_PER_MAIN_PAGE)
-					.list();
+					.setFirstResult(first).setMaxResults(VAL_ADS_PER_MAIN_PAGE)
+					.addOrder(Order.asc("created")).list();
+			return l;
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
+			// handled by aspect
 		}
 
-		return l;
+		return null;
 	}
 
-	public int getCount() {
+	@Override
+	public int getTotalAdsCount() {
 
-		Session s = getSession();
-		Long cnt = (long) 0;
 		try {
+			Session s = getSession();
+			Long cnt = (long) 0;
 			cnt = (Long) s.createCriteria(Ads.class)
 					.setProjection(Projections.rowCount()).uniqueResult();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
-		}
 
-		return cnt.intValue();
+			return cnt.intValue();
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return 0;
 	}
 
-	public int getCountByUser(String usr) {
+	@Override
+	public int getAdsCountByUser(String usr) {
 
-		Long cnt = (long) 0;
-		Session s = getSession();
 		try {
+			Long cnt = (long) 0;
+			Session s = getSession();
 			cnt = (Long) s.createCriteria(Ads.class)
 					.add(Restrictions.eq("owner", usr))
 					.setProjection(Projections.rowCount()).uniqueResult();
+
+			return cnt.intValue();
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
+			// handled by aspect
 		}
-
-		return cnt.intValue();
+		return 0;
 	}
 
-	private Session getSession() {
-
-		Session s = HibernateUtil.getSessionFactory().openSession();
-		if (!s.isConnected())
-			s.reconnect(null);
-		return s;
-	}
-
-	private void close(Session s) {
-
-		if (s != null && s.isOpen()) {
-			s.close();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public ArrayList<Ads> getByUser(String usr, int page) {
-
-		Session ses = getSession();
-		ArrayList<Ads> ads = null;
-		int first = ((page - 1) * ADS_PER_LOGIN_PAGE);
+	@Override
+	@SuppressWarnings ("unchecked")
+	public ArrayList<Ads> getAdsListByUserAndPage(String usr, int page) {
 
 		try {
+			Session ses = getSession();
+			ArrayList<Ads> ads = null;
+			int first = ((page - 1) * VAL_ADS_PER_LOGIN_PAGE);
 			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(ADS_PER_LOGIN_PAGE)
+					.setFirstResult(first)
+					.setMaxResults(VAL_ADS_PER_LOGIN_PAGE)
+					.addOrder(Order.asc("created"))
 					.add(Restrictions.eq("owner", usr)).list();
+
+			return ads;
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(ses);
+			// handled by aspect
 		}
 
-		return ads;
+		return null;
 	}
 
 	@Override
-	public Ads getById(int adsId) {
-		final Session session = getSession();
-		Ads ads = null;
+	public Ads getSingleAdsById(int adsId) {
+
 		try {
+			Session session = getSession();
+			Ads ads = null;
 			Criteria criteria = session.createCriteria(Ads.class).add(
-					Restrictions.eq("id", new Integer(adsId)));
+					Restrictions.eq("id", adsId));
 			ads = (Ads) criteria.uniqueResult();
+
+			return ads;
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
+			// handled by aspect
 		}
-		return ads;
+		return null;
 	}
 
 	@Override
-	public void deleteById(int adsId) {
-		Session s = getSession();
+	public boolean deleteSingleAdsById(int adsId) {
+
 		try {
-			s.beginTransaction();
-			String hql = "delete from ".concat(Ads.class.getName()).concat(
-					" where id = :adsId");
-			s.createQuery(hql)
-					.setString("adsId", new Integer(adsId).toString())
+			Session s = getSession();
+			StringBuilder hql = new StringBuilder();
+			hql.append("delete from ").append(Ads.class.getName())
+					.append(" where id = :adsId");
+			s.createQuery(hql.toString())
+					.setString("adsId", Integer.toString(adsId))
 					.executeUpdate();
+
+			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
+			// handled by aspect
+		}
+		return false;
+	}
+
+	@Override
+	public void updateAds(Ads ads) {
+
+		try {
+			Session s = getSession();
+			StringBuilder hql = new StringBuilder();
+
+			hql.setLength(0);
+			hql.append("update ").append(Ads.class.getName())
+					.append(" set name = :name").append(" where id = :id");
+			s.createQuery(hql.toString()).setInteger("id", ads.getId())
+					.setString("name", ads.getName()).executeUpdate();
+
+		} catch (Exception e) {
+			// handled by aspect
 		}
 	}
 
+	@SuppressWarnings ("unchecked")
+	@Override
+	public ArrayList<Ads> getAdsListByUser(String usr) {
+
+		try {
+			Session ses = getSession();
+			ArrayList<Ads> ads = null;
+			ads = (ArrayList<Ads>) ses.createCriteria(Ads.class)
+					.addOrder(Order.asc("created"))
+					.add(Restrictions.eq("owner", usr)).list();
+
+			return ads;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+
+		return null;
+	}
 }

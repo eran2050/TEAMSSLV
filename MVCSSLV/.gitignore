@@ -1,11 +1,11 @@
 /build
-bin/
+/bin
 .DS_Store
 .classpath
 .project
-.settings
 *.class
 *.jar
 *.war
 *.ear
 *.iws
+/target

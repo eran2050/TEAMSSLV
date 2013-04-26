@@ -1,5 +1,5 @@
-<%@page import="domain.mainpage.Ads"%>
-<jsp:useBean id="model" type="mvc.mainpage.MainPageModel"
+<%@page import="domain.ads.Ads"%>
+<jsp:useBean id="modelMainPage" type="mvc.mainpage.MainPageModel"
 	class="mvc.mainpage.MainPageModel" scope="request"></jsp:useBean>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -21,15 +21,14 @@
 						href="/java2/">Home </a></td>
 					<td class="nm"><a class="nm" href="/java2/add">Add </a></td>
 					<td class="nm"><a class="nm" href="/java2/admin">Admin</a></td>
-					<td class="nm2">Status:&nbsp; <jsp:getProperty name="model"
-							property="loginStatus" />
+					<td class="nm2">Status:&nbsp;<%=modelMainPage.getLoginStatus()%>
 					</td>
 				</tr>
 			</table>
 		</div>
 		<div class="body">
 			<p>
-				Total Ads:&nbsp;<%=model.getListingSize()%>
+				Total Ads:&nbsp;<%=modelMainPage.getListingSize()%>
 			</p>
 			<table class="ml">
 				<tr>
@@ -39,8 +38,8 @@
 					<th class="ml">User</th>
 				</tr>
 				<%
-					if (model.isAvailable())
-						for (Ads ml : model.getListing()) {
+					if (modelMainPage.isAvailable())
+						for (Ads ml : modelMainPage.getListing()) {
 				%>
 				<tr>
 					<td width="5%"><a href="/java2/adview?adsid=<%=ml.getId()%>"
@@ -56,12 +55,12 @@
 			</table>
 
 			<%
-				if (model.getPageNumbers() != null) {
+				if (modelMainPage.getPageNumbers() != null) {
 			%>
 			<p>
 				Pages:&nbsp;
 				<%
-					for (String pn : model.getPageNumbers()) {
+					for (String pn : modelMainPage.getPageNumbers()) {
 				%>
 
 				<%=pn%>
@@ -81,9 +80,15 @@
 		<div class="footer">
 			<table class="footer">
 				<tr>
-					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;</td>
+					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=modelMainPage.getAppVersion()%>&nbsp;
+					</td>
 				</tr>
 			</table>
+			<p style="align: center;">
+				Page generated in
+				<%=modelMainPage.getLoadingTime() %>
+				msec
+			</p>
 		</div>
 	</div>
 </body>

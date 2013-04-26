@@ -1,9 +1,13 @@
 package dao.users;
 
-import domain.loginpage.Users;
+import java.util.ArrayList;
+
+import domain.users.Users;
 
 public interface UsersDAO {
 
-	Users getUserById(String s);
+    Users getUserById(String s);
+    
+    ArrayList<Users> getAllUsers();
 
 }

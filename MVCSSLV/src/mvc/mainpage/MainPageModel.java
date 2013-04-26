@@ -3,10 +3,9 @@ package mvc.mainpage;
 import java.util.ArrayList;
 import java.util.List;
 
-import mvc.IModel;
-import domain.mainpage.Ads;
+import domain.ads.Ads;
 
-public class MainPageModel implements IModel {
+public class MainPageModel {
 
 	private String			userName;
 	private String			loginStatus;
@@ -15,6 +14,8 @@ public class MainPageModel implements IModel {
 	private boolean			available;
 	private List<String>	pageNumbers;
 	private int				currentPage;
+	private String			appVersion;
+	private long			loadingTime;
 
 	public String getUserName() {
 		return userName;
@@ -70,5 +71,21 @@ public class MainPageModel implements IModel {
 
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
+	}
+
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+	}
+
+	public long getLoadingTime() {
+		return loadingTime;
+	}
+
+	public void setLoadingTime(long loadingTime) {
+		this.loadingTime = loadingTime;
 	}
 }

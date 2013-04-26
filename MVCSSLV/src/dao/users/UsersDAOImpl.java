@@ -1,40 +1,43 @@
 package dao.users;
 
+import java.util.ArrayList;
+
 import org.hibernate.Session;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import util.HibernateUtil;
-import domain.loginpage.Users;
+import dao.BaseDAO;
+import domain.users.Users;
 
-public class UsersDAOImpl implements UsersDAO {
+@Component
+@Transactional
+public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 
-	private Session getSession() {
-		Session s = HibernateUtil.getSessionFactory().openSession();
-		if (!s.isConnected())
-			s.reconnect(null);
-
-		return s;
-	}
-
-	private void close(Session s) {
-
-		if (s != null && s.isOpen()) {
-			s.close();
-		}
-	}
-
-	@Override
 	public Users getUserById(String s1) {
 
-		Session s = getSession();
-		Users u = null;
 		try {
+			Session s = getSession();
+			Users u = null;
 			u = (Users) s.get(Users.class, s1);
+			return u;
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close(s);
+			// handled by aspect
 		}
+		return null;
+	}
 
-		return u;
+	@SuppressWarnings ("unchecked")
+	@Override
+	public ArrayList<Users> getAllUsers() {
+
+		try {
+			Session s = getSession();
+			ArrayList<Users> list = null;
+			list = (ArrayList<Users>) s.createCriteria(Users.class).list();
+			return list;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return null;
 	}
 }

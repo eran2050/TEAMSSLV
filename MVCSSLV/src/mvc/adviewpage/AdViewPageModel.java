@@ -1,18 +1,21 @@
 package mvc.adviewpage;
 
 import java.util.ArrayList;
-import domain.addescpage.AdDesc;
-import domain.mainpage.Ads;
-import mvc.IModel;
 
-public class AdViewPageModel implements IModel {
+import domain.addesc.AdDesc;
+import domain.ads.Ads;
 
-	private Ads ads;
-	private ArrayList<AdDesc> fullDesc;
-	private String userName;
-	private String loginStatus;
-	private boolean available;
-	private int adsId;	
+public class AdViewPageModel {
+
+	private Ads					ads;
+	private ArrayList<AdDesc>	fullDesc;
+	private String				userName;
+	private String				loginStatus;
+	private boolean				available;
+	private int					adsId;
+	private String				appVersion;
+	private String				action;
+	private String				form;
 
 	public Ads getAds() {
 		return ads;
@@ -62,4 +65,27 @@ public class AdViewPageModel implements IModel {
 		this.adsId = adsId;
 	}
 
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getForm() {
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.form = form;
+	}
 }

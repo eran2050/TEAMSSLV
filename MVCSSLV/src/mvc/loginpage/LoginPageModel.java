@@ -3,25 +3,26 @@ package mvc.loginpage;
 import java.util.ArrayList;
 import java.util.List;
 
-import mvc.IModel;
-import domain.loginpage.Users;
-import domain.mainpage.Ads;
+import domain.ads.Ads;
+import domain.users.Users;
 
-public class LoginPageModel implements IModel {
+public class LoginPageModel {
 
-	private String userName;
-	private String userPassword;
-	private String statusMessage;
-	private String status;
-	private String htmlForm;
-	private ArrayList<Ads> ads;
-	private Users user;
-	private boolean valid;
-	private List<String> pageNumbers;
-	private int currentPage;
-	private int listingSize;
-	private String action;
-	private Long adsId;
+	private String			userName;
+	private String			userPassword;
+	private String			statusMessage;
+	private String			status;
+	private String			htmlForm;
+	private ArrayList<Ads>	ads;
+	private Users			user;
+	private boolean			valid;
+	private List<String>	pageNumbers;
+	private int				currentPage;
+	private int				listingSize;
+	private String			action;
+	private Long			adsId;
+	private String			appVersion;
+	private long			loadingTime;
 
 	public String getUserName() {
 		return userName;
@@ -127,4 +128,19 @@ public class LoginPageModel implements IModel {
 		this.action = action;
 	}
 
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+	}
+
+	public long getLoadingTime() {
+		return loadingTime;
+	}
+
+	public void setLoadingTime(long loadingTime) {
+		this.loadingTime = loadingTime;
+	}
 }

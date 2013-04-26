@@ -2,13 +2,15 @@ package dao.addesc;
 
 import java.util.ArrayList;
 
-import domain.addescpage.AdDesc;
+import domain.addesc.AdDesc;
 
 public interface AdDescDAO {
 
-	ArrayList<AdDesc> getFullAdDesc(int adsId);
-	
-	ArrayList<AdDesc> getFullAdDesc1(int adsId);
-	
-	void deleteByAdsId(int adsId);
+	ArrayList<AdDesc> getFullAdDescByHQL(int adsId);
+
+	ArrayList<AdDesc> getFullAdDescByCriteria(int adsId);
+
+	boolean deleteByAdsId(int adsId);
+
+	boolean updateAdDesc(ArrayList<AdDesc> fullDesc);
 }
