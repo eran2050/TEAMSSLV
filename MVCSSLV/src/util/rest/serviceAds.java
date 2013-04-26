@@ -2,8 +2,6 @@ package util.rest;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +15,15 @@ import dao.ads.AdsDAO;
 import domain.ads.Ads;
 
 @Controller
-@RequestMapping("/service/ads")
+@RequestMapping ("/service/ads")
 public class serviceAds {
 
-	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
-
 	@Autowired
-	AdsDAO adsDao;
+	AdsDAO	adsDao;
 
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
+<<<<<<< HEAD
 	String getUserById(@PathVariable String id) {
 
 		ArrayList<Ads> ads = adsDao.getByUser(id);
@@ -35,5 +32,19 @@ public class serviceAds {
 		logger.info("getByUser(" + id + ") : " + gson);
 
 		return gson;
+=======
+	String getAdsByUserId(@PathVariable ("id") String id) {
+
+		try {
+			ArrayList<Ads> ads = adsDao.getAdsListByUser(id);
+			Gson json = new Gson();
+			String gson = json.toJson(ads);
+
+			return gson;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return null;
+>>>>>>> origin/Spring-MVC-Sashko-26apr2013
 	}
 }

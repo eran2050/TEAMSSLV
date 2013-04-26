@@ -16,16 +16,18 @@ import domain.ads.NewAd;
 @Transactional
 public class NewAdDAOImpl extends BaseDAO implements NewAdDAO {
 
+	@Override
 	public boolean setNewAd(String name, String userName,
 			ArrayList<NewAdPageParams> paramList) {
-				try {
+
+		try {
 			Session s = getSession();
-			//Processing main text of advertisement to table
+			// Processing main text of advertisement to table
 			NewAd na = new NewAd();
 			na.setName(name);
 			na.setOwner(userName);
 			s.save(na);
-			//processing additional parameters to table
+			// Processing additional parameters to table
 			for (NewAdPageParams c : paramList) {
 				NewAdDesc na1 = new NewAdDesc();
 				na1.setCriteria1(c.getParamName());
@@ -34,10 +36,11 @@ public class NewAdDAOImpl extends BaseDAO implements NewAdDAO {
 				s.save(na1);
 				na1 = null;
 			}
+
 			return true;
 		} catch (Exception e) {
-		    return false;
+			// handled by aspect
 		}
-		
-}
+		return false;
+	}
 }

@@ -35,9 +35,9 @@ public class MainPageController extends AbstractController implements Config {
 		MainPageModel m = new MainPageModel();
 
 		// Model Creator
-		String userName = EMPTY;
-		if (request.getSession().getAttribute(USERNAME) != null) {
-			userName = (String) request.getSession().getAttribute(USERNAME);
+		String userName = VAL_EMPTY;
+		if (request.getSession().getAttribute(VAL_USERNAME) != null) {
+			userName = (String) request.getSession().getAttribute(VAL_USERNAME);
 		}
 		m.setUserName(userName);
 		logger.info("userName is: ".concat(userName));
@@ -52,11 +52,11 @@ public class MainPageController extends AbstractController implements Config {
 			}
 		}
 
-		int adsCount = ads.getCount();
+		int adsCount = ads.getTotalAdsCount();
 		m.setListingSize(adsCount);
 		logger.info("adsCount = " + Integer.toString(adsCount));
 
-		int maxPage = Math.round((float) adsCount / (float) ADS_PER_MAIN_PAGE) + 1;
+		int maxPage = Math.round((float) adsCount / (float) VAL_ADS_PER_MAIN_PAGE) + 1;
 		if (page > maxPage)
 			page = maxPage;
 		if (page <= 0)
@@ -65,41 +65,41 @@ public class MainPageController extends AbstractController implements Config {
 		logger.info("currentPage = " + Integer.toString(page));
 
 		// Controller
-		m.setAppVersion(APP_VERSION);
+		m.setAppVersion(VAL_APP_VERSION);
 		m.setAvailable(m.getListingSize() > 0);
 		m.setListing(ads.getMainListing(m.getCurrentPage()));
 
-		if (m.getUserName().equals(EMPTY)) {
-			m.setLoginStatus("<a class=nm href=".concat(CONTEXT_ROOT)
-					.concat("login>").concat(NOT_LOGGED_IN).concat("</a>"));
+		if (m.getUserName().equals(VAL_EMPTY)) {
+			m.setLoginStatus("<a class=nm href=".concat(VAL_CONTEXT_ROOT)
+					.concat("login>").concat(STATUS_NOT_LOGGED_IN).concat("</a>"));
 		} else {
-			m.setLoginStatus("<a class=nm href=".concat(CONTEXT_ROOT)
-					.concat("login>").concat(LOGGED_IN).concat(" as ")
+			m.setLoginStatus("<a class=nm href=".concat(VAL_CONTEXT_ROOT)
+					.concat("login>").concat(STATUS_LOGGED_IN).concat(" as ")
 					.concat(m.getUserName()).concat("</a>"));
 		}
 
 		// PageNumbers
 		ArrayList<String> list = new ArrayList<String>();
-		int cnt = Math.round(m.getListingSize() / ADS_PER_MAIN_PAGE);
+		int cnt = Math.round(m.getListingSize() / VAL_ADS_PER_MAIN_PAGE);
 		if (cnt > 0) {
 			int n;
-			if (cnt * ADS_PER_MAIN_PAGE == m.getListingSize())
+			if (cnt * VAL_ADS_PER_MAIN_PAGE == m.getListingSize())
 				cnt -= 1;
 			if (cnt > 0) {
 				for (n = 1; n <= cnt + 1; n++) {
 					if (n == m.getCurrentPage()) {
-						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+						list.add("<a class=pages href=".concat(VAL_CONTEXT_ROOT)
 								.concat("?page=").concat(Integer.toString(n))
 								.concat("><b><u>").concat(Integer.toString(n))
 								.concat("</u></b></a>&nbsp;"));
 					} else {
-						list.add("<a class=pages href=".concat(CONTEXT_ROOT)
+						list.add("<a class=pages href=".concat(VAL_CONTEXT_ROOT)
 								.concat("?page=").concat(Integer.toString(n))
 								.concat(">").concat(Integer.toString(n))
 								.concat("</a>&nbsp;"));
 					}
 
-					if (n % PAGES_IN_LINE == 0)
+					if (n % VAL_PAGES_IN_LINE == 0)
 						list.add("<br />");
 				}
 			} else
@@ -108,7 +108,7 @@ public class MainPageController extends AbstractController implements Config {
 		}
 		// Elapsed loading time calculations
 		long loadEnd = System.nanoTime();
-		double loadElapsedTime = (double) (loadEnd - loadStart) / 1000000.0;
+		double loadElapsedTime = (loadEnd - loadStart) / 1000000.0;
 		m.setLoadingTime(Math.round(loadElapsedTime));
 		//
 		model.addObject("modelMainPage", m);

@@ -8,17 +8,17 @@ public interface AdsDAO {
 
 	ArrayList<Ads> getMainListing(int page);
 
-	ArrayList<Ads> getByUser(String s, int page);
+	ArrayList<Ads> getAdsListByUserAndPage(String s, int page);
 	
-	ArrayList<Ads> getByUser(String s);
+	ArrayList<Ads> getAdsListByUser(String s);
 
-	int getCount();
+	int getTotalAdsCount();
 
-	int getCountByUser(String s);
+	int getAdsCountByUser(String s);
 
-	Ads getById(int adsId);
+	Ads getSingleAdsById(int adsId);
 
-	boolean deleteById(int adsId);
+	boolean deleteSingleAdsById(int adsId);
 
 	void updateAds(Ads ads);
 

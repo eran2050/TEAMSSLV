@@ -2,8 +2,6 @@ package util.rest;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +15,15 @@ import dao.addesc.AdDescDAO;
 import domain.addesc.AdDesc;
 
 @Controller
-@RequestMapping("/service/addesc")
+@RequestMapping ("/service/addesc")
 public class serviceAdDesc {
 
-	private Logger logger = LoggerFactory.getLogger(serviceUsers.class);
-
 	@Autowired
-	AdDescDAO adsDao;
+	AdDescDAO	adsDao;
 
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/ads/{id}", method = RequestMethod.GET)
 	public @ResponseBody
+<<<<<<< HEAD
 	String getUserById(@PathVariable String id) {
 
 		ArrayList<AdDesc> ads = adsDao.getFullAdDesc(Integer.parseInt(id));
@@ -35,5 +32,19 @@ public class serviceAdDesc {
 		logger.info("getFullAdDesc(" + id + ") : " + gson);
 
 		return gson;
+=======
+	String getAdDescByAdsId(@PathVariable ("id") String id) {
+
+		try {
+			ArrayList<AdDesc> ads = adsDao.getFullAdDescByHQL(Integer.parseInt(id));
+			Gson json = new Gson();
+			String gson = json.toJson(ads);
+
+			return gson;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return null;
+>>>>>>> origin/Spring-MVC-Sashko-26apr2013
 	}
 }

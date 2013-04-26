@@ -2,10 +2,10 @@ package mvc.adviewpage;
 
 import java.util.ArrayList;
 
-import mvc.IModel;
 import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
+<<<<<<< HEAD
 public class AdViewPageModel implements IModel {
 
     private Ads ads;
@@ -66,6 +66,67 @@ public class AdViewPageModel implements IModel {
     public void setAdsId(int adsId) {
         this.adsId = adsId;
     }
+=======
+public class AdViewPageModel {
+
+	private Ads					ads;
+	private ArrayList<AdDesc>	fullDesc;
+	private String				userName;
+	private String				loginStatus;
+	private boolean				available;
+	private int					adsId;
+	private String				appVersion;
+	private String				action;
+	private String				form;
+
+	public Ads getAds() {
+		return ads;
+	}
+
+	public void setAds(Ads ads) {
+		this.ads = ads;
+	}
+
+	public ArrayList<AdDesc> getFullDesc() {
+		return fullDesc;
+	}
+
+	public void setFullDesc(ArrayList<AdDesc> fullDesc) {
+		this.fullDesc = fullDesc;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getLoginStatus() {
+		return loginStatus;
+	}
+
+	public void setLoginStatus(String loginStatus) {
+		this.loginStatus = loginStatus;
+	}
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
+	public int getAdsId() {
+		return adsId;
+	}
+
+	public void setAdsId(int adsId) {
+		this.adsId = adsId;
+	}
+>>>>>>> origin/Spring-MVC-Sashko-26apr2013
 
 	public String getAppVersion() {
 		return appVersion;

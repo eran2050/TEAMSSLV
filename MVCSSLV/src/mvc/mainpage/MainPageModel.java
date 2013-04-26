@@ -3,20 +3,19 @@ package mvc.mainpage;
 import java.util.ArrayList;
 import java.util.List;
 
-import mvc.IModel;
 import domain.ads.Ads;
 
-public class MainPageModel implements IModel {
+public class MainPageModel {
 
-	private String userName;
-	private String loginStatus;
-	private ArrayList<Ads> listing;
-	private int listingSize;
-	private boolean available;
-	private List<String> pageNumbers;
-	private int currentPage;
-	private String appVersion;
-	private long loadingTime;
+	private String			userName;
+	private String			loginStatus;
+	private ArrayList<Ads>	listing;
+	private int				listingSize;
+	private boolean			available;
+	private List<String>	pageNumbers;
+	private int				currentPage;
+	private String			appVersion;
+	private long			loadingTime;
 
 	public String getUserName() {
 		return userName;

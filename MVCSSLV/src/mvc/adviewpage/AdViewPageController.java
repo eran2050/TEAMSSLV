@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import util.Config;
-
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
 import dao.users.UsersDAO;
@@ -21,22 +19,25 @@ import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
 @Component
-@Controller(value = "/adview/")
+@Controller (value = "/adview")
 public class AdViewPageController extends AbstractController implements Config {
 
 	@Autowired
-	private AdDescDAO adDesc;
+	private AdDescDAO	adDesc;
+
 	@Autowired
+<<<<<<< HEAD
 	private AdsDAO ads;
 	@Autowired
 	private UsersDAO users;
+=======
+	private AdsDAO		ads;
+>>>>>>> origin/Spring-MVC-Sashko-26apr2013
 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		ModelAndView model = new ModelAndView("adviewpage");
-
-		// HttpSession httpSession = request.getSession();
 
 		// Process request
 		String userName = null;
@@ -68,20 +69,20 @@ public class AdViewPageController extends AbstractController implements Config {
 
 		String action = request.getParameter("action");
 		if (action == null) {
-			action = EMPTY;
+			action = VAL_EMPTY;
 		}
 		// Initialize model
 		AdViewPageModel adViewM = new AdViewPageModel();
 		adViewM.setAdsId(adsId);
 		adViewM.setUserName(userName);
 		adViewM.setAction(action);
-		adViewM.setAds(ads.getById(adViewM.getAdsId()));
-		adViewM.setAppVersion(APP_VERSION);
-		adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
+		adViewM.setAds(ads.getSingleAdsById(adViewM.getAdsId()));
+		adViewM.setAppVersion(VAL_APP_VERSION);
+		adViewM.setFullDesc(adDesc.getFullAdDescByHQL(adViewM.getAdsId()));
 
 		// Complete action
-		if (adViewM.getAds().getOwner().equals(
-				(String) request.getSession().getAttribute("username"))) {
+		if (adViewM.getAds().getOwner()
+				.equals((String) request.getSession().getAttribute("username"))) {
 			if (adViewM.getAction().equals(ACTION_UPDATE)) {
 				ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 
@@ -89,7 +90,7 @@ public class AdViewPageController extends AbstractController implements Config {
 				ad.setName(adName);
 				ad.setId(adsId);
 				ads.updateAds(ad);
-				adViewM.setAds(ads.getById(adViewM.getAdsId()));
+				adViewM.setAds(ads.getSingleAdsById(adViewM.getAdsId()));
 
 				for (int i = 0; i < adDescId.length; i++) {
 
@@ -109,19 +110,19 @@ public class AdViewPageController extends AbstractController implements Config {
 		// Create http elements
 		if (adViewM.getUserName() == null) {
 			adViewM.setLoginStatus("<a class=nm href=/java2/login>".concat(
-					NOT_LOGGED_IN).concat("</a>"));
+					STATUS_NOT_LOGGED_IN).concat("</a>"));
 		} else {
 			adViewM.setLoginStatus("<a class=nm href=/java2/login>"
-					.concat(LOGGED_IN).concat(" as ")
+					.concat(STATUS_LOGGED_IN).concat(" as ")
 					.concat(adViewM.getUserName()).concat("</a>"));
 		}
 
 		StringBuilder form = new StringBuilder();
-		if (adViewM.getAction().equals(EMPTY)
+		if (adViewM.getAction().equals(VAL_EMPTY)
 				|| adViewM.getAction().equals(ACTION_VIEW)
 				|| adViewM.getAction().equals(ACTION_UPDATE)) {
 
-			form.append("<form name=editaddesc method=post action=\"/java2/adview/\">");
+			form.append("<form name=editaddesc method=post action=\"/java2/adview\">");
 
 			// ///
 			form.append("<table class=\"ml1\">");
@@ -176,7 +177,7 @@ public class AdViewPageController extends AbstractController implements Config {
 
 		} else if (adViewM.getAction().equals(ACTION_EDIT)) {
 
-			form.append("<form name=updateaddesc method=post action=\"/java2/adview/\">");
+			form.append("<form name=updateaddesc method=post action=\"/java2/adview\">");
 			// ///
 			form.append("<table class=\"ml1\">");
 			form.append("<tr>");
