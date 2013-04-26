@@ -81,12 +81,9 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-<<<<<<< HEAD
-=======
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
 					<webXml>WebContent/WEB-INF/web.xml</webXml>
 					<webResources>
 						<resource>

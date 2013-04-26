@@ -15,20 +15,15 @@ import dao.users.UsersDAO;
 import domain.users.Users;
 
 @Controller
-@RequestMapping ("/service/users")
+@RequestMapping("/service/users")
 public class serviceUsers {
 
 	@Autowired
-<<<<<<< HEAD
-	UsersDAO usersDao;	
-=======
-	UsersDAO	usersDao;
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
+	UsersDAO usersDao;
 
-	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getUserById(@PathVariable ("id") String id) {
-
+	String getUserById(@PathVariable("id") String id) {
 		try {
 			Users user = usersDao.getUserById(id);
 			Gson json = new Gson();
@@ -40,28 +35,16 @@ public class serviceUsers {
 		}
 		return null;
 	}
-<<<<<<< HEAD
-	
-	@RequestMapping(method = RequestMethod.GET)
-=======
 
-	@RequestMapping (value = "/short", method = RequestMethod.GET)
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
+	@RequestMapping(value = "/short", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersShort() {
 
-<<<<<<< HEAD
-		ArrayList<Users> users = usersDao.getAllUsers();
-		Gson json = new Gson();
-		String gson = json.toJson(users);
-		logger.info("getAllUsers() : " + gson);
-=======
 		try {
 			ArrayList<Users> users = usersDao.getAllUsers();
 			ArrayList<String> list = new ArrayList<String>();
 			for (Users user : users) {
-				String fixed = new String(user.getId().replace("\u0026", "&"));
-				list.add(fixed);
+				list.add(user.getId());
 			}
 			Gson json = new Gson();
 			String gson = json.toJson(list);
@@ -72,9 +55,8 @@ public class serviceUsers {
 		}
 		return null;
 	}
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
 
-	@RequestMapping (value = "/long", method = RequestMethod.GET)
+	@RequestMapping(value = "/long", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersLong() {
 

@@ -106,18 +106,10 @@ public class LoginPageController extends AbstractController implements Config {
 			lm.setStatusMessage(STATUS_LOGGED_IN);
 			logger.info(STATUS_LOGGED_IN);
 		} else if (ru != null && !userChecked && su == null) {
-<<<<<<< HEAD
-			lm.setStatusMessage(NO_SUCH_USER);
-			logger.warn(NO_SUCH_USER);
-		} else if (ru == null && su == null && lm.getAction().equals(EMPTY)) {
-			lm.setStatusMessage(NOT_LOGGED_IN);
-			logger.info(NOT_LOGGED_IN);
-=======
 			lm.setStatusMessage(STATUS_NO_SUCH_USER);
 			logger.warn(STATUS_NO_SUCH_USER);
 		} else if (ru == null && su == null && lm.getAction().equals(VAL_EMPTY)) {
 			lm.setStatusMessage(STATUS_NOT_LOGGED_IN);
->>>>>>> origin/Spring-MVC-Sashko-26apr2013
 		}
 
 		// Controller

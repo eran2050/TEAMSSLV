@@ -20,5 +20,4 @@ public class NewAdPageParams {
 	public void setParamValue(String paramValue) {
 		this.paramValue = paramValue;
 	}
-
 }
