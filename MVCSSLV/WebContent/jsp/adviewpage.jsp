@@ -9,17 +9,33 @@
 <title>java2 - "SS.LV": Ads description</title>
 </head>
 <body>
-	<div class="body">
-		<div class="footer1">
-			<table class="footer1">
-				<tr>
-					<td class="footer">&nbsp;</td>
-				</tr>
-			</table>
+	<div class="page">
+		<table class="ml1">
+			<tr>
+				<td class="nm" align="right" style="background-color: #999933">Status:&nbsp;
+					<%=model.getLoginStatus()%></td>
+			</tr>
+
+			<tr>
+				<td class="nm" align="right">
+					<a href="JavaScript:window.close()"><i>Close this window</i></a>
+				</td>
+			</tr>
+		</table>
+		<div class="body">
+
+			<p>
+				<%
+					if (model.getStatusMessage() != null) {
+						out.println("Status : " + model.getStatusMessage());
+
+					}
+				%>
+			</p>
+
+
 		</div>
-		<p align="left">
-			<a href="JavaScript:window.close()"><b>Close this window</b></a>
-		</p>
+
 		<%=model.getForm()%>
 		<br>
 		<div class="footer1">

@@ -9,6 +9,7 @@ public interface Config {
 	public static final String LOGGED_OUT = "Logged Out";
 	public static final String EMPTY = "";
 	public static final String AD_DELETED = "Advertisment has been removed.";
+	public static final String AD_UPDATED = "Advertisment has been updated.";
 	public static final int ADS_PER_MAIN_PAGE = 20;
 	public static final int ADS_PER_LOGIN_PAGE = 10;
 	public static final int PAGES_IN_LINE = 20;

@@ -16,6 +16,7 @@ import util.Config;
 
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
+import dao.users.UsersDAO;
 import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
@@ -27,6 +28,8 @@ public class AdViewPageController extends AbstractController implements Config {
 	private AdDescDAO adDesc;
 	@Autowired
 	private AdsDAO ads;
+	@Autowired
+	private UsersDAO users;
 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -98,6 +101,7 @@ public class AdViewPageController extends AbstractController implements Config {
 					fullDesc.add(adDesc);
 
 				}
+				adViewM.setStatusMessage(AD_UPDATED);
 				adDesc.updateAdDesc(fullDesc);
 				adViewM.setFullDesc(fullDesc);
 			}

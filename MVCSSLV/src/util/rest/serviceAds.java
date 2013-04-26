@@ -27,12 +27,12 @@ public class serviceAds {
 
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getAdsByUserId(@PathVariable String id) {
+	String getUserById(@PathVariable String id) {
 
 		ArrayList<Ads> ads = adsDao.getByUser(id);
 		Gson json = new Gson();
 		String gson = json.toJson(ads);
-		logger.info("getAdsByUserId(" + id + ") : " + gson);
+		logger.info("getByUser(" + id + ") : " + gson);
 
 		return gson;
 	}
