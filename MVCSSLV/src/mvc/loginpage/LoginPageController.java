@@ -168,7 +168,7 @@ public class LoginPageController extends AbstractController implements Config {
 
 			if (lm.getUserName() != null) {
 				logger.info("Getting count of Ads by User..");
-				int adsCount = ads.getCountByUser(lm.getUserName());
+				int adsCount = ads.getAdsCountByUser(lm.getUserName());
 				lm.setListingSize(adsCount);
 
 				int maxPage = Math.round((float) adsCount
@@ -183,13 +183,13 @@ public class LoginPageController extends AbstractController implements Config {
 			lm.setCurrentPage(page);
 
 			logger.info("Getting Ads for showing up the list..");
-			lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
+			lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(), lm.getCurrentPage()));
 		} else
 
 		// Delete Ad
 		if (lm.getAction().equals(ACTION_DELETE)) {
 			logger.info("Getting authorization for Deletion..");
-			Ads ad = ads.getById(lm.getAdsId().intValue());
+			Ads ad = ads.getSingleAdsById(lm.getAdsId().intValue());
 			String adsOwner = ad == null ? VAL_EMPTY : ad.getOwner();
 			String logUser = lm.getUserName() == null ? VAL_EMPTY + VAL_EMPTY
 					: lm.getUserName();
@@ -198,14 +198,14 @@ public class LoginPageController extends AbstractController implements Config {
 					&& adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
 				logger.info("Deleting Ad..");
 				adDesc.deleteByAdsId(lm.getAdsId().intValue());
-				ads.deleteById(lm.getAdsId().intValue());
+				ads.deleteSingleAdsById(lm.getAdsId().intValue());
 				lm.setStatusMessage(STATUS_AD_DELETED);
 				lm.setHtmlForm(sLogoutForm.toString());
 				lm.setStatus(STATUS_LOGGED_IN + " as ");
 
 				if (lm.getUserName() != null) {
 					logger.info("Getting count of Ads by User..");
-					int adsCount = ads.getCountByUser(lm.getUserName());
+					int adsCount = ads.getAdsCountByUser(lm.getUserName());
 					lm.setListingSize(adsCount);
 
 					int maxPage = Math.round((float) adsCount
@@ -220,7 +220,7 @@ public class LoginPageController extends AbstractController implements Config {
 				lm.setCurrentPage(page);
 
 				logger.info("Getting Ads after Deletion..");
-				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
+				lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(), lm.getCurrentPage()));
 			} else if (logUser != null && !logUser.equals(VAL_EMPTY)
 					&& !adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
@@ -230,7 +230,7 @@ public class LoginPageController extends AbstractController implements Config {
 
 				if (lm.getUserName() != null) {
 					logger.info("Getting count of Ads by User..");
-					int adsCount = ads.getCountByUser(lm.getUserName());
+					int adsCount = ads.getAdsCountByUser(lm.getUserName());
 					lm.setListingSize(adsCount);
 
 					int maxPage = Math.round((float) adsCount
@@ -245,7 +245,7 @@ public class LoginPageController extends AbstractController implements Config {
 				lm.setCurrentPage(page);
 
 				logger.info("Getting ads after not authorized Deletion..");
-				lm.setAds(ads.getByUser(lm.getUserName(), lm.getCurrentPage()));
+				lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(), lm.getCurrentPage()));
 			} else {
 				lm.setHtmlForm(sLoginForm.toString());
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);

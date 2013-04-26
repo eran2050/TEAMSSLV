@@ -3,14 +3,10 @@ package util;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-public class Util {
-
-	private static String	forUTF8;
+public class Util implements Config {
 
 	public static String getSha(String s, String k) {
-
-		String hash = "";
-
+		String hash = VAL_EMPTY;
 		try {
 			Mac mac = Mac.getInstance("HmacSha256");
 			SecretKeySpec secret = new SecretKeySpec(k.getBytes(), "HmacSha256");
@@ -20,15 +16,8 @@ public class Util {
 				hash += String.format("%02x", b);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			// handled by aspect
 		}
-
 		return hash;
 	}
-
-	public static String toUTF8(String s1) {
-		forUTF8 = s1.replace("\u0026", "&");
-		return forUTF8;
-	}
-
 }

@@ -16,52 +16,66 @@ import domain.addesc.AdDesc;
 @Transactional
 public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 
-	@SuppressWarnings("unchecked")
-	public ArrayList<AdDesc> getFullAdDesc(int adsId) {
-		ArrayList<AdDesc> fullAdDesc;
-		Session s = getSession();
-		Query query = s.createQuery("from AdDesc where adsId = :adsId ");
-		query.setParameter("adsId", adsId);
-		fullAdDesc = (ArrayList<AdDesc>) query.list();
+	@Override
+	@SuppressWarnings ("unchecked")
+	public ArrayList<AdDesc> getFullAdDescByHQL(int adsId) {
 
-		return fullAdDesc;
+		try {
+			ArrayList<AdDesc> fullAdDesc;
+			Session s = getSession();
+			Query query = s.createQuery("from AdDesc where adsId = :adsId ");
+			query.setParameter("adsId", adsId);
+			fullAdDesc = (ArrayList<AdDesc>) query.list();
+
+			return fullAdDesc;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public ArrayList<AdDesc> getFullAdDesc1(int adsId) {
-		ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
-		final Session session = getSession();
+	@Override
+	@SuppressWarnings ("unchecked")
+	public ArrayList<AdDesc> getFullAdDescByCriteria(int adsId) {
+
 		try {
+			ArrayList<AdDesc> fullAdDesc = new ArrayList<AdDesc>();
+			Session session = getSession();
 			Criteria criteria = session.createCriteria(AdDesc.class).add(
 					Restrictions.eq("adsId", adsId));
-
 			fullAdDesc = (ArrayList<AdDesc>) criteria.list();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		return fullAdDesc;
+			return fullAdDesc;
+		} catch (Exception e) {
+			// handled by aspect
+		}
+		return null;
 	}
 
+	@Override
 	public boolean deleteByAdsId(int adsId) {
-		Session s = getSession();
+
 		try {
+			Session s = getSession();
 			StringBuilder hql = new StringBuilder();
 			hql.append("delete from ").append(AdDesc.class.getName())
 					.append(" where adsId = :adsId");
 			s.createQuery(hql.toString())
 					.setString("adsId", Integer.toString(adsId))
 					.executeUpdate();
+
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			// handled by aspect
 		}
 		return false;
 	}
 
-	public void updateAdDesc(ArrayList<AdDesc> fullDesc) {
-		Session s = getSession();
+	@Override
+	public boolean updateAdDesc(ArrayList<AdDesc> fullDesc) {
+
 		try {
+			Session s = getSession();
 			StringBuilder hql = new StringBuilder();
 
 			for (AdDesc adDesc : fullDesc) {
@@ -73,12 +87,12 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 				s.createQuery(hql.toString()).setInteger("id", adDesc.getId())
 						.setString("criteria", adDesc.getCriteria())
 						.setString("value", adDesc.getValue()).executeUpdate();
-//				System.out.println("id" + adDesc.getId() + "criteria"+
-//						adDesc.getCriteria() + "value"+ adDesc.getValue());
+
+				return true;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			// handled by aspect
 		}
-
+		return false;
 	}
 }

@@ -69,9 +69,9 @@ public class AdViewPageController extends AbstractController implements Config {
 		adViewM.setAdsId(adsId);
 		adViewM.setUserName(userName);
 		adViewM.setAction(action);
-		adViewM.setAds(ads.getById(adViewM.getAdsId()));
+		adViewM.setAds(ads.getSingleAdsById(adViewM.getAdsId()));
 		adViewM.setAppVersion(VAL_APP_VERSION);
-		adViewM.setFullDesc(adDesc.getFullAdDesc(adViewM.getAdsId()));
+		adViewM.setFullDesc(adDesc.getFullAdDescByHQL(adViewM.getAdsId()));
 
 		// Complete action
 		if (adViewM.getAds().getOwner()
@@ -83,7 +83,7 @@ public class AdViewPageController extends AbstractController implements Config {
 				ad.setName(adName);
 				ad.setId(adsId);
 				ads.updateAds(ad);
-				adViewM.setAds(ads.getById(adViewM.getAdsId()));
+				adViewM.setAds(ads.getSingleAdsById(adViewM.getAdsId()));
 
 				for (int i = 0; i < adDescId.length; i++) {
 

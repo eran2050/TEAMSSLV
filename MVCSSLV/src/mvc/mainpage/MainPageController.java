@@ -52,7 +52,7 @@ public class MainPageController extends AbstractController implements Config {
 			}
 		}
 
-		int adsCount = ads.getCount();
+		int adsCount = ads.getTotalAdsCount();
 		m.setListingSize(adsCount);
 		logger.info("adsCount = " + Integer.toString(adsCount));
 
@@ -108,7 +108,7 @@ public class MainPageController extends AbstractController implements Config {
 		}
 		// Elapsed loading time calculations
 		long loadEnd = System.nanoTime();
-		double loadElapsedTime = (double) (loadEnd - loadStart) / 1000000.0;
+		double loadElapsedTime = (loadEnd - loadStart) / 1000000.0;
 		m.setLoadingTime(Math.round(loadElapsedTime));
 		//
 		model.addObject("modelMainPage", m);
