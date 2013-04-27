@@ -24,51 +24,37 @@ public class serviceUsers {
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
 	String getUserById(@PathVariable("id") String id) {
-		try {
-			Users user = usersDao.getUserById(id);
-			Gson json = new Gson();
-			String gson = json.toJson(user);
 
-			return gson;
-		} catch (Exception e) {
-			// handled by aspect
-		}
-		return null;
+		Users user = usersDao.getUserById(id);
+		Gson json = new Gson();
+		String gson = json.toJson(user);
+
+		return gson;
 	}
 
 	@RequestMapping(value = "/short", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersShort() {
 
-		try {
-			ArrayList<Users> users = usersDao.getAllUsers();
-			ArrayList<String> list = new ArrayList<String>();
-			for (Users user : users) {
-				list.add(user.getId());
-			}
-			Gson json = new Gson();
-			String gson = json.toJson(list);
-
-			return gson;
-		} catch (Exception e) {
-			// handled by aspect
+		ArrayList<Users> users = usersDao.getAllUsers();
+		ArrayList<String> list = new ArrayList<String>();
+		for (Users user : users) {
+			list.add(user.getId());
 		}
-		return null;
+		Gson json = new Gson();
+		String gson = json.toJson(list);
+
+		return gson;
 	}
 
 	@RequestMapping(value = "/long", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersLong() {
 
-		try {
-			ArrayList<Users> users = usersDao.getAllUsers();
-			Gson json = new Gson();
-			String gson = json.toJson(users);
+		ArrayList<Users> users = usersDao.getAllUsers();
+		Gson json = new Gson();
+		String gson = json.toJson(users);
 
-			return gson;
-		} catch (Exception e) {
-			// handled by aspect
-		}
-		return null;
+		return gson;
 	}
 }

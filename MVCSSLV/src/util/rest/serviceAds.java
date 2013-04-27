@@ -25,15 +25,10 @@ public class serviceAds {
 	public @ResponseBody
 	String getAdsByUserId(@PathVariable ("id") String id) {
 
-		try {
-			ArrayList<Ads> ads = adsDao.getAdsListByUser(id);
+		ArrayList<Ads> ads = adsDao.getAdsListByUser(id);
 			Gson json = new Gson();
 			String gson = json.toJson(ads);
 
 			return gson;
-		} catch (Exception e) {
-			// handled by aspect
-		}
-		return null;
 	}
 }

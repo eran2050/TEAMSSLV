@@ -25,15 +25,10 @@ public class serviceAdDesc {
 	public @ResponseBody
 	String getAdDescByAdsId(@PathVariable ("id") String id) {
 
-		try {
 			ArrayList<AdDesc> ads = adsDao.getFullAdDescByHQL(Integer.parseInt(id));
 			Gson json = new Gson();
 			String gson = json.toJson(ads);
 
 			return gson;
-		} catch (Exception e) {
-			// handled by aspect
-		}
-		return null;
 	}
 }

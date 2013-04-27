@@ -20,27 +20,22 @@ public class NewAdDAOImpl extends BaseDAO implements NewAdDAO {
 	public boolean setNewAd(String name, String userName,
 			ArrayList<NewAdPageParams> paramList) {
 
-		try {
-			Session s = getSession();
-			// Processing main text of advertisement to table
-			NewAd na = new NewAd();
-			na.setName(name);
-			na.setOwner(userName);
-			s.save(na);
-			// Processing additional parameters to table
-			for (NewAdPageParams c : paramList) {
-				NewAdDesc na1 = new NewAdDesc();
-				na1.setCriteria1(c.getParamName());
-				na1.setValue1(c.getParamValue());
-				na1.setNewAd(na);
-				s.save(na1);
-				na1 = null;
-			}
-
-			return true;
-		} catch (Exception e) {
-			// handled by aspect
+		Session s = getSession();
+		// Processing main text of advertisement to table
+		NewAd na = new NewAd();
+		na.setName(name);
+		na.setOwner(userName);
+		s.save(na);
+		// Processing additional parameters to table
+		for (NewAdPageParams c : paramList) {
+			NewAdDesc na1 = new NewAdDesc();
+			na1.setCriteria1(c.getParamName());
+			na1.setValue1(c.getParamValue());
+			na1.setNewAd(na);
+			s.save(na1);
+			na1 = null;
 		}
-		return false;
+
+		return true;
 	}
 }
