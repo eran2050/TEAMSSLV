@@ -57,6 +57,10 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<defaultGoal>install</defaultGoal>
@@ -84,29 +88,29 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
-					<webXml>WebContent/WEB-INF/web.xml</webXml>
+					<webXml>WebContent${file.separator}WEB-INF${file.separator}web.xml</webXml>
 					<webResources>
 						<resource>
 							<filtering>false</filtering>
 							<directory>WebContent</directory>
 							<targetPath></targetPath>
 							<includes>
-								<include>**/*.txt</include>
-								<include>**/*.jsp</include>
-								<include>**/*.css</include>
-								<include>**/*.jpg</include>
+								<include>**${file.separator}*.txt</include>
+								<include>**${file.separator}*.jsp</include>
+								<include>**${file.separator}*.css</include>
+								<include>**${file.separator}*.jpg</include>
 							</includes>
 						</resource>
 						<resource>
 							<filtering>false</filtering>
-							<directory>WebContent/WEB-INF</directory>
+							<directory>WebContent${file.separator}WEB-INF</directory>
 							<targetPath>WEB-INF</targetPath>
 							<includes>
 								<include>mvc-dispatcher-servlet.xml</include>
-								<include>**/*.class</include>
-								<include>classes/BeanLocations.xml</include>
-								<include>classes/hibernate.cfg.xml</include>
-								<include>classes/properties/jdbc.properties</include>
+								<include>**${file.separator}*.class</include>
+								<include>classes${file.separator}BeanLocations.xml</include>
+								<include>classes${file.separator}hibernate.cfg.xml</include>
+								<include>classes${file.separator}properties${file.separator}jdbc.properties</include>
 							</includes>
 						</resource>
 					</webResources>
@@ -175,6 +179,11 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
 				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.17.1-GA</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
