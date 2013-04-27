@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-
 import util.Config;
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
@@ -19,15 +19,18 @@ import domain.addesc.AdDesc;
 import domain.ads.Ads;
 
 @Component
-@Controller (value = "/adview")
+@Controller(value = "/adview")
 public class AdViewPageController extends AbstractController implements Config {
 
+	private final Logger logger = LoggerFactory
+			.getLogger(AdViewPageController.class);
+
 	@Autowired
-	private AdDescDAO	adDesc;
+	private AdDescDAO adDesc;
 
 	@Autowired
 	private AdsDAO ads;
-	
+
 	@Autowired
 	private UsersDAO users;
 
@@ -81,6 +84,8 @@ public class AdViewPageController extends AbstractController implements Config {
 		if (adViewM.getAds().getOwner()
 				.equals((String) request.getSession().getAttribute("username"))) {
 			if (adViewM.getAction().equals(ACTION_UPDATE)) {
+				logger.info("Update description where adsId=".concat(Integer
+						.toString(adsId)));
 				ArrayList<AdDesc> fullDesc = new ArrayList<AdDesc>();
 
 				Ads ad = new Ads();
@@ -99,9 +104,11 @@ public class AdViewPageController extends AbstractController implements Config {
 					fullDesc.add(adDesc);
 
 				}
+				logger.info("Updated!");
 				adViewM.setStatusMessage(AD_UPDATED);
 				adDesc.updateAdDesc(fullDesc);
 				adViewM.setFullDesc(fullDesc);
+
 			}
 		}
 		// Create http elements
