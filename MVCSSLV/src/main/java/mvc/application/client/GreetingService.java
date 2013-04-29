@@ -1,9 +1,9 @@
 package mvc.application.client;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.springframework.stereotype.Component;
 
-@RemoteServiceRelativePath("greet/greetingService.gwt")
-public interface GreetingService extends RemoteService {
-	String greetServer(String name);
+@Component
+public interface GreetingService {
+
+	String greet(String name);
 }

@@ -54,26 +54,57 @@
 			<artifactId>gson</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>2.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<version>2.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.0.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>3.2.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
 		</dependency>
 	</dependencies>
 	<build>
-		<defaultGoal>install</defaultGoal>
 		<finalName>java2</finalName>
 		<plugins>
 			<plugin>
@@ -117,10 +148,6 @@
 							<targetPath>WEB-INF</targetPath>
 							<includes>
 								<include>mvc-dispatcher-servlet.xml</include>
-								<include>**${file.separator}*.class</include>
-								<include>classes${file.separator}BeanLocations.xml</include>
-								<include>classes${file.separator}hibernate.cfg.xml</include>
-								<include>classes${file.separator}properties${file.separator}jdbc.properties</include>
 							</includes>
 						</resource>
 					</webResources>
@@ -134,16 +161,26 @@
 					<execution>
 						<phase>process-resources</phase>
 						<goals>
-							<goal>generateAsync</goal>
 							<goal>compile</goal>
+							<goal>test</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -236,14 +273,29 @@
 				<version>2.2.3</version>
 			</dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.5</version>
-			</dependency>
-			<dependency>
 				<groupId>org.javassist</groupId>
 				<artifactId>javassist</artifactId>
 				<version>3.17.1-GA</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-user</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-servlet</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>3.2.2.RELEASE</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

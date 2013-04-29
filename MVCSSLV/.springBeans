@@ -7,7 +7,6 @@
 	</configSuffixes>
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
-		<config>WebContent/WEB-INF/classes/BeanLocations.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

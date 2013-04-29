@@ -9,7 +9,7 @@
 
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:properties/jdbc.properties" />
+		<property name="location" value="classpath:jdbc.properties" />
 	</bean>
 
 	<bean id="dataSource"
@@ -26,6 +26,7 @@
 		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
 		<property name="hibernateProperties">
 			<props>
+				<prop key="javax.persistence.validation.mode">none</prop>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
 			</props>
 		</property>
@@ -39,6 +40,7 @@
 	</bean>
 
 	<context:annotation-config />
+	
 	<context:component-scan base-package="dao" />
 	<context:component-scan base-package="mvc" />
 	<context:component-scan base-package="util" />
