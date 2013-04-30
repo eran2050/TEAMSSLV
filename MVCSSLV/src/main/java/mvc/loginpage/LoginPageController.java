@@ -1,5 +1,21 @@
 package mvc.loginpage;
 
+import static common.Config.ACTION_DELETE;
+import static common.Config.ACTION_LOGIN;
+import static common.Config.ACTION_LOGOUT;
+import static common.Config.ACTION_NOT_AUTHORIZED;
+import static common.Config.STATUS_AD_DELETED;
+import static common.Config.STATUS_LOGGED_IN;
+import static common.Config.STATUS_LOGGED_OUT;
+import static common.Config.STATUS_NOT_LOGGED_IN;
+import static common.Config.STATUS_NO_SUCH_USER;
+import static common.Config.VAL_ADS_PER_LOGIN_PAGE;
+import static common.Config.VAL_APP_VERSION;
+import static common.Config.VAL_CONTEXT_ROOT;
+import static common.Config.VAL_EMPTY;
+import static common.Config.VAL_PAGES_IN_LINE;
+import static common.Config.VAL_USERNAME;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +30,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import util.Config;
-import util.Util;
+import common.Util;
+
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
 import dao.users.UsersDAO;
@@ -24,7 +40,7 @@ import domain.users.Users;
 
 @Component
 @Controller (value = "/login")
-public class LoginPageController extends AbstractController implements Config {
+public class LoginPageController extends AbstractController {
 
 	private final Logger	logger	= LoggerFactory
 											.getLogger(LoginPageController.class);
@@ -183,7 +199,8 @@ public class LoginPageController extends AbstractController implements Config {
 			lm.setCurrentPage(page);
 
 			logger.info("Getting Ads for showing up the list..");
-			lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(), lm.getCurrentPage()));
+			lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(),
+					lm.getCurrentPage()));
 		} else
 
 		// Delete Ad
@@ -220,7 +237,8 @@ public class LoginPageController extends AbstractController implements Config {
 				lm.setCurrentPage(page);
 
 				logger.info("Getting Ads after Deletion..");
-				lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(), lm.getCurrentPage()));
+				lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(),
+						lm.getCurrentPage()));
 			} else if (logUser != null && !logUser.equals(VAL_EMPTY)
 					&& !adsOwner.toUpperCase().equals(logUser.toUpperCase())) {
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);
@@ -245,7 +263,8 @@ public class LoginPageController extends AbstractController implements Config {
 				lm.setCurrentPage(page);
 
 				logger.info("Getting ads after not authorized Deletion..");
-				lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(), lm.getCurrentPage()));
+				lm.setAds(ads.getAdsListByUserAndPage(lm.getUserName(),
+						lm.getCurrentPage()));
 			} else {
 				lm.setHtmlForm(sLoginForm.toString());
 				lm.setStatusMessage(ACTION_NOT_AUTHORIZED);

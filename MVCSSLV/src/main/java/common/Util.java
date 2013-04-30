@@ -1,9 +1,11 @@
-package util;
+package common;
+
+import static common.Config.VAL_EMPTY;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-public class Util implements Config {
+public class Util {
 
 	public static String getSha(String s, String k) {
 		String hash = VAL_EMPTY;

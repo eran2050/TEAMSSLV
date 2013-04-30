@@ -1,5 +1,8 @@
 package dao.ads;
 
+import static common.Config.VAL_ADS_PER_LOGIN_PAGE;
+import static common.Config.VAL_ADS_PER_MAIN_PAGE;
+
 import java.util.ArrayList;
 
 import org.hibernate.Criteria;

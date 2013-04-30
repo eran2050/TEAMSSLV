@@ -1,5 +1,14 @@
 package mvc.mainpage;
 
+import static common.Config.STATUS_LOGGED_IN;
+import static common.Config.STATUS_NOT_LOGGED_IN;
+import static common.Config.VAL_ADS_PER_MAIN_PAGE;
+import static common.Config.VAL_APP_VERSION;
+import static common.Config.VAL_CONTEXT_ROOT;
+import static common.Config.VAL_EMPTY;
+import static common.Config.VAL_PAGES_IN_LINE;
+import static common.Config.VAL_USERNAME;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,18 +22,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import util.Config;
 import dao.ads.AdsDAO;
 
 @Component
-@Controller(value = "/")
-public class MainPageController extends AbstractController implements Config {
+@Controller (value = "/")
+public class MainPageController extends AbstractController {
 
-	private final Logger logger = LoggerFactory
-			.getLogger(MainPageController.class);
+	private final Logger	logger	= LoggerFactory
+											.getLogger(MainPageController.class);
 
 	@Autowired
-	private AdsDAO ads;
+	private AdsDAO			ads;
 
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
@@ -56,7 +64,8 @@ public class MainPageController extends AbstractController implements Config {
 		m.setListingSize(adsCount);
 		logger.info("adsCount = " + Integer.toString(adsCount));
 
-		int maxPage = Math.round((float) adsCount / (float) VAL_ADS_PER_MAIN_PAGE) + 1;
+		int maxPage = Math.round((float) adsCount
+				/ (float) VAL_ADS_PER_MAIN_PAGE) + 1;
 		if (page > maxPage)
 			page = maxPage;
 		if (page <= 0)
@@ -71,7 +80,8 @@ public class MainPageController extends AbstractController implements Config {
 
 		if (m.getUserName().equals(VAL_EMPTY)) {
 			m.setLoginStatus("<a class=nm href=".concat(VAL_CONTEXT_ROOT)
-					.concat("login>").concat(STATUS_NOT_LOGGED_IN).concat("</a>"));
+					.concat("login>").concat(STATUS_NOT_LOGGED_IN)
+					.concat("</a>"));
 		} else {
 			m.setLoginStatus("<a class=nm href=".concat(VAL_CONTEXT_ROOT)
 					.concat("login>").concat(STATUS_LOGGED_IN).concat(" as ")
@@ -88,14 +98,16 @@ public class MainPageController extends AbstractController implements Config {
 			if (cnt > 0) {
 				for (n = 1; n <= cnt + 1; n++) {
 					if (n == m.getCurrentPage()) {
-						list.add("<a class=pages href=".concat(VAL_CONTEXT_ROOT)
-								.concat("?page=").concat(Integer.toString(n))
-								.concat("><b><u>").concat(Integer.toString(n))
+						list.add("<a class=pages href="
+								.concat(VAL_CONTEXT_ROOT).concat("?page=")
+								.concat(Integer.toString(n)).concat("><b><u>")
+								.concat(Integer.toString(n))
 								.concat("</u></b></a>&nbsp;"));
 					} else {
-						list.add("<a class=pages href=".concat(VAL_CONTEXT_ROOT)
-								.concat("?page=").concat(Integer.toString(n))
-								.concat(">").concat(Integer.toString(n))
+						list.add("<a class=pages href="
+								.concat(VAL_CONTEXT_ROOT).concat("?page=")
+								.concat(Integer.toString(n)).concat(">")
+								.concat(Integer.toString(n))
 								.concat("</a>&nbsp;"));
 					}
 

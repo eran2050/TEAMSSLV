@@ -5,10 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import util.Config;
-
 @Component
-public class BaseDAO implements Config {
+public class BaseDAO {
 
 	@Autowired
 	protected SessionFactory	sessionFactory;

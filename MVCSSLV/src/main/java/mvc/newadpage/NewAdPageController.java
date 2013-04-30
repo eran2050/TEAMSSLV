@@ -1,5 +1,11 @@
 package mvc.newadpage;
 
+import static common.Config.STATUS_LOGGED_IN;
+import static common.Config.STATUS_NOT_LOGGED_IN;
+import static common.Config.VAL_APP_VERSION;
+import static common.Config.VAL_CONTEXT_ROOT;
+import static common.Config.VAL_EMPTY;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,12 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import util.Config;
 import dao.ads.NewAdDAO;
 
 @Component
 @Controller (value = "/add")
-public class NewAdPageController extends AbstractController implements Config {
+public class NewAdPageController extends AbstractController {
 
 	@Autowired
 	private NewAdDAO	dao;

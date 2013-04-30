@@ -1,5 +1,14 @@
 package mvc.adviewpage;
 
+import static common.Config.ACTION_EDIT;
+import static common.Config.ACTION_UPDATE;
+import static common.Config.ACTION_VIEW;
+import static common.Config.AD_UPDATED;
+import static common.Config.STATUS_LOGGED_IN;
+import static common.Config.STATUS_NOT_LOGGED_IN;
+import static common.Config.VAL_APP_VERSION;
+import static common.Config.VAL_EMPTY;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import util.Config;
 import dao.addesc.AdDescDAO;
 import dao.ads.AdsDAO;
 import dao.users.UsersDAO;
@@ -20,16 +28,16 @@ import domain.ads.Ads;
 
 @Component
 @Controller (value = "/adview")
-public class AdViewPageController extends AbstractController implements Config {
+public class AdViewPageController extends AbstractController {
 
 	@Autowired
 	private AdDescDAO	adDesc;
 
 	@Autowired
-	private AdsDAO ads;
-	
+	private AdsDAO		ads;
+
 	@Autowired
-	private UsersDAO users;
+	private UsersDAO	users;
 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

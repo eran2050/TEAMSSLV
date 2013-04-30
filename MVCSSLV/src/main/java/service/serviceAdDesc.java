@@ -1,4 +1,4 @@
-package util.rest;
+package service;
 
 import java.util.ArrayList;
 
@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
-import dao.ads.AdsDAO;
-import domain.ads.Ads;
+import dao.addesc.AdDescDAO;
+import domain.addesc.AdDesc;
 
 @Controller
-@RequestMapping ("/service/ads")
-public class serviceAds {
+@RequestMapping ("/service/addesc")
+public class serviceAdDesc {
 
 	@Autowired
-	AdsDAO	adsDao;
+	AdDescDAO	adsDao;
 
-	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
+	@RequestMapping (value = "/ads/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getAdsByUserId(@PathVariable ("id") String id) {
+	String getAdDescByAdsId(@PathVariable ("id") String id) {
 
 		try {
-			ArrayList<Ads> ads = adsDao.getAdsListByUser(id);
+			ArrayList<AdDesc> ads = adsDao.getFullAdDescByHQL(Integer.parseInt(id));
 			Gson json = new Gson();
 			String gson = json.toJson(ads);
 

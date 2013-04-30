@@ -1,4 +1,4 @@
-package util.rest;
+package service;
 
 import java.util.ArrayList;
 

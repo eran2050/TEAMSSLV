@@ -1,4 +1,4 @@
-package util;
+package common;
 
 import org.hibernate.SessionFactory;
 import org.springframework.context.ApplicationContext;
