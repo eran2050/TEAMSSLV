@@ -29,12 +29,17 @@ public class Application implements EntryPoint {
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
-	private final GreetingServiceGWTWrapperAsync	greetingService	= GWT.create(GreetingServiceGWTWrapper.class);
+	private final IndexGWTWrapperAsync	greetingService	= GWT.create(IndexGWTWrapper.class);
 
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+
+		//
+
+		// default GWT Hello World
+
 		final Button sendButton = new Button("Send");
 		final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
@@ -58,6 +63,7 @@ public class Application implements EntryPoint {
 		dialogBox.setText("Remote Procedure Call");
 		dialogBox.setAnimationEnabled(true);
 		final Button closeButton = new Button("Close");
+
 		// We can set the id of a widget by accessing its Element
 		closeButton.getElement().setId("closeButton");
 		final Label textToServerLabel = new Label();
@@ -113,6 +119,7 @@ public class Application implements EntryPoint {
 				greetingService.greet(textToServer,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
+
 								// Show the RPC error message to the user
 								dialogBox
 										.setText("Remote Procedure Call - Failure");

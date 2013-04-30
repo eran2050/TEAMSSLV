@@ -1,16 +1,16 @@
 package net.voaideahost.sslv.mvc.gwt.web.server;
 
-import net.voaideahost.sslv.mvc.gwt.app.client.GreetingService;
-import net.voaideahost.sslv.mvc.gwt.web.client.GreetingServiceGWTWrapper;
+import net.voaideahost.sslv.mvc.gwt.app.client.IndexService;
+import net.voaideahost.sslv.mvc.gwt.web.client.IndexGWTWrapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
-public class GreetingServiceGWTWrapperImpl extends
-		AutoinjectingRemoteServiceServlet implements GreetingServiceGWTWrapper {
+public class IndexGWTWrapperImpl extends
+		AutoinjectingRemoteServiceServlet implements IndexGWTWrapper {
 	private static final long	serialVersionUID	= 1L;
 
-	private GreetingService		greetingServiceSpring;
+	private IndexService		greetingServiceSpring;
 
 	public String greet(String name) {
 
@@ -19,7 +19,7 @@ public class GreetingServiceGWTWrapperImpl extends
 
 	@Autowired
 	@Required
-	public void setGreetingService(GreetingService greetingService) {
+	public void setGreetingService(IndexService greetingService) {
 		this.greetingServiceSpring = greetingService;
 	}
 }
