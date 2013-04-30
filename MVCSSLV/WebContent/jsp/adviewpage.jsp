@@ -1,8 +1,8 @@
-<%@page import="domain.ads.Ads"%>
-<%@page import="mvc.adviewpage.AdViewPageModel"%>
-<%@page import="domain.addesc.AdDesc"%>
-<jsp:useBean id="model" type="mvc.adviewpage.AdViewPageModel"
-	class="mvc.adviewpage.AdViewPageModel" scope="request"></jsp:useBean>
+<%@page import="net.voaideahost.sslv.domain.ads.Ads"%>
+<%@page import="net.voaideahost.sslv.mvc.adviewpage.AdViewPageModel"%>
+<%@page import="net.voaideahost.sslv.domain.addesc.AdDesc"%>
+<jsp:useBean id="model" type="net.voaideahost.sslv.mvc.adviewpage.AdViewPageModel"
+	class="net.voaideahost.sslv.mvc.adviewpage.AdViewPageModel" scope="request"></jsp:useBean>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="/java2/css/global.css" />

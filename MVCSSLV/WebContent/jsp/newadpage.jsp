@@ -1,6 +1,6 @@
-<%@page import="domain.ads.NewAd"%>
-<jsp:useBean id="modelAddNew" type="mvc.newadpage.NewAdPageModel"
-	class="mvc.newadpage.NewAdPageModel" scope="request"></jsp:useBean>
+<%@page import="net.voaideahost.sslv.domain.ads.NewAd"%>
+<jsp:useBean id="modelAddNew" type="net.voaideahost.sslv.mvc.newadpage.NewAdPageModel"
+	class="net.voaideahost.sslv.mvc.newadpage.NewAdPageModel" scope="request"></jsp:useBean>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>

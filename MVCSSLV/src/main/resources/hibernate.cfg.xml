@@ -11,11 +11,11 @@
 		<property name="show_sql">true</property>
 
 		<!-- Hibernate Annotations (and package-info.java) -->
-		<mapping class="domain.users.Users" />
-		<mapping class="domain.ads.Ads" />
-		<mapping class="domain.addesc.AdDesc" />
-		<mapping class="domain.ads.NewAd" />
-		<mapping class="domain.addesc.NewAdDesc" />
+		<mapping class="net.voaideahost.sslv.domain.users.Users" />
+		<mapping class="net.voaideahost.sslv.domain.ads.Ads" />
+		<mapping class="net.voaideahost.sslv.domain.addesc.AdDesc" />
+		<mapping class="net.voaideahost.sslv.domain.ads.NewAd" />
+		<mapping class="net.voaideahost.sslv.domain.addesc.NewAdDesc" />
 
 	</session-factory>
 

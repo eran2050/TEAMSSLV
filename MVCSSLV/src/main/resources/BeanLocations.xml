@@ -39,12 +39,8 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<context:annotation-config />
-	
-	<context:component-scan base-package="dao" />
-	<context:component-scan base-package="mvc" />
-	<context:component-scan base-package="util" />
-
+	<context:annotation-config />	
+	<context:component-scan base-package="net.voaideahost.sslv" />
 	<aop:aspectj-autoproxy />
 
 </beans>

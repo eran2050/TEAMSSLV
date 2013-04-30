@@ -1,6 +1,6 @@
-<%@page import="domain.ads.Ads"%>
-<jsp:useBean id="modelLoginPage" type="mvc.loginpage.LoginPageModel"
-	class="mvc.loginpage.LoginPageModel" scope="request"></jsp:useBean>
+<%@page import="net.voaideahost.sslv.domain.ads.Ads"%>
+<jsp:useBean id="modelLoginPage" type="net.voaideahost.sslv.mvc.loginpage.LoginPageModel"
+	class="net.voaideahost.sslv.mvc.loginpage.LoginPageModel" scope="request"></jsp:useBean>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="/java2/css/global.css" />
