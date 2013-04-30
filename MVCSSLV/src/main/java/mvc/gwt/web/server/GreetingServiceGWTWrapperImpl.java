@@ -1,16 +1,16 @@
-package mvc.web.server;
+package mvc.gwt.web.server;
 
-import mvc.application.client.GreetingService;
-import mvc.web.client.GreetingServiceGWTWrapper;
+import mvc.gwt.application.client.GreetingService;
+import mvc.gwt.web.client.GreetingServiceGWTWrapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
 public class GreetingServiceGWTWrapperImpl extends
 		AutoinjectingRemoteServiceServlet implements GreetingServiceGWTWrapper {
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID	= 1L;
 
-	private GreetingService greetingServiceSpring;
+	private GreetingService		greetingServiceSpring;
 
 	public String greet(String name) {
 

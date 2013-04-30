@@ -1,4 +1,4 @@
-package mvc.web.server;
+package mvc.gwt.web.server;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

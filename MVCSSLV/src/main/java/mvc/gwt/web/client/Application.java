@@ -1,7 +1,4 @@
-package mvc.web.client;
-
-import mvc.web.client.GreetingServiceGWTWrapper;
-import mvc.web.client.GreetingServiceGWTWrapperAsync;
+package mvc.gwt.web.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -24,16 +21,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class Application implements EntryPoint {
 
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
+	private static final String						SERVER_ERROR	= "An error occurred while "
+																			+ "attempting to contact the server. Please check your network "
+																			+ "connection and try again.";
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
 	 */
-	private final GreetingServiceGWTWrapperAsync greetingService = GWT
-			.create(GreetingServiceGWTWrapper.class);
+	private final GreetingServiceGWTWrapperAsync	greetingService	= GWT.create(GreetingServiceGWTWrapper.class);
 
 	/**
 	 * This is the entry point method.

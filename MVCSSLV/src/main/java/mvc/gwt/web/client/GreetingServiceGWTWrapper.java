@@ -1,4 +1,4 @@
-package mvc.web.client;
+package mvc.gwt.web.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

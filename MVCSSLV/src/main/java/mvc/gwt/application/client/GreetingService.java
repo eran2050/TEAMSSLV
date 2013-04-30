@@ -1,4 +1,4 @@
-package mvc.application.client;
+package mvc.gwt.application.client;
 
 import org.springframework.stereotype.Component;
 

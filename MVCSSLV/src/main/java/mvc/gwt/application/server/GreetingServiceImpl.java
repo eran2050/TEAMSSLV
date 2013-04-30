@@ -1,4 +1,4 @@
-package mvc.application.server;
+package mvc.gwt.application.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
