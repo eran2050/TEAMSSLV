@@ -16,7 +16,7 @@ public class LoggingAspect {
 
 	private Logger	logger	= LoggerFactory.getLogger(getClass());
 
-	@Before ("execution(* dao.UsersDAO.getUserById(..))")
+	@Before ("execution(* net.voaideahost.sslv.dao.UsersDAO.getUserById(..))")
 	public void logBeforeGetUserById(JoinPoint joinPoint) {
 
 		logger.info("Authenticating action by: "
@@ -24,7 +24,7 @@ public class LoggingAspect {
 
 	}
 
-	@Before ("execution(* dao.AdsDAO.deleteById(..))")
+	@Before ("execution(* net.voaideahost.sslv.dao.AdsDAO.deleteById(..))")
 	public void logAroundAdsDaoDeleteById(JoinPoint joinPoint) {
 
 		logger.info("Running Delete Ad task: "
@@ -32,7 +32,7 @@ public class LoggingAspect {
 
 	}
 
-	@AfterReturning (pointcut = "execution(* dao.AdDescDAO.deleteById(..))", returning = "result")
+	@AfterReturning (pointcut = "execution(* net.voaideahost.sslv.dao.AdDescDAO.deleteById(..))", returning = "result")
 	public void logAfterReturningAdsDaoDeleteById(JoinPoint joinPoint,
 			boolean result) {
 
@@ -41,7 +41,7 @@ public class LoggingAspect {
 					+ joinPoint.getSignature().getName());
 	}
 
-	@AfterThrowing (pointcut = "execution(* (dao, util).*", throwing = "e")
+	@AfterThrowing (pointcut = "execution(* net.voaideahost.sslv.*(..))", throwing = "e")
 	public void logAfterAnyMethodThrownException(JoinPoint joinPoint,
 			Throwable e) {
 

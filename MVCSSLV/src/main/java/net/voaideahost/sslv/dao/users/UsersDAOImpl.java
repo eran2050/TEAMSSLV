@@ -6,13 +6,17 @@ import net.voaideahost.sslv.dao.BaseDAO;
 import net.voaideahost.sslv.domain.users.Users;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Component
 @Transactional
 public class UsersDAOImpl extends BaseDAO implements UsersDAO {
+
+	private Logger	logger	= LoggerFactory.getLogger(this.getClass()
+									.getSimpleName());
 
 	public Users getUserById(String s1) {
 
@@ -22,7 +26,7 @@ public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 			u = (Users) s.get(Users.class, s1);
 			return u;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getUserById() " + e.getMessage());
 		}
 		return null;
 	}
@@ -37,7 +41,7 @@ public class UsersDAOImpl extends BaseDAO implements UsersDAO {
 			list = (ArrayList<Users>) s.createCriteria(Users.class).list();
 			return list;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getAllUsers() " + e.getMessage());
 		}
 		return null;
 	}

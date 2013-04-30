@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import net.voaideahost.sslv.dao.users.UsersDAO;
 import net.voaideahost.sslv.domain.users.Users;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,17 +16,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
-
 @Controller
-@RequestMapping("/service/users")
+@RequestMapping ("/service/users")
 public class serviceUsers {
 
-	@Autowired
-	UsersDAO usersDao;
+	private Logger	logger	= LoggerFactory.getLogger(this.getClass()
+									.getSimpleName());
 
-	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+	@Autowired
+	UsersDAO		usersDao;
+
+	@RequestMapping (value = "/user/{id}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getUserById(@PathVariable("id") String id) {
+	String getUserById(@PathVariable ("id") String id) {
 		try {
 			Users user = usersDao.getUserById(id);
 			Gson json = new Gson();
@@ -32,12 +36,12 @@ public class serviceUsers {
 
 			return gson;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getUserById() " + e.getMessage());
 		}
 		return null;
 	}
 
-	@RequestMapping(value = "/short", method = RequestMethod.GET)
+	@RequestMapping (value = "/short", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersShort() {
 
@@ -52,12 +56,12 @@ public class serviceUsers {
 
 			return gson;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getAllUsersShort() " + e.getMessage());
 		}
 		return null;
 	}
 
-	@RequestMapping(value = "/long", method = RequestMethod.GET)
+	@RequestMapping (value = "/long", method = RequestMethod.GET)
 	public @ResponseBody
 	String getAllUsersLong() {
 
@@ -68,7 +72,7 @@ public class serviceUsers {
 
 			return gson;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getAllUsersLong() " + e.getMessage());
 		}
 		return null;
 	}

@@ -13,13 +13,17 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Component
 @Transactional
 public class AdsDAOImpl extends BaseDAO implements AdsDAO {
+
+	private Logger	logger	= LoggerFactory.getLogger(this.getClass()
+									.getSimpleName());
 
 	@Override
 	@SuppressWarnings ("unchecked")
@@ -34,7 +38,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					.addOrder(Order.asc("created")).list();
 			return l;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getMainListing() " + e.getMessage());
 		}
 
 		return null;
@@ -51,7 +55,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			return cnt.intValue();
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getTotalAdsCount() " + e.getMessage());
 		}
 		return 0;
 	}
@@ -68,7 +72,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			return cnt.intValue();
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getAdsCountByUser() " + e.getMessage());
 		}
 		return 0;
 	}
@@ -89,7 +93,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			return ads;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getAdsListByUserAndPage() " + e.getMessage());
 		}
 
 		return null;
@@ -107,7 +111,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			return ads;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getSingleAdsById() " + e.getMessage());
 		}
 		return null;
 	}
@@ -126,7 +130,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			return true;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("deleteSingleAdsById() " + e.getMessage());
 		}
 		return false;
 	}
@@ -145,7 +149,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 					.setString("name", ads.getName()).executeUpdate();
 
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("updateAds() " + e.getMessage());
 		}
 	}
 
@@ -162,7 +166,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
 			return ads;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getAdsListByUser() " + e.getMessage());
 		}
 
 		return null;

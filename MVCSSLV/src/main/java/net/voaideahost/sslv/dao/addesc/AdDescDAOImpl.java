@@ -9,13 +9,17 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Component
 @Transactional
 public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
+
+	private Logger	logger	= LoggerFactory.getLogger(this.getClass()
+									.getSimpleName());
 
 	@Override
 	@SuppressWarnings ("unchecked")
@@ -30,7 +34,7 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 
 			return fullAdDesc;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getFullAdDescByHQL() " + e.getMessage());
 		}
 		return null;
 	}
@@ -48,7 +52,7 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 
 			return fullAdDesc;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("getFullAdDescByCriteria() " + e.getMessage());
 		}
 		return null;
 	}
@@ -67,7 +71,7 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 
 			return true;
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("deleteByAdsId() " + e.getMessage());
 		}
 		return false;
 	}
@@ -92,7 +96,7 @@ public class AdDescDAOImpl extends BaseDAO implements AdDescDAO {
 				return true;
 			}
 		} catch (Exception e) {
-			// handled by aspect
+			logger.error("updateAdDesc() " + e.getMessage());
 		}
 		return false;
 	}
