@@ -9,7 +9,7 @@
 </head>
 
 <body>
-
+	<div id="bodyContainer"></div>
 	<table>
 		<tr>
 			<td id="headerWidgetStub"></td>
@@ -18,9 +18,16 @@
 			<td colspan="4" id="mainContainer"></td>
 		</tr>
 		<tr>
-			<td colspan="4" id="fotterWidgetStub"></td>
+			<td colspan="4" id="secondContainer"></td>
+		</tr>
+		<tr>
+			<td colspan="4" id="thirdContainer"></td>
+		</tr>
+		<tr>
+			<td colspan="4" id="footerWidgetStub"></td>
 		</tr>
 	</table>
+
 
 	<h1>Web Application Starter Project</h1>
 

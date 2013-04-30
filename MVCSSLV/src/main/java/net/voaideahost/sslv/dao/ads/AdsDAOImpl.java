@@ -22,21 +22,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 
-	private Logger	logger	= LoggerFactory.getLogger(this.getClass()
-									.getSimpleName());
+	private Logger logger = LoggerFactory.getLogger(this.getClass()
+			.getSimpleName());
 
 	@Override
-	@SuppressWarnings ("unchecked")
+	@SuppressWarnings("unchecked")
 	public ArrayList<Ads> getMainListing(int page) {
 
 		try {
 			ArrayList<Ads> l = null;
 			Session s = getSession();
-			int first = ((page - 1) * VAL_ADS_PER_MAIN_PAGE);
-			l = (ArrayList<Ads>) s.createCriteria(Ads.class)
-					.setFirstResult(first).setMaxResults(VAL_ADS_PER_MAIN_PAGE)
-					.addOrder(Order.asc("created")).list();
-			return l;
+			if (page != -1) {
+				int first = ((page - 1) * VAL_ADS_PER_MAIN_PAGE);
+				l = (ArrayList<Ads>) s.createCriteria(Ads.class)
+						.setFirstResult(first)
+						.setMaxResults(VAL_ADS_PER_MAIN_PAGE)
+						.addOrder(Order.asc("created")).list();
+				return l;
+			} else {
+				l = (ArrayList<Ads>) s.createCriteria(Ads.class)
+						.addOrder(Order.asc("created")).list();
+				return l;
+			}
 		} catch (Exception e) {
 			logger.error("getMainListing() " + e.getMessage());
 		}
@@ -78,7 +85,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 	}
 
 	@Override
-	@SuppressWarnings ("unchecked")
+	@SuppressWarnings("unchecked")
 	public ArrayList<Ads> getAdsListByUserAndPage(String usr, int page) {
 
 		try {
@@ -153,7 +160,7 @@ public class AdsDAOImpl extends BaseDAO implements AdsDAO {
 		}
 	}
 
-	@SuppressWarnings ("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Ads> getAdsListByUser(String usr) {
 

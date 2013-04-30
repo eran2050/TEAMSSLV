@@ -36,7 +36,7 @@
 
 	<servlet-mapping>
     	<servlet-name>gwtService</servlet-name>
-    	<url-pattern>/application/greetingService</url-pattern>
+    	<url-pattern>/application/gwtService</url-pattern>
 	</servlet-mapping>
   		
 </web-app>

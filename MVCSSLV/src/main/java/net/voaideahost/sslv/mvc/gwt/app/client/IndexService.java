@@ -6,4 +6,6 @@ import org.springframework.stereotype.Component;
 public interface IndexService {
 
 	String greet(String name);
+
+	String getMainListing();
 }

@@ -2,14 +2,21 @@ package net.voaideahost.sslv.mvc.gwt.web.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -20,38 +27,102 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Application implements EntryPoint {
 
-	private static final String			SERVER_ERROR	= "An error occurred while "
-																+ "attempting to contact the server. Please check your network "
-																+ "connection and try again.";
-	private static final String			AppVersion		= "T2CSupp Staff&nbsp;(c)&nbsp;"
-																+ "LALALA"
-																+ "&nbsp;";
+	private static final String SERVER_ERROR = "An error occurred while "
+			+ "attempting to contact the server. Please check your network "
+			+ "connection and try again.";
+	private static final String AppVersion = "T2CSupp Staff&nbsp;(c)&nbsp;"
+			+ "LALALA" + "&nbsp;";
 
-	private final IndexGWTWrapperAsync	greetingService	= GWT.create(IndexGWTWrapper.class);
+	private final IndexGWTWrapperAsync gwtService = GWT
+			.create(IndexGWTWrapper.class);
 
 	public void onModuleLoad() {
 
 		// Header / Main Container / Footer
+		DecoratorPanel decorPanel = new DecoratorPanel();
 
 		// HEADER
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setSpacing(5);
-		headerPanel.add(new Button("Main"));
+		final Button mainButton = new Button("Main");
+		headerPanel.add(mainButton);
 		headerPanel.add(new Button("Add"));
 		headerPanel.add(new Button("Admin"));
 		headerPanel.add(new Button("Login"));
 		headerPanel
 				.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_JUSTIFY);
+		decorPanel.add(headerPanel);
 		RootPanel.get("headerWidgetStub").add(headerPanel);
 
 		// MAIN CONTAINER
+		final FlexTable flex = new FlexTable();
+		decorPanel.add(flex);
+		RootPanel.get("mainContainer").add(flex);
 
 		// FOOTER
 		HorizontalPanel footerPanel = new HorizontalPanel();
 		footerPanel.setSpacing(5);
 		footerPanel.add(new HTML(AppVersion));
 		footerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		RootPanel.get("fotterWidgetStub").add(footerPanel);
+		decorPanel.add(footerPanel);
+		RootPanel.get("footerWidgetStub").add(footerPanel);
+
+		// Compiling everything
+		RootPanel.get("bodyContainer").add(decorPanel);
+
+		// HANDLERS
+		// Create a handler for the sendButton and nameField
+		class MainButtonClickHandler implements ClickHandler {
+			public void onClick(ClickEvent event) {
+				sendNameToServer();
+			}
+
+			private void sendNameToServer() {
+
+				// Then, we send the input to the server.
+				mainButton.setEnabled(false);
+				gwtService.getMainListing(new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+
+						// Show the RPC error message to the user
+						mainButton.setEnabled(true);
+						mainButton.setFocus(true);
+					}
+
+					public void onSuccess(String result) {
+
+						flex.clear();
+						flex.setHTML(0, 0, "OK");
+
+						// Parse JSON
+						String json = result;
+						JSONArray array = (JSONArray) JSONParser
+								.parseStrict(json);
+						JSONObject val;
+						int i;
+						int col = 0;
+						for (i = 0; i < array.size(); i++) {
+							val = array.get(i).isObject();
+							flex.setHTML(i, col++, val.get("id").isString()
+									.toString());
+							flex.setHTML(i, col++, val.get("name").isString()
+									.toString());
+							flex.setHTML(i, col++, val.get("owner").isString()
+									.toString());
+							flex.setHTML(i, col++, val.get("created")
+									.isString().toString());
+							col = 0;
+						}
+						mainButton.setEnabled(true);
+						mainButton.setFocus(true);
+					}
+				});
+			}
+		}
+
+		// Add a handler refresyh Flex Table
+		MainButtonClickHandler mainButtonClickHandler = new MainButtonClickHandler();
+		mainButton.addClickHandler(mainButtonClickHandler);
 
 		// default GWT Hello World
 		final Button sendButton = new Button("Send");
@@ -120,29 +191,27 @@ public class Application implements EntryPoint {
 				sendButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
-				greetingService.greet(textToServer,
-						new AsyncCallback<String>() {
-							public void onFailure(Throwable caught) {
+				gwtService.greet(textToServer, new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
 
-								// Show the RPC error message to the user
-								dialogBox
-										.setText("Remote Procedure Call - Failure");
-								serverResponseLabel
-										.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
+						// Show the RPC error message to the user
+						dialogBox.setText("Remote Procedure Call - Failure");
+						serverResponseLabel
+								.addStyleName("serverResponseLabelError");
+						serverResponseLabel.setHTML(SERVER_ERROR);
+						dialogBox.center();
+						closeButton.setFocus(true);
+					}
 
-							public void onSuccess(String result) {
-								dialogBox.setText("Remote Procedure Call");
-								serverResponseLabel
-										.removeStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(result);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-						});
+					public void onSuccess(String result) {
+						dialogBox.setText("Remote Procedure Call");
+						serverResponseLabel
+								.removeStyleName("serverResponseLabelError");
+						serverResponseLabel.setHTML(result);
+						dialogBox.center();
+						closeButton.setFocus(true);
+					}
+				});
 			}
 		}
 

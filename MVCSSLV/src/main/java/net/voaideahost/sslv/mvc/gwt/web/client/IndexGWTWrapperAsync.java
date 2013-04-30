@@ -4,5 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface IndexGWTWrapperAsync {
 
-	void greet(String input, AsyncCallback<String> callback);
+	void greet(String input, AsyncCallback<String> asyncCallback);
+
+	void getMainListing(AsyncCallback<String> asyncCallback);
 }
