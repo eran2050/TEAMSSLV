@@ -1,5 +1,6 @@
 <%@page import="net.voaideahost.sslv.domain.ads.Ads"%>
-<jsp:useBean id="modelMainPage" type="net.voaideahost.sslv.mvc.mainpage.MainPageModel"
+<jsp:useBean id="modelMainPage"
+	type="net.voaideahost.sslv.mvc.mainpage.MainPageModel"
 	class="net.voaideahost.sslv.mvc.mainpage.MainPageModel" scope="request"></jsp:useBean>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -86,7 +87,7 @@
 			</table>
 			<p style="align: center;">
 				Page generated in
-				<%=modelMainPage.getLoadingTime() %>
+				<%=modelMainPage.getLoadingTime()%>
 				msec
 			</p>
 		</div>
