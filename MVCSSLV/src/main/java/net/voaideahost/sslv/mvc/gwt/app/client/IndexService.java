@@ -7,5 +7,5 @@ public interface IndexService {
 
 	String greet(String name);
 
-	String getMainListing();
+	String getMainListing(int page);
 }

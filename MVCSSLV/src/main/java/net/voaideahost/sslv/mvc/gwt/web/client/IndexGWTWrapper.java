@@ -8,5 +8,5 @@ public interface IndexGWTWrapper extends RemoteService {
 
 	String greet(String name);
 
-	String getMainListing();
+	String getMainListing(int page);
 }

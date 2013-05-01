@@ -24,8 +24,8 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
 	}
 
 	@Override
-	public String getMainListing() {
+	public String getMainListing(int page) {
 
-		return service.getMainListing();
+		return service.getMainListing(page);
 	}
 }

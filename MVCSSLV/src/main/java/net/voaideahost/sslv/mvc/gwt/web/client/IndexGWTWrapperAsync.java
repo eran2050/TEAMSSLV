@@ -6,5 +6,5 @@ public interface IndexGWTWrapperAsync {
 
 	void greet(String input, AsyncCallback<String> asyncCallback);
 
-	void getMainListing(AsyncCallback<String> asyncCallback);
+	void getMainListing(int page, AsyncCallback<String> asyncCallback);
 }

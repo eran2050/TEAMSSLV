@@ -1,34 +1,69 @@
 /** Add css rules here for your application. */
 
-
 /** Example rules used by the template application (remove for your app) */
-h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
-  text-align: center;
+div.page {
+	padding: 1px;
+	margin: 5px;
+	width: 1015px;
+}
+
+div.body {
+	width: 1024px;
+	padding: 1px;
+	margin: 5px;
+}
+
+.td {
+	background-color: #009966;
+	text-align: left;
+}
+
+.table.nm {
+	width: 98%;
+	text-align: center;
+	background-color: #99CC33;
+}
+
+.td.nm {
+	width: 16%;
+	color: white;
 }
 
 .sendButton {
-  display: block;
-  font-size: 16pt;
+	display: block;
+	font-size: 16pt;
 }
 
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
-  width: 400px;
+	width: 400px;
 }
 
 .dialogVPanel {
-  margin: 5px;
+	margin: 5px;
 }
 
 .serverResponseLabelError {
-  color: red;
+	color: red;
 }
 
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
-  margin: 15px 6px 6px;
+	margin: 15px 6px 6px;
+}
+
+.cw-FlexTable table {
+	border-collapse: collapse;
+	width: 98%;
+	text-align: left;
+}
+
+.cw-FlexTable td {
+	padding: 3px;
+	border: 1px solid green;
+}
+
+.cw-FlexTable th {
+	background-color: #009966;
+	text-align: left;
 }

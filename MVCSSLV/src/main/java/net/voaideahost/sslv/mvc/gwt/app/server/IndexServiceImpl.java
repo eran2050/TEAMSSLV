@@ -40,13 +40,12 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	@Override
-	public String getMainListing() {
+	public String getMainListing(int page) {
 
 		try {
-			ArrayList<Ads> ads = aDao.getMainListing(-1);
+			ArrayList<Ads> ads = aDao.getMainListing(page);
 			Gson gson = new Gson();
 			String toJson = gson.toJson(ads);
-			logger.info("getMainListing() " + toJson);
 
 			return toJson;
 		} catch (Exception e) {

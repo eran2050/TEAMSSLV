@@ -81,8 +81,10 @@
 		<div class="footer">
 			<table class="footer">
 				<tr>
-					<td class="footer">T2CSupp Staff&nbsp;(c)&nbsp;<%=modelMainPage.getAppVersion()%>&nbsp;
-					</td>
+					<td class="footer"><a
+						href="<%=request.getContextPath()%>/index">T2CSupp
+							Staff&nbsp;(c)&nbsp;<%=modelMainPage.getAppVersion()%>&nbsp;
+					</a></td>
 				</tr>
 			</table>
 			<p style="align: center;">
