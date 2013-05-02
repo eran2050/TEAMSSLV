@@ -17,20 +17,20 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class Application implements EntryPoint {
 
-	@SuppressWarnings("unused")
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
-	private static final String AppVersion = "T2CSupp Staff&nbsp;(c)&nbsp;"
-			+ "LALALA" + "&nbsp;";
+	@SuppressWarnings ("unused")
+	private static final String			SERVER_ERROR	= "An error occurred while "
+																+ "attempting to contact the server. Please check your network "
+																+ "connection and try again.";
 
-	private final IndexGWTWrapperAsync gwtService = GWT
-			.create(IndexGWTWrapper.class);
+	public final AppConst				appConst		= GWT.create(AppConst.class);
+
+	private final IndexGWTWrapperAsync	gwtService		= GWT.create(IndexGWTWrapper.class);
 
 	public void onModuleLoad() {
 
 		// Header / Main Container / Footer
 		DecoratorPanel decorHeaderPanel = new DecoratorPanel();
+		decorHeaderPanel.setStyleName("gwt-DecoratorPanel");
 
 		// HEADER
 		HorizontalPanel headerPanel = new HorizontalPanel();
@@ -53,6 +53,7 @@ public class Application implements EntryPoint {
 		// MAIN CONTAINER
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		DecoratorPanel decorMainPanel = new DecoratorPanel();
+		decorMainPanel.setStyleName("gwt-DecoratorPanel");
 		final FlexTable flex = new FlexTable();
 		flex.setHTML(0, 0, "Loading...");
 		mainPanel.add(flex);
@@ -62,8 +63,9 @@ public class Application implements EntryPoint {
 		// FOOTER
 		HorizontalPanel footerPanel = new HorizontalPanel();
 		DecoratorPanel decorFooterPanel = new DecoratorPanel();
+		decorFooterPanel.setStyleName("gwt-DecoratorPanel");
 		FlexTable footerTable = new FlexTable();
-		footerTable.setHTML(0, 0, AppVersion);
+		footerTable.setHTML(0, 0, appConst.APP_VERSION());
 		footerPanel.add(footerTable);
 		footerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		decorFooterPanel.add(footerPanel);
