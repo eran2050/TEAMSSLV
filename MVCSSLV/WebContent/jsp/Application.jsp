@@ -9,21 +9,29 @@
 </head>
 
 <body>
-	<div class="page">
-		<div class="body">
+	<div>
+		<div>
 			<table>
 				<tr>
 					<td colspan="4" id="headerWidgetStub"></td>
 				</tr>
+			</table>
+		</div>
+		<div>
+			<table>
 				<tr>
-					<td colspan="4" id="mainContainer"></td>
+					<td colspan="4" id="mainContainerStub"></td>
 				</tr>
 				<tr>
-					<td colspan="4" id="secondContainer"></td>
+					<td colspan="4" id="secondContainerStub"></td>
 				</tr>
 				<tr>
-					<td colspan="4" id="thirdContainer"></td>
+					<td colspan="4" id="thirdContainerStub"></td>
 				</tr>
+			</table>
+		</div>
+		<div>
+			<table>
 				<tr>
 					<td colspan="4" id="footerWidgetStub"></td>
 				</tr>

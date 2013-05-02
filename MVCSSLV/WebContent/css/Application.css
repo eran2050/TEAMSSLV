@@ -7,24 +7,41 @@ div.page {
 	width: 1015px;
 }
 
+div.header {
+	width: 1024px;
+	padding: 1px;
+	margin: 5px;
+	height: 20px;
+}
+
 div.body {
 	width: 1024px;
 	padding: 1px;
 	margin: 5px;
 }
 
-.td {
+div.footer {
+	width: 1024px;
+	padding: 1px;
+	margin: 5px;
+	height: 20px;
+}
+
+td {
+	text-align: left;
+}
+
+th {
 	background-color: #009966;
 	text-align: left;
 }
 
-.table.nm {
+table.nm {
 	width: 98%;
 	text-align: center;
-	background-color: #99CC33;
 }
 
-.td.nm {
+td.nm {
 	width: 16%;
 	color: white;
 }
