@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
 public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
-		implements IndexGWTWrapper {
+		implements
+			IndexGWTWrapper {
 	private static final long serialVersionUID = 1L;
 
 	private IndexService service;
@@ -27,5 +28,11 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
 	public String getMainListing(int page) {
 
 		return service.getMainListing(page);
+	}
+
+	@Override
+	public Integer getTotalAds() {
+
+		return service.getTotalAds();
 	}
 }

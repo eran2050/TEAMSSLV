@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Application implements EntryPoint {
 
-	@SuppressWarnings("unused")
 	private static final String SERVER_ERROR = "An error occurred while "
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
@@ -122,13 +121,31 @@ public class Application implements EntryPoint {
 			private int mainButtonCliclHandlerTotalAds = 0;
 
 			public void onClick(ClickEvent event) {
+				getTotalAdsFromServer();
 				getMainListingByPageFromServer();
 			}
+
+			AsyncCallback<Integer> getTotalAdsFromServer = new AsyncCallback<Integer>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+
+					Window.alert(SERVER_ERROR);
+				}
+
+				@Override
+				public void onSuccess(Integer result) {
+
+					setTotalAds(result.intValue());
+					// Window.alert("Total Ads:" +
+					// Integer.toString(getTotalAds()));
+				}
+
+			};
 
 			AsyncCallback<String> getMainListingByPageFromServerAsyncCall = new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
 
-					// Show the RPC error message to the user
 					mainButton.setEnabled(true);
 					mainButton.setFocus(true);
 				}
@@ -145,61 +162,93 @@ public class Application implements EntryPoint {
 					JSONArray array = (JSONArray) JSONParser.parseStrict(json);
 					JSONObject v;
 
-					setTotalAds(array.size());
-					Window.alert("Total Ads:" + Integer.toString(getTotalAds()));
-					
-					int i;
-					int col = 0;
-
 					// Header row
 					flex.setHTML(0, 0, "id");
 					flex.setHTML(0, 1, "name");
 					flex.setHTML(0, 2, "owner");
 					flex.setHTML(0, 3, "created");
-					// flex.getRowFormatter().setStyleName(0, "th");
+					// flex.getRowFormatter().setStyleName(0,
+					// "th");
 
 					// Data rows
-					int arrayBoundary = getTotalAds()
-							- ((int) getTotalAds() % appConst
-									.VAL_ADS_PER_MAIN_PAGE())
-							* appConst.VAL_ADS_PER_MAIN_PAGE();
-					Window.alert("Ads on this page: "
-							+ Integer.toString(arrayBoundary));
+					int arrayBoundary = 0;
 
-					for (i = 0; i < arrayBoundary; i++) {
-						v = array.get(
-								i + (getPageNumber() - 1)
-										* appConst.VAL_ADS_PER_MAIN_PAGE())
-								.isObject();
-						flex.setHTML(i + 1, col++, v.get("id").isNumber()
-								.toString());
-						flex.setHTML(i + 1, col++, v.get("name").isString()
-								.stringValue());
-						flex.setHTML(i + 1, col++, v.get("owner").isString()
-								.stringValue().toString());
-						flex.setHTML(i + 1, col++, v.get("created").isString()
-								.stringValue());
-						flex.setWidget(i + 1, col++, new Button("View"));
-						col = 0;
+					if (getPageNumber() * appConst.VAL_ADS_PER_MAIN_PAGE() <= getTotalAds()
+							&& getTotalAds() != 0) {
+						arrayBoundary = appConst.VAL_ADS_PER_MAIN_PAGE();
 					}
 
+					if (getPageNumber() * appConst.VAL_ADS_PER_MAIN_PAGE() > getTotalAds()
+							&& getTotalAds() != 0) {
+						arrayBoundary = getTotalAds()
+								- ((getPageNumber() - 1) * appConst
+										.VAL_ADS_PER_MAIN_PAGE());
+					}
+
+					Window.alert("Ads on this page: "
+							+ Integer.toString(arrayBoundary));
+					int i;
+					for (i = 0; i < arrayBoundary; i++) {
+						v = array.get(i).isObject();
+						flex.setHTML(i + 1, 0, v.get("id").isNumber()
+								.toString());
+						final String nameStub = v.get("name").isString()
+								.stringValue();
+						flex.setHTML(i + 1, 1, v.get("name").isString()
+								.stringValue());
+						flex.setHTML(i + 1, 2, v.get("owner").isString()
+								.stringValue().toString());
+						flex.setHTML(i + 1, 3, v.get("created").isString()
+								.stringValue());
+
+						Button buttonViewAds = new Button("View");
+						buttonViewAds.addClickHandler(new ClickHandler() {
+
+							@Override
+							public void onClick(ClickEvent event) {
+
+								Window.alert("Showing AdStub for " + nameStub);
+							}
+						});
+						flex.setWidget(i + 1, 4, buttonViewAds);
+					}
+
+					// Clear the rest in table
+					for (i = arrayBoundary; i < appConst
+							.VAL_ADS_PER_MAIN_PAGE(); i++)
+						flex.removeRow(arrayBoundary);
+
 					// Draw buttons
-					int buttonsToDraw = (int) getTotalAds()
-							% appConst.VAL_ADS_PER_MAIN_PAGE();
-					Window.alert("Buttons: " + Integer.toString(buttonsToDraw));
+					int buttonsToDraw = (int) (getTotalAds() % appConst
+							.VAL_ADS_PER_MAIN_PAGE()) - 2;
+					if (buttonsToDraw < 0)
+						buttonsToDraw = 0;
+					// Window.alert("Buttons: " +
+					// Integer.toString(buttonsToDraw));
 
 					i = 0;
 					pageNumberTable.clear();
 					for (i = 0; i < buttonsToDraw; i++) {
-						Button pageButton = new Button(
-								Integer.toBinaryString(i + 1));
-						pageButton.setStyleName("sendButton");
+						final Button pageButton = new Button(
+								Integer.toString(i + 1));
+						if (getPageNumber() == i + 1) {
+							pageButton.setSize("25px", "40px");
+						} else {
+							pageButton.setSize("25px", "25px");
+						}
 
 						final int iPage = i;
 						pageButton.addClickHandler(new ClickHandler() {
+
 							public void onClick(ClickEvent event) {
+
+								mainButton.setEnabled(false);
+								pageButton.setEnabled(false);
 								setPageNumber(iPage + 1);
+								Window.alert(Integer.toString(iPage + 1));
 								getMainListingByPageFromServer();
+								pageButton.setEnabled(true);
+								mainButton.setEnabled(true);
 							}
 						});
 						pageNumberTable.setWidget(0, i + 1, pageButton);
@@ -210,9 +259,13 @@ public class Application implements EntryPoint {
 				}
 			};
 
+			private void getTotalAdsFromServer() {
+
+				gwtService.getTotalAds(getTotalAdsFromServer);
+			}
+
 			private void getMainListingByPageFromServer() {
 
-				// Then, we send the input to the server.
 				mainButton.setEnabled(false);
 				gwtService.getMainListing(getPageNumber(),
 						getMainListingByPageFromServerAsyncCall);
@@ -237,7 +290,9 @@ public class Application implements EntryPoint {
 
 		// Add a handler refresh Flex Table
 		MainButtonClickHandler mainButtonClickHandler = new MainButtonClickHandler();
+
 		// Initialise()
+		mainButtonClickHandler.getTotalAdsFromServer();
 		mainButtonClickHandler.getMainListingByPageFromServer();
 		mainButton.addClickHandler(mainButtonClickHandler);
 

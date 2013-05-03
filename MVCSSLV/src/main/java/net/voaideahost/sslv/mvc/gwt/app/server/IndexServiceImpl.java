@@ -54,4 +54,17 @@ public class IndexServiceImpl implements IndexService {
 
 		return null;
 	}
+
+	@Override
+	public Integer getTotalAds() {
+		try {
+			int num = aDao.getTotalAdsCount();
+
+			return new Integer(num);
+		} catch (Exception e) {
+			logger.error("getTotalAds() " + e.getMessage());
+		}
+
+		return 0;
+	}
 }
