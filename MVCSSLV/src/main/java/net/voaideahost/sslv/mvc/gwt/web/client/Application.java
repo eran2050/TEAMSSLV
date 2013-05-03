@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Application implements EntryPoint {
@@ -34,7 +35,9 @@ public class Application implements EntryPoint {
 	public static DialogBox alertWidget(final String header,
 			final String content) {
 		final DialogBox box = new DialogBox();
+		box.setAnimationEnabled(true);
 		final VerticalPanel panel = new VerticalPanel();
+		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		box.setText(header);
 		panel.add(new Label(content));
 		final Button buttonClose = new Button("Close", new ClickHandler() {
@@ -75,7 +78,8 @@ public class Application implements EntryPoint {
 		menuTable.setWidget(0, 0, mainButton);
 		menuTable.setWidget(0, 1, new Button("Add"));
 		menuTable.setWidget(0, 2, new Button("Admin"));
-		menuTable.setWidget(0, 3, new Button("Login"));
+		menuTable.setWidget(0, 3, new TextBox());
+		menuTable.setWidget(0, 4, new Button("Login"));
 		headerPanel.add(menuTable);
 		decorHeaderPanel.add(headerPanel);
 		RootPanel.get("headerWidgetStub").add(decorHeaderPanel);
@@ -113,6 +117,9 @@ public class Application implements EntryPoint {
 		decorFooterPanel.add(footerPanel);
 		RootPanel.get("footerWidgetStub").add(decorFooterPanel);
 
+		// Alert Widget
+		// RootPanel.get("thirdContainerStub").add(alertWidget);
+
 		// HANDLERS
 		// Create a handler for the sendButton and nameField
 		class MainButtonClickHandler implements ClickHandler {
@@ -137,8 +144,6 @@ public class Application implements EntryPoint {
 				public void onSuccess(Integer result) {
 
 					setTotalAds(result.intValue());
-					// Window.alert("Total Ads:" +
-					// Integer.toString(getTotalAds()));
 				}
 
 			};
@@ -154,7 +159,7 @@ public class Application implements EntryPoint {
 
 					flex.clear();
 					flex.setCellPadding(3);
-					flex.setCellSpacing(3);
+					flex.setCellSpacing(5);
 					flex.addStyleName("cw-FlexTable");
 
 					// Parse JSON
@@ -167,8 +172,6 @@ public class Application implements EntryPoint {
 					flex.setHTML(0, 1, "name");
 					flex.setHTML(0, 2, "owner");
 					flex.setHTML(0, 3, "created");
-					// flex.getRowFormatter().setStyleName(0,
-					// "th");
 
 					// Data rows
 					int arrayBoundary = 0;
@@ -185,15 +188,12 @@ public class Application implements EntryPoint {
 										.VAL_ADS_PER_MAIN_PAGE());
 					}
 
-					Window.alert("Ads on this page: "
-							+ Integer.toString(arrayBoundary));
 					int i;
-					for (i = 0; i < arrayBoundary; i++) {
+					for (i = 0; i < arrayBoundary + 1; i++) {
 						v = array.get(i).isObject();
+
 						flex.setHTML(i + 1, 0, v.get("id").isNumber()
 								.toString());
-						final String nameStub = v.get("name").isString()
-								.stringValue();
 						flex.setHTML(i + 1, 1, v.get("name").isString()
 								.stringValue());
 						flex.setHTML(i + 1, 2, v.get("owner").isString()
@@ -201,19 +201,25 @@ public class Application implements EntryPoint {
 						flex.setHTML(i + 1, 3, v.get("created").isString()
 								.stringValue());
 
+						final String idStub = v.get("id").isNumber().toString();
+						final String adsStub = v.get("owner").isString()
+								.stringValue().toString()
+								+ ": " + v.get("name").isString().stringValue();
+
 						Button buttonViewAds = new Button("View");
 						buttonViewAds.addClickHandler(new ClickHandler() {
 
 							@Override
 							public void onClick(ClickEvent event) {
 
-								Window.alert("Showing AdStub for " + nameStub);
+								DialogBox box = alertWidget(idStub, adsStub);
+								box.show();
 							}
 						});
 						flex.setWidget(i + 1, 4, buttonViewAds);
 					}
 
-					// Clear the rest in table
+					// Clear the rest of the table
 					for (i = arrayBoundary; i < appConst
 							.VAL_ADS_PER_MAIN_PAGE(); i++)
 						flex.removeRow(arrayBoundary);
@@ -223,32 +229,21 @@ public class Application implements EntryPoint {
 							.VAL_ADS_PER_MAIN_PAGE()) - 2;
 					if (buttonsToDraw < 0)
 						buttonsToDraw = 0;
-					// Window.alert("Buttons: " +
-					// Integer.toString(buttonsToDraw));
 
 					i = 0;
 					pageNumberTable.clear();
 					for (i = 0; i < buttonsToDraw; i++) {
 						final Button pageButton = new Button(
 								Integer.toString(i + 1));
-						if (getPageNumber() == i + 1) {
-							pageButton.setSize("25px", "40px");
-						} else {
-							pageButton.setSize("25px", "25px");
-						}
+						pageButton.setSize("30px", "30px");
 
 						final int iPage = i;
 						pageButton.addClickHandler(new ClickHandler() {
 
 							public void onClick(ClickEvent event) {
 
-								mainButton.setEnabled(false);
-								pageButton.setEnabled(false);
 								setPageNumber(iPage + 1);
-								Window.alert(Integer.toString(iPage + 1));
 								getMainListingByPageFromServer();
-								pageButton.setEnabled(true);
-								mainButton.setEnabled(true);
 							}
 						});
 						pageNumberTable.setWidget(0, i + 1, pageButton);
