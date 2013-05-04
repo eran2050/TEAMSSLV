@@ -49,6 +49,7 @@ td.nm {
 .sendButton {
 	display: block;
 	font-size: 16pt;
+	width: 50px;
 }
 
 /** Most GWT widgets already have a style name defined */
@@ -71,7 +72,7 @@ td.nm {
 
 .cw-FlexTable table {
 	border-collapse: collapse;
-	width: 98%;
+	width: 1024px;
 	text-align: left;
 }
 

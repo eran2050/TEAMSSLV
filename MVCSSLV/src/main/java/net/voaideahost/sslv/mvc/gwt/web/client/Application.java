@@ -36,6 +36,7 @@ public class Application implements EntryPoint {
 			final String content) {
 		final DialogBox box = new DialogBox();
 		box.setAnimationEnabled(true);
+		box.center();
 		final VerticalPanel panel = new VerticalPanel();
 		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		box.setText(header);
@@ -73,7 +74,7 @@ public class Application implements EntryPoint {
 		// menuTable.addStyleName("table.td");
 
 		// Buttons
-		final Button mainButton = new Button("Main");
+		final Button mainButton = new Button("Home");
 		mainButton.addStyleName("sendButton");
 		menuTable.setWidget(0, 0, mainButton);
 		menuTable.setWidget(0, 1, new Button("Add"));
@@ -128,6 +129,8 @@ public class Application implements EntryPoint {
 			private int mainButtonCliclHandlerTotalAds = 0;
 
 			public void onClick(ClickEvent event) {
+
+				mainButton.setEnabled(false);
 				getTotalAdsFromServer();
 				getMainListingByPageFromServer();
 			}
@@ -185,11 +188,11 @@ public class Application implements EntryPoint {
 							&& getTotalAds() != 0) {
 						arrayBoundary = getTotalAds()
 								- ((getPageNumber() - 1) * appConst
-										.VAL_ADS_PER_MAIN_PAGE());
+										.VAL_ADS_PER_MAIN_PAGE()) + 1;
 					}
 
 					int i;
-					for (i = 0; i < arrayBoundary + 1; i++) {
+					for (i = 0; i < arrayBoundary; i++) {
 						v = array.get(i).isObject();
 
 						flex.setHTML(i + 1, 0, v.get("id").isNumber()
@@ -220,9 +223,13 @@ public class Application implements EntryPoint {
 					}
 
 					// Clear the rest of the table
-					for (i = arrayBoundary; i < appConst
-							.VAL_ADS_PER_MAIN_PAGE(); i++)
-						flex.removeRow(arrayBoundary);
+					Window.alert("getRowcount=" + flex.getRowCount()
+							+ ", arrayBoundary=" + arrayBoundary);
+
+					// if (flex.getRowCount() > arrayBoundary - 1) {
+					// for (i = arrayBoundary; i < flex.getRowCount(); i++)
+					// flex.removeRow(i);
+					// }
 
 					// Draw buttons
 					int buttonsToDraw = (int) (getTotalAds() % appConst
@@ -242,6 +249,16 @@ public class Application implements EntryPoint {
 
 							public void onClick(ClickEvent event) {
 
+								int i = 0;
+								Button button;
+								for (i = 1; i < pageNumberTable.getCellCount(0); i++) {
+									button = (Button) pageNumberTable
+											.getWidget(0, i);
+									button.setEnabled(false);
+									if (i == getPageNumber()) {
+										button.setFocus(true);
+									}
+								}
 								setPageNumber(iPage + 1);
 								getMainListingByPageFromServer();
 							}
