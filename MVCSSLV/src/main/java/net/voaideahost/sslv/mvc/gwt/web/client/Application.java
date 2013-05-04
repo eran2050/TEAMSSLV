@@ -7,12 +7,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -33,14 +32,18 @@ public class Application implements EntryPoint {
 			.create(IndexGWTWrapper.class);
 
 	public static DialogBox alertWidget(final String header,
-			final String content) {
+			final String content, int left, int top) {
 		final DialogBox box = new DialogBox();
 		box.setAnimationEnabled(true);
-		box.center();
+		if (left == 0 && top == 0) {
+			box.center();
+		} else {
+			box.setPopupPosition(left, top);
+		}
 		final VerticalPanel panel = new VerticalPanel();
-		panel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
+		panel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		box.setText(header);
-		panel.add(new Label(content));
+		panel.add(new HTML("<b>" + content + "</b>"));
 		final Button buttonClose = new Button("Close", new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -55,7 +58,7 @@ public class Application implements EntryPoint {
 		panel.add(emptyLabel);
 		buttonClose.setWidth("90px");
 		panel.add(buttonClose);
-		panel.setCellHorizontalAlignment(buttonClose, HasAlignment.ALIGN_RIGHT);
+		panel.setCellHorizontalAlignment(buttonClose, HasAlignment.ALIGN_CENTER);
 		box.add(panel);
 		return box;
 	}
@@ -63,63 +66,69 @@ public class Application implements EntryPoint {
 	public void onModuleLoad() {
 
 		// Header / Main Container / Footer
-		DecoratorPanel decorHeaderPanel = new DecoratorPanel();
-		decorHeaderPanel.setStyleName("gwt-DecoratorPanel");
 
 		// HEADER
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		FlexTable menuTable = new FlexTable();
 		menuTable.addStyleName("cw-FlexTable");
-		// menuTable.addStyleName("table.nm");
-		// menuTable.addStyleName("table.td");
+		menuTable.setWidth("1024px");
+		menuTable.getRowFormatter().setStyleName(0, "cw-FlexTable.nm");
+		menuTable.setCellPadding(0);
+		menuTable.setCellSpacing(0);
 
 		// Buttons
 		final Button mainButton = new Button("Home");
 		mainButton.addStyleName("sendButton");
 		menuTable.setWidget(0, 0, mainButton);
+		menuTable.getCellFormatter().setWidth(0, 0, "16%");
+		mainButton.setWidth("100%");
 		menuTable.setWidget(0, 1, new Button("Add"));
+		menuTable.getCellFormatter().setWidth(0, 1, "16%");
 		menuTable.setWidget(0, 2, new Button("Admin"));
+		menuTable.getCellFormatter().setWidth(0, 2, "16%");
 		menuTable.setWidget(0, 3, new TextBox());
 		menuTable.setWidget(0, 4, new Button("Login"));
 		headerPanel.add(menuTable);
-		decorHeaderPanel.add(headerPanel);
-		RootPanel.get("headerWidgetStub").add(decorHeaderPanel);
+		RootPanel.get("headerWidgetStub").add(headerPanel);
+
+		// Ad Count Label
+		final HTML adCountLabel = new HTML("<p>Empty label..</p>");
+		RootPanel.get("preMainContainerStub").add(adCountLabel);
 
 		// MAIN CONTAINER
-		DecoratorPanel decorMainPanel = new DecoratorPanel();
 		HorizontalPanel mainPanel = new HorizontalPanel();
-		decorMainPanel.setStyleName("gwt-DecoratorPanel");
 		final FlexTable flex = new FlexTable();
-		flex.setHTML(0, 0, "Loading...");
+		flex.addStyleName("cw-FlexTable");
+		flex.setWidth("1024px");
+		flex.getColumnFormatter().setWidth(0, "5%");
+		flex.getColumnFormatter().setWidth(1, "50%");
+		flex.getColumnFormatter().setWidth(2, "18%");
+		flex.getColumnFormatter().setWidth(3, "14%");
+		flex.getRowFormatter().setStyleName(0, "cw-FlexTable.ml");
 		mainPanel.add(flex);
-		decorMainPanel.add(mainPanel);
-		RootPanel.get("mainContainerStub").add(decorMainPanel);
+		RootPanel.get("mainContainerStub").add(mainPanel);
 
 		// Page numbers
-		DecoratorPanel decorPages = new DecoratorPanel();
-		decorPages.setStyleName("gwt-DecoratorPanel");
 		HorizontalPanel pagesPanel = new HorizontalPanel();
 		final FlexTable pageNumberTable = new FlexTable();
+		pageNumberTable.addStyleName("cw-FlexTable");
 		pageNumberTable.setHTML(0, 0, "Pages");
-		pageNumberTable.setStyleName("cw-FlexTable");
 		pagesPanel.add(pageNumberTable);
-		decorPages.add(pagesPanel);
-		RootPanel.get("secondContainerStub").add(decorPages);
+		RootPanel.get("secondContainerStub").add(pagesPanel);
 
 		// FOOTER
 		HorizontalPanel footerPanel = new HorizontalPanel();
-		DecoratorPanel decorFooterPanel = new DecoratorPanel();
-		decorFooterPanel.setStyleName("gwt-DecoratorPanel");
 		FlexTable footerTable = new FlexTable();
+		footerTable.addStyleName("cw-FlexTable");
+		footerTable.setWidth("1024px");
 		footerTable.setHTML(0, 0, "T2CSupp&nbsp;Staff&nbsp;(c)&nbsp;"
 				+ appConst.APP_VERSION() + "&nbsp;");
 		footerPanel.add(footerTable);
-		footerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		decorFooterPanel.add(footerPanel);
-		RootPanel.get("footerWidgetStub").add(decorFooterPanel);
-
-		// Alert Widget
-		// RootPanel.get("thirdContainerStub").add(alertWidget);
+		footerTable.getCellFormatter().setHorizontalAlignment(0, 0,
+				HasHorizontalAlignment.ALIGN_RIGHT);
+		footerTable.getCellFormatter().setWidth(0, 0, "100%");
+		footerTable.getRowFormatter().setStyleName(0, "cw-FlexTable.nm");
+		RootPanel.get("footerWidgetStub").add(footerPanel);
 
 		// HANDLERS
 		// Create a handler for the sendButton and nameField
@@ -140,7 +149,9 @@ public class Application implements EntryPoint {
 				@Override
 				public void onFailure(Throwable caught) {
 
-					Window.alert(SERVER_ERROR);
+					DialogBox box = alertWidget("Connection failure",
+							SERVER_ERROR, 0, 0);
+					box.show();
 				}
 
 				@Override
@@ -161,9 +172,9 @@ public class Application implements EntryPoint {
 				public void onSuccess(String result) {
 
 					flex.clear();
-					flex.setCellPadding(3);
-					flex.setCellSpacing(5);
-					flex.addStyleName("cw-FlexTable");
+					flex.removeAllRows();
+					flex.setCellPadding(0);
+					flex.setCellSpacing(0);
 
 					// Parse JSON
 					String json = result;
@@ -171,10 +182,10 @@ public class Application implements EntryPoint {
 					JSONObject v;
 
 					// Header row
-					flex.setHTML(0, 0, "id");
-					flex.setHTML(0, 1, "name");
-					flex.setHTML(0, 2, "owner");
-					flex.setHTML(0, 3, "created");
+					flex.setHTML(0, 0, "<b>Id</b>");
+					flex.setHTML(0, 1, "<b>Summary</b>");
+					flex.setHTML(0, 2, "<b>Date</b>");
+					flex.setHTML(0, 3, "<b>User</b>");
 
 					// Data rows
 					int arrayBoundary = 0;
@@ -191,79 +202,69 @@ public class Application implements EntryPoint {
 										.VAL_ADS_PER_MAIN_PAGE()) + 1;
 					}
 
-					int i;
-					for (i = 0; i < arrayBoundary; i++) {
-						v = array.get(i).isObject();
+					int i1 = 0;
+					for (i1 = 0; i1 < arrayBoundary; i1++) {
+						v = array.get(i1).isObject();
 
-						flex.setHTML(i + 1, 0, v.get("id").isNumber()
+						flex.setHTML(i1 + 1, 0, v.get("id").isNumber()
 								.toString());
-						flex.setHTML(i + 1, 1, v.get("name").isString()
+						flex.setHTML(i1 + 1, 1, v.get("name").isString()
 								.stringValue());
-						flex.setHTML(i + 1, 2, v.get("owner").isString()
+
+						// Date
+						String dateCreated = v.get("created").isString()
+								.stringValue();
+
+						flex.setHTML(i1 + 1, 2, dateCreated);
+
+						flex.setHTML(i1 + 1, 3, v.get("owner").isString()
 								.stringValue().toString());
-						flex.setHTML(i + 1, 3, v.get("created").isString()
-								.stringValue());
 
 						final String idStub = v.get("id").isNumber().toString();
 						final String adsStub = v.get("owner").isString()
 								.stringValue().toString()
 								+ ": " + v.get("name").isString().stringValue();
 
-						Button buttonViewAds = new Button("View");
+						final Button buttonViewAds = new Button("View");
+						buttonViewAds.setWidth("100%");
 						buttonViewAds.addClickHandler(new ClickHandler() {
 
 							@Override
 							public void onClick(ClickEvent event) {
 
-								DialogBox box = alertWidget(idStub, adsStub);
+								DialogBox box = alertWidget(idStub, adsStub,
+										buttonViewAds.getAbsoluteLeft(),
+										buttonViewAds.getAbsoluteTop());
 								box.show();
 							}
 						});
-						flex.setWidget(i + 1, 4, buttonViewAds);
+						flex.setWidget(i1 + 1, 4, buttonViewAds);
 					}
-
-					// Clear the rest of the table
-					Window.alert("getRowcount=" + flex.getRowCount()
-							+ ", arrayBoundary=" + arrayBoundary);
-
-					// if (flex.getRowCount() > arrayBoundary - 1) {
-					// for (i = arrayBoundary; i < flex.getRowCount(); i++)
-					// flex.removeRow(i);
-					// }
 
 					// Draw buttons
 					int buttonsToDraw = (int) (getTotalAds() % appConst
 							.VAL_ADS_PER_MAIN_PAGE()) - 2;
-					if (buttonsToDraw < 0)
+					if (buttonsToDraw < 0) {
 						buttonsToDraw = 0;
+					}
 
-					i = 0;
 					pageNumberTable.clear();
-					for (i = 0; i < buttonsToDraw; i++) {
+					int i2 = 1;
+					for (i2 = 1; i2 <= buttonsToDraw; i2++) {
 						final Button pageButton = new Button(
-								Integer.toString(i + 1));
+								Integer.toString(i2));
 						pageButton.setSize("30px", "30px");
 
-						final int iPage = i;
+						final int iPage = i2;
 						pageButton.addClickHandler(new ClickHandler() {
 
 							public void onClick(ClickEvent event) {
 
-								int i = 0;
-								Button button;
-								for (i = 1; i < pageNumberTable.getCellCount(0); i++) {
-									button = (Button) pageNumberTable
-											.getWidget(0, i);
-									button.setEnabled(false);
-									if (i == getPageNumber()) {
-										button.setFocus(true);
-									}
-								}
-								setPageNumber(iPage + 1);
+								setPageNumber(iPage);
 								getMainListingByPageFromServer();
 							}
 						});
-						pageNumberTable.setWidget(0, i + 1, pageButton);
+						pageNumberTable.setWidget(0, i2, pageButton);
 					}
 
 					// Repatriate button :) finally..

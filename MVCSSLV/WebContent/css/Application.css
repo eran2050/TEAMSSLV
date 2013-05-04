@@ -4,24 +4,20 @@
 div.page {
 	padding: 1px;
 	margin: 5px;
-	width: 1015px;
 }
 
 div.header {
-	width: 1024px;
 	padding: 1px;
 	margin: 5px;
 	height: 20px;
 }
 
 div.body {
-	width: 1024px;
 	padding: 1px;
 	margin: 5px;
 }
 
 div.footer {
-	width: 1024px;
 	padding: 1px;
 	margin: 5px;
 	height: 20px;
@@ -44,6 +40,7 @@ table.nm {
 td.nm {
 	width: 16%;
 	color: white;
+	background-color: #99CC33;
 }
 
 .sendButton {
@@ -54,7 +51,10 @@ td.nm {
 
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
-	width: 400px;
+	width: 230px;
+	margin: 5px;
+	padding: 10px;
+	word-wrap: break-word;
 }
 
 .dialogVPanel {
@@ -72,16 +72,23 @@ td.nm {
 
 .cw-FlexTable table {
 	border-collapse: collapse;
-	width: 1024px;
 	text-align: left;
+	spacing: 0px;
 }
 
 .cw-FlexTable td {
-	padding: 3px;
+	padding: 1px;
+	spacing: 0px;
 	border: 1px solid green;
 }
 
-.cw-FlexTable th {
+.cw-FlexTable.ml {
 	background-color: #009966;
 	text-align: left;
+	color: white;
+}
+
+.cw-FlexTable.nm {
+	background-color: #99CC33;
+	color: white;
 }
