@@ -22,17 +22,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Application implements EntryPoint {
 
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
+	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 
 	public final AppConst appConst = GWT.create(AppConst.class);
 
-	private final IndexGWTWrapperAsync gwtService = GWT
-			.create(IndexGWTWrapper.class);
+	private final IndexGWTWrapperAsync gwtService = GWT.create(IndexGWTWrapper.class);
 
-	public static DialogBox alertWidget(final String header,
-			final String content, int left, int top) {
+	public static DialogBox alertWidget(final String header, final String content, int left, int top) {
 		final DialogBox box = new DialogBox();
 		box.setAnimationEnabled(true);
 		if (left == 0 && top == 0) {
@@ -66,22 +63,20 @@ public class Application implements EntryPoint {
 	public void onModuleLoad() {
 
 		// Header / Main Container / Footer
+		int currentAppPage = 1;
 
 		// HEADER
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		FlexTable menuTable = new FlexTable();
 		menuTable.addStyleName("cw-FlexTable");
 		menuTable.setWidth("1024px");
-		menuTable.getRowFormatter().setStyleName(0, "cw-FlexTable.nm");
-		menuTable.setCellPadding(0);
-		menuTable.setCellSpacing(0);
+		menuTable.getRowFormatter().setStyleName(0, "cw-FlexTable-navigation");
 
 		// Buttons
-		final Button mainButton = new Button("Home");
-		mainButton.addStyleName("sendButton");
-		menuTable.setWidget(0, 0, mainButton);
+		final Button homeButton = new Button("Home");
+		homeButton.addStyleName("sendButton");
+		menuTable.setWidget(0, 0, homeButton);
 		menuTable.getCellFormatter().setWidth(0, 0, "16%");
-		mainButton.setWidth("100%");
 		menuTable.setWidget(0, 1, new Button("Add"));
 		menuTable.getCellFormatter().setWidth(0, 1, "16%");
 		menuTable.setWidget(0, 2, new Button("Admin"));
@@ -92,7 +87,7 @@ public class Application implements EntryPoint {
 		RootPanel.get("headerWidgetStub").add(headerPanel);
 
 		// Ad Count Label
-		final HTML adCountLabel = new HTML("<p>Empty label..</p>");
+		final HTML adCountLabel = new HTML("<p>" + appConst.VAL_LOADING() + "</p>");
 		RootPanel.get("preMainContainerStub").add(adCountLabel);
 
 		// MAIN CONTAINER
@@ -104,14 +99,12 @@ public class Application implements EntryPoint {
 		flex.getColumnFormatter().setWidth(1, "50%");
 		flex.getColumnFormatter().setWidth(2, "18%");
 		flex.getColumnFormatter().setWidth(3, "14%");
-		flex.getRowFormatter().setStyleName(0, "cw-FlexTable.ml");
 		mainPanel.add(flex);
 		RootPanel.get("mainContainerStub").add(mainPanel);
 
 		// Page numbers
 		HorizontalPanel pagesPanel = new HorizontalPanel();
 		final FlexTable pageNumberTable = new FlexTable();
-		pageNumberTable.addStyleName("cw-FlexTable");
 		pageNumberTable.setHTML(0, 0, "Pages");
 		pagesPanel.add(pageNumberTable);
 		RootPanel.get("secondContainerStub").add(pagesPanel);
@@ -121,25 +114,24 @@ public class Application implements EntryPoint {
 		FlexTable footerTable = new FlexTable();
 		footerTable.addStyleName("cw-FlexTable");
 		footerTable.setWidth("1024px");
-		footerTable.setHTML(0, 0, "T2CSupp&nbsp;Staff&nbsp;(c)&nbsp;"
-				+ appConst.APP_VERSION() + "&nbsp;");
+		footerTable.setHTML(0, 0, "T2CSupp&nbsp;Staff&nbsp;(c)&nbsp;" + appConst.APP_VERSION() + "&nbsp;");
 		footerPanel.add(footerTable);
-		footerTable.getCellFormatter().setHorizontalAlignment(0, 0,
-				HasHorizontalAlignment.ALIGN_RIGHT);
-		footerTable.getCellFormatter().setWidth(0, 0, "100%");
-		footerTable.getRowFormatter().setStyleName(0, "cw-FlexTable.nm");
+		footerTable.getColumnFormatter().setWidth(0, "100%");
+		footerTable.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_RIGHT);
+		footerTable.getRowFormatter().setStyleName(0, "cw-FlexTable-footer");
 		RootPanel.get("footerWidgetStub").add(footerPanel);
 
 		// HANDLERS
 		// Create a handler for the sendButton and nameField
-		class MainButtonClickHandler implements ClickHandler {
+		class HomeButtonClickHandler implements ClickHandler {
 
-			private int mainButtonClickHandlerPageNumber = 1;
-			private int mainButtonCliclHandlerTotalAds = 0;
+			private int homeButtonClickHandlerPageNumber = 1;
+			private int homeButtonCliclHandlerTotalAds = 0;
 
 			public void onClick(ClickEvent event) {
 
-				mainButton.setEnabled(false);
+				homeButton.setEnabled(false);
+				setPageNumber(1);
 				getTotalAdsFromServer();
 				getMainListingByPageFromServer();
 			}
@@ -149,8 +141,7 @@ public class Application implements EntryPoint {
 				@Override
 				public void onFailure(Throwable caught) {
 
-					DialogBox box = alertWidget("Connection failure",
-							SERVER_ERROR, 0, 0);
+					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
 					box.show();
 				}
 
@@ -158,6 +149,7 @@ public class Application implements EntryPoint {
 				public void onSuccess(Integer result) {
 
 					setTotalAds(result.intValue());
+					adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds() + "</p>");
 				}
 
 			};
@@ -165,16 +157,16 @@ public class Application implements EntryPoint {
 			AsyncCallback<String> getMainListingByPageFromServerAsyncCall = new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
 
-					mainButton.setEnabled(true);
-					mainButton.setFocus(true);
+					homeButton.setEnabled(true);
+					homeButton.setFocus(true);
 				}
 
 				public void onSuccess(String result) {
 
+					adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds() + "</p>");
+
 					flex.clear();
 					flex.removeAllRows();
-					flex.setCellPadding(0);
-					flex.setCellSpacing(0);
 
 					// Parse JSON
 					String json = result;
@@ -186,44 +178,26 @@ public class Application implements EntryPoint {
 					flex.setHTML(0, 1, "<b>Summary</b>");
 					flex.setHTML(0, 2, "<b>Date</b>");
 					flex.setHTML(0, 3, "<b>User</b>");
+					flex.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
 
 					// Data rows
-					int arrayBoundary = 0;
-
-					if (getPageNumber() * appConst.VAL_ADS_PER_MAIN_PAGE() <= getTotalAds()
-							&& getTotalAds() != 0) {
-						arrayBoundary = appConst.VAL_ADS_PER_MAIN_PAGE();
-					}
-
-					if (getPageNumber() * appConst.VAL_ADS_PER_MAIN_PAGE() > getTotalAds()
-							&& getTotalAds() != 0) {
-						arrayBoundary = getTotalAds()
-								- ((getPageNumber() - 1) * appConst
-										.VAL_ADS_PER_MAIN_PAGE()) + 1;
-					}
+					int arrayBoundary = array.size();
 
 					int i1 = 0;
 					for (i1 = 0; i1 < arrayBoundary; i1++) {
 						v = array.get(i1).isObject();
 
-						flex.setHTML(i1 + 1, 0, v.get("id").isNumber()
-								.toString());
-						flex.setHTML(i1 + 1, 1, v.get("name").isString()
-								.stringValue());
+						flex.setHTML(i1 + 1, 0, v.get("id").isNumber().toString());
+						flex.setHTML(i1 + 1, 1, v.get("name").isString().stringValue());
 
 						// Date
-						String dateCreated = v.get("created").isString()
-								.stringValue();
-
+						String dateCreated = v.get("created").isString().stringValue();
 						flex.setHTML(i1 + 1, 2, dateCreated);
 
-						flex.setHTML(i1 + 1, 3, v.get("owner").isString()
-								.stringValue().toString());
+						flex.setHTML(i1 + 1, 3, v.get("owner").isString().stringValue().toString());
 
 						final String idStub = v.get("id").isNumber().toString();
-						final String adsStub = v.get("owner").isString()
-								.stringValue().toString()
-								+ ": " + v.get("name").isString().stringValue();
+						final String adsStub = v.get("owner").isString().stringValue().toString() + ": " + v.get("name").isString().stringValue();
 
 						final Button buttonViewAds = new Button("View");
 						buttonViewAds.setWidth("100%");
@@ -232,9 +206,8 @@ public class Application implements EntryPoint {
 							@Override
 							public void onClick(ClickEvent event) {
 
-								DialogBox box = alertWidget(idStub, adsStub,
-										buttonViewAds.getAbsoluteLeft(),
-										buttonViewAds.getAbsoluteTop());
+								// Window.alert("4.5");
+								DialogBox box = alertWidget(idStub, adsStub, buttonViewAds.getAbsoluteLeft(), buttonViewAds.getAbsoluteTop());
 								box.show();
 							}
 						});
@@ -242,33 +215,47 @@ public class Application implements EntryPoint {
 					}
 
 					// Draw buttons
-					int buttonsToDraw = (int) (getTotalAds() % appConst
-							.VAL_ADS_PER_MAIN_PAGE()) - 2;
-					if (buttonsToDraw < 0) {
-						buttonsToDraw = 0;
-					}
+					int buttonsToDraw = Math.round(getTotalAds() / appConst.VAL_ADS_PER_MAIN_PAGE());
 
-					pageNumberTable.clear();
-					int i2 = 1;
-					for (i2 = 1; i2 <= buttonsToDraw; i2++) {
-						final Button pageButton = new Button(
-								Integer.toString(i2));
-						pageButton.setSize("30px", "30px");
+					if (buttonsToDraw > 0) {
+						if (buttonsToDraw * appConst.VAL_ADS_PER_MAIN_PAGE() == getTotalAds())
+							buttonsToDraw -= 1;
+						pageNumberTable.clear();
 
-						final int iPage = i2;
-						pageButton.addClickHandler(new ClickHandler() {
+						int i2 = 1;
+						for (i2 = 1; i2 <= buttonsToDraw + 1; i2++) {
+							final Button pageButton = new Button(Integer.toString(i2));
+							pageButton.setSize("25px", "25px");
 
-							public void onClick(ClickEvent event) {
-
-								setPageNumber(iPage);
-								getMainListingByPageFromServer();
+							final int iPage = i2;
+							if (i2 == getPageNumber()) {
+								pageButton.setHTML("<b>" + iPage + "</b>");
 							}
-						});
-						pageNumberTable.setWidget(0, i2, pageButton);
+
+							pageButton.addClickHandler(new ClickHandler() {
+
+								public void onClick(ClickEvent event) {
+
+									adCountLabel.setHTML("<p>" + appConst.VAL_LOADING() + "</p>");
+
+									int n;
+									for (n = 1; n < pageNumberTable.getCellCount(0); n++) {
+										Button button = (Button) pageNumberTable.getWidget(0, n);
+										button.setEnabled(false);
+										if (n == iPage) {
+											button.setHTML("<b>" + iPage + "</b>");
+										}
+									}
+									setPageNumber(iPage);
+									getMainListingByPageFromServer();
+								}
+							});
+							pageNumberTable.setWidget(0, i2, pageButton);
+						}
 					}
 
 					// Repatriate button :) finally..
-					mainButton.setEnabled(true);
+					homeButton.setEnabled(true);
 				}
 			};
 
@@ -279,35 +266,41 @@ public class Application implements EntryPoint {
 
 			private void getMainListingByPageFromServer() {
 
-				mainButton.setEnabled(false);
-				gwtService.getMainListing(getPageNumber(),
-						getMainListingByPageFromServerAsyncCall);
+				homeButton.setEnabled(false);
+				gwtService.getMainListing(getPageNumber(), getMainListingByPageFromServerAsyncCall);
 			}
 
 			public int getPageNumber() {
-				return mainButtonClickHandlerPageNumber;
+				return homeButtonClickHandlerPageNumber;
 			}
 
 			public void setPageNumber(int mainButtonClickHandlerPageNumber) {
-				this.mainButtonClickHandlerPageNumber = mainButtonClickHandlerPageNumber;
+				this.homeButtonClickHandlerPageNumber = mainButtonClickHandlerPageNumber;
 			}
 
 			public int getTotalAds() {
-				return mainButtonCliclHandlerTotalAds;
+				return homeButtonCliclHandlerTotalAds;
 			}
 
 			public void setTotalAds(int mainButtonCliclHandlerTotalAds) {
-				this.mainButtonCliclHandlerTotalAds = mainButtonCliclHandlerTotalAds;
+				this.homeButtonCliclHandlerTotalAds = mainButtonCliclHandlerTotalAds;
 			}
 		}
 
 		// Add a handler refresh Flex Table
-		MainButtonClickHandler mainButtonClickHandler = new MainButtonClickHandler();
+		HomeButtonClickHandler mainButtonClickHandler = new HomeButtonClickHandler();
+		homeButton.addClickHandler(mainButtonClickHandler);
 
 		// Initialise()
-		mainButtonClickHandler.getTotalAdsFromServer();
-		mainButtonClickHandler.getMainListingByPageFromServer();
-		mainButton.addClickHandler(mainButtonClickHandler);
+		switch (currentAppPage) {
+		case 1:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+			mainButtonClickHandler.getTotalAdsFromServer();
+			mainButtonClickHandler.getMainListingByPageFromServer();
+			break;
+		default:
+			break;
+		}
 
 		/*
 		 * // default GWT Hello World final Button sendButton = new

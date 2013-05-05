@@ -3,7 +3,7 @@ package net.voaideahost.sslv.mvc.gwt.web.client;
 import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
-	@DefaultStringValue("v5.0.0_12")
+	@DefaultStringValue("v5.0.1_8")
 	String APP_VERSION();
 
 	@DefaultStringValue("")
@@ -11,4 +11,7 @@ public interface AppConst extends Constants {
 
 	@DefaultIntValue(15)
 	int VAL_ADS_PER_MAIN_PAGE();
+
+	@DefaultStringValue("Status: Loading..")
+	String VAL_LOADING();
 }
