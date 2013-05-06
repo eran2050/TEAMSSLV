@@ -118,45 +118,34 @@ td.footer {
 
 a:link {
 	text-decoration: none;
-}
-
-a:visited {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:active {
-	text-decoration: underline;
-}
-
-a:link {
-	color: black;
-}
-
-a.nm:link {
 	color: white;
 }
 
 a:visited {
+	text-decoration: none;
+	color: white;
+}
+
+a:hover {
+	text-decoration: underline;
 	color: black;
+}
+
+a:active {
+	text-decoration: underline;
+	color: black;
+}
+
+
+a.nm:link {
+	color: white;
 }
 
 a.nm:visited {
 	color: white;
 }
 
-a:hover {
-	color: black;
-}
-
 a.nm:hover {
-	color: white;
-}
-
-a:active {
 	color: white;
 }
 

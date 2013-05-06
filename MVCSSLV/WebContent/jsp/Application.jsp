@@ -4,43 +4,52 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link type="text/css" rel="stylesheet" href="/java2/css/Application.css">
-<title>Web Application Starter Project</title>
+<title>Java2: GWT</title>
 <script type="text/javascript" src="application/application.nocache.js"></script>
 </head>
-
 <body>
 	<div class="page">
 		<div class="header">
 			<table>
 				<tr>
-					<td id="headerWidgetStub"></td>
+					<td id="header1"></td>
 				</tr>
 			</table>
 		</div>
 		<div class="body">
 			<table>
 				<tr>
-					<td id="preMainContainerStub"></td>
+					<td id="body0"></td>
 				</tr>
 			</table>
 			<table>
 				<tr>
-					<td id="mainContainerStub"></td>
+					<td id="body1"></td>
 				</tr>
+			</table>
+			<table>
 				<tr>
-					<td id="secondContainerStub"></td>
+					<td id="body2"></td>
 				</tr>
+			</table>
+			<table>
 				<tr>
-					<td id="thirdContainerStub"></td>
+					<td id="body3"></td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td id="body4"></td>
 				</tr>
 			</table>
 		</div>
 		<div class="footer">
 			<table>
 				<tr>
-					<td id="footerWidgetStub"></td>
+					<td id="footer1"></td>
 				</tr>
 			</table>
+			<p id="footer2"></p>
 		</div>
 	</div>
 </body>

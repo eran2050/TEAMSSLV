@@ -1,6 +1,3 @@
-/** Add css rules here for your application. */
-
-/** Example rules used by the template application (remove for your app) */
 div.page {
 	padding: 1px;
 	margin: 5px;
@@ -9,7 +6,6 @@ div.page {
 div.header {
 	padding: 1px;
 	margin: 5px;
-	height: 20px;
 }
 
 div.body {
@@ -20,54 +16,6 @@ div.body {
 div.footer {
 	padding: 1px;
 	margin: 5px;
-	height: 20px;
-}
-
-td {
-	text-align: left;
-}
-
-th {
-	background-color: #009966;
-	text-align: left;
-}
-
-table.nm {
-	width: 98%;
-	text-align: center;
-}
-
-td.nm {
-	width: 16%;
-	color: white;
-	background-color: #99CC33;
-}
-
-.sendButton {
-	display: block;
-	font-size: 16pt;
-	width: 50px;
-}
-
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-	width: 230px;
-	margin: 5px;
-	padding: 10px;
-	word-wrap: break-word;
-}
-
-.dialogVPanel {
-	margin: 5px;
-}
-
-.serverResponseLabelError {
-	color: red;
-}
-
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-	margin: 15px 6px 6px;
 }
 
 .cw-FlexTable {
@@ -88,6 +36,10 @@ td.nm {
 	color: white;
 }
 
+.cw-FlexTable-navigation td {
+	text-align: center;
+}
+
 .cw-FlexTable-navigation td:hover {
 	background-color: #999933;
 }
@@ -99,5 +51,44 @@ td.nm {
 .cw-FlexTable-footer {
 	background-color: #99CC33;
 	color: white;
+}
+
+.cw-FlexTable-footer td {
 	text-align: right;
+}
+
+a:link {
+	text-decoration: none;
+	color: white;
+}
+
+a:visited {
+	text-decoration: none;
+	color: white;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: white;
+}
+
+a:active {
+	text-decoration: underline;
+	color: white;
+}
+
+.ml-anchor a:link {
+	color: black;
+}
+
+.ml-anchor a:visited {
+	color: black;
+}
+
+.ml-anchor a:hover {
+	color: black;
+}
+
+.ml-anchor a:active {
+	color: black;
 }

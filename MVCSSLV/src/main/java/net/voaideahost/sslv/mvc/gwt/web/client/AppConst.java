@@ -3,7 +3,7 @@ package net.voaideahost.sslv.mvc.gwt.web.client;
 import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
-	@DefaultStringValue("v5.0.1_8")
+	@DefaultStringValue("v5.0.1_9")
 	String APP_VERSION();
 
 	@DefaultStringValue("")
