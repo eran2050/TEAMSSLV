@@ -35,4 +35,10 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
 
 		return service.getTotalAds();
 	}
+	
+	@Override
+	public String getAdDesc(int adDescId) {
+		
+		return service.getAdDesc(adDescId);
+	}
 }

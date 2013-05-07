@@ -11,4 +11,6 @@ public interface IndexGWTWrapper extends RemoteService {
 	String getMainListing(int page);
 
 	Integer getTotalAds();
+	
+	String getAdDesc(int adDescId);
 }

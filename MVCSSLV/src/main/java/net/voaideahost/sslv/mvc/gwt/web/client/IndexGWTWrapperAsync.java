@@ -9,4 +9,6 @@ public interface IndexGWTWrapperAsync {
 	void getMainListing(int page, AsyncCallback<String> asyncCallback);
 
 	void getTotalAds(AsyncCallback<Integer> asyncCallback);
+
+	void getAdDesc(int adDescId, AsyncCallback<String> asyncCallback);
 }

@@ -2,8 +2,10 @@ package net.voaideahost.sslv.mvc.gwt.app.server;
 
 import java.util.ArrayList;
 
+import net.voaideahost.sslv.dao.addesc.AdDescDAO;
 import net.voaideahost.sslv.dao.ads.AdsDAO;
 import net.voaideahost.sslv.dao.users.UsersDAO;
+import net.voaideahost.sslv.domain.addesc.AdDesc;
 import net.voaideahost.sslv.domain.ads.Ads;
 import net.voaideahost.sslv.domain.users.Users;
 import net.voaideahost.sslv.mvc.gwt.app.client.IndexService;
@@ -25,6 +27,9 @@ public class IndexServiceImpl implements IndexService {
 
 	@Autowired
 	private AdsDAO aDao;
+
+	@Autowired
+	private AdDescDAO dDao;
 
 	@Override
 	public String greet(String name) {
@@ -66,5 +71,21 @@ public class IndexServiceImpl implements IndexService {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public String getAdDesc(int adDescId) {
+
+		try {
+			ArrayList<AdDesc> ads = dDao.getFullAdDescByCriteria(adDescId);
+			Gson gson = new Gson();
+			String toJson = gson.toJson(ads);
+
+			return toJson;
+		} catch (Exception e) {
+			logger.error("getAdDesc() " + e.getMessage());
+		}
+
+		return null;
 	}
 }

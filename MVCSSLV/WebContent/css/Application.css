@@ -26,6 +26,14 @@ div.footer {
 	border: 1px solid green;
 }
 
+.cw-FlexTable-view-edit-box {
+	border-collapse: collapse;
+}
+
+.cw-FlexTable-view-edit-box td {
+	border: 0px;
+}
+
 .cw-FlexTable-main-list {
 	background-color: #009966;
 	color: white;
