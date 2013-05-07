@@ -118,12 +118,12 @@ td.footer {
 
 a:link {
 	text-decoration: none;
-	color: white;
+	color: black;
 }
 
 a:visited {
 	text-decoration: none;
-	color: white;
+	color: black;
 }
 
 a:hover {
@@ -150,5 +150,5 @@ a.nm:hover {
 }
 
 a.nm:active {
-	color: black;
+	color: white;
 }
