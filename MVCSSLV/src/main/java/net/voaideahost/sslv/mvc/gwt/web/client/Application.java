@@ -24,14 +24,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Application implements EntryPoint {
 
-	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
+	private static final String SERVER_ERROR = "An error occurred while "
+			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 
 	public final AppConst appConst = GWT.create(AppConst.class);
 
-	private final IndexGWTWrapperAsync gwtService = GWT.create(IndexGWTWrapper.class);
+	private final IndexGWTWrapperAsync gwtService = GWT
+			.create(IndexGWTWrapper.class);
 
-	public static DialogBox alertWidget(final String header, final String content, int left, int top) {
+	public static DialogBox alertWidget(final String header,
+			final String content, int left, int top) {
 		final DialogBox box = new DialogBox();
 		box.setAnimationEnabled(true);
 		if (left == 0 && top == 0) {
@@ -88,7 +91,8 @@ public class Application implements EntryPoint {
 
 		// Ad Count Label
 		HorizontalPanel statusPanel = new HorizontalPanel();
-		final HTML adCountLabel = new HTML("<p>" + appConst.VAL_LOADING() + "</p>");
+		final HTML adCountLabel = new HTML("<p>" + appConst.VAL_LOADING()
+				+ "</p>");
 		statusPanel.add(adCountLabel);
 		RootPanel.get("body0").add(statusPanel);
 
@@ -116,10 +120,12 @@ public class Application implements EntryPoint {
 		FlexTable footerTable = new FlexTable();
 		footerTable.addStyleName("cw-FlexTable");
 		footerTable.setWidth("1024px");
-		footerTable.setHTML(0, 0, "T2CSupp&nbsp;Staff&nbsp;(c)&nbsp;" + appConst.APP_VERSION() + "&nbsp;");
+		footerTable.setHTML(0, 0, "T2CSupp&nbsp;Staff&nbsp;(c)&nbsp;"
+				+ appConst.APP_VERSION() + "&nbsp;");
 		footerPanel.add(footerTable);
 		footerTable.getColumnFormatter().setWidth(0, "100%");
-		footerTable.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_RIGHT);
+		footerTable.getCellFormatter().setHorizontalAlignment(0, 0,
+				HasHorizontalAlignment.ALIGN_RIGHT);
 		footerTable.getRowFormatter().setStyleName(0, "cw-FlexTable-footer");
 		RootPanel.get("footer1").add(footerPanel);
 
@@ -135,11 +141,14 @@ public class Application implements EntryPoint {
 
 			private int homeButtonClickHandlerPageNumber = 1;
 			private int homeButtonCliclHandlerTotalAds = 0;
+			private boolean buttonViewAdsPressed = false;
+
 			private double pageTime1 = Duration.currentTimeMillis();
 
 			public void onClick(ClickEvent event) {
 
 				setPageNumber(1);
+				setButtonViewAdsPressed(false);
 				getTotalAdsFromServer();
 				getMainListingByPageFromServer();
 				pageTime1 = Duration.currentTimeMillis();
@@ -150,7 +159,8 @@ public class Application implements EntryPoint {
 				@Override
 				public void onFailure(Throwable caught) {
 
-					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
+					DialogBox box = alertWidget("Connection failure",
+							SERVER_ERROR, 0, 0);
 					box.show();
 				}
 
@@ -158,7 +168,8 @@ public class Application implements EntryPoint {
 				public void onSuccess(Integer result) {
 
 					setTotalAds(result.intValue());
-					adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds() + "</p>");
+					adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds()
+							+ "</p>");
 				}
 
 			};
@@ -172,7 +183,8 @@ public class Application implements EntryPoint {
 
 				public void onSuccess(String result) {
 
-					adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds() + "</p>");
+					adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds()
+							+ "</p>");
 
 					flex.clear();
 					flex.removeAllRows();
@@ -187,7 +199,8 @@ public class Application implements EntryPoint {
 					flex.setHTML(0, 1, "<b>Summary</b>");
 					flex.setHTML(0, 2, "<b>Date</b>");
 					flex.setHTML(0, 3, "<b>User</b>");
-					flex.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
+					flex.getRowFormatter().setStyleName(0,
+							"cw-FlexTable-main-list");
 
 					// Data rows
 					int arrayBoundary = array.size();
@@ -196,17 +209,21 @@ public class Application implements EntryPoint {
 					for (i1 = 0; i1 < arrayBoundary; i1++) {
 						v = array.get(i1).isObject();
 
-						flex.setHTML(i1 + 1, 0, v.get("id").isNumber().toString());
+						flex.setHTML(i1 + 1, 0, v.get("id").isNumber()
+								.toString());
 						// flex.setHTML(i1 + 1, 1,
 						// v.get("name").isString().stringValue());
 
 						// Date
-						String dateCreated = v.get("created").isString().stringValue();
+						String dateCreated = v.get("created").isString()
+								.stringValue();
 						flex.setHTML(i1 + 1, 2, dateCreated);
-						flex.setHTML(i1 + 1, 3, v.get("owner").isString().stringValue().toString());
+						flex.setHTML(i1 + 1, 3, v.get("owner").isString()
+								.stringValue().toString());
 
 						// Creating Edit Click Handler
-						final String adsStub = v.get("name").isString().stringValue();
+						final String adsStub = v.get("name").isString()
+								.stringValue();
 						final Anchor buttonViewAds = new Anchor();
 						buttonViewAds.setHTML(adsStub);
 						final int viewEditRowNumber = i1 + 2;
@@ -215,41 +232,53 @@ public class Application implements EntryPoint {
 							@Override
 							public void onClick(ClickEvent event) {
 
+								// Disable all
+								if (isButtonViewAdsPressed())
+									return;
+
 								// Flex
 								flex.insertRow(viewEditRowNumber);
-								flex.getFlexCellFormatter().setColSpan(viewEditRowNumber, 0, 5);
+								flex.getFlexCellFormatter().setColSpan(
+										viewEditRowNumber, 0, 5);
 
 								// View / Edit Box
 								HorizontalPanel viewEditPanel = new HorizontalPanel();
+								viewEditPanel.setWidth("100%");
 								FlexTable viewEditTable = new FlexTable();
 								viewEditTable.setWidth("100%");
-								viewEditTable.setWidget(0, 0, new Label("Name:"));
+								viewEditTable.setWidget(0, 0,
+										new Label("Name:"));
 								TextBox nameTextBox = new TextBox();
 								nameTextBox.setText(adsStub);
 								viewEditTable.setWidget(0, 1, nameTextBox);
 
 								// Close Button
 								Button viewEditCloseButton = new Button("Close");
-								viewEditCloseButton.addClickHandler(new ClickHandler() {
+								viewEditCloseButton
+										.addClickHandler(new ClickHandler() {
 
-									@Override
-									public void onClick(ClickEvent event) {
+											@Override
+											public void onClick(ClickEvent event) {
 
-										flex.removeRow(viewEditRowNumber);
-									}
-								});
-								viewEditTable.setWidget(3, 1, viewEditCloseButton);
+												flex.removeRow(viewEditRowNumber);
+												setButtonViewAdsPressed(false);
+											}
+										});
+								viewEditTable.setWidget(3, 1,
+										viewEditCloseButton);
 								viewEditPanel.add(viewEditTable);
 
 								// Flex
-								flex.setWidget(viewEditRowNumber, 0, viewEditPanel);
+								flex.setWidget(viewEditRowNumber, 0,
+										viewEditPanel);
 							}
 						});
 						flex.setWidget(i1 + 1, 1, buttonViewAds);
 					}
 
 					// Draw buttons
-					int buttonsToDraw = Math.round(getTotalAds() / appConst.VAL_ADS_PER_MAIN_PAGE());
+					int buttonsToDraw = Math.round(getTotalAds()
+							/ appConst.VAL_ADS_PER_MAIN_PAGE());
 
 					if (buttonsToDraw > 0) {
 						if (buttonsToDraw * appConst.VAL_ADS_PER_MAIN_PAGE() == getTotalAds())
@@ -258,7 +287,8 @@ public class Application implements EntryPoint {
 
 						int i2 = 1;
 						for (i2 = 1; i2 <= buttonsToDraw + 1; i2++) {
-							final Button pageButton = new Button(Integer.toString(i2));
+							final Button pageButton = new Button(
+									Integer.toString(i2));
 							pageButton.setSize("25px", "25px");
 
 							final int iPage = i2;
@@ -272,15 +302,19 @@ public class Application implements EntryPoint {
 
 									// General
 									pageTime1 = Duration.currentTimeMillis();
-									adCountLabel.setHTML("<p>" + appConst.VAL_LOADING() + "</p>");
+									adCountLabel.setHTML("<p>"
+											+ appConst.VAL_LOADING() + "</p>");
 
 									// Page Button
 									int n;
-									for (n = 1; n < pageNumberTable.getCellCount(0); n++) {
-										Button button = (Button) pageNumberTable.getWidget(0, n);
+									for (n = 1; n < pageNumberTable
+											.getCellCount(0); n++) {
+										Button button = (Button) pageNumberTable
+												.getWidget(0, n);
 										button.setEnabled(false);
 										if (n == iPage) {
-											button.setHTML("<b>" + iPage + "</b>");
+											button.setHTML("<b>" + iPage
+													+ "</b>");
 										}
 									}
 									setPageNumber(iPage);
@@ -292,7 +326,8 @@ public class Application implements EntryPoint {
 					}
 					double pageTime2 = Duration.currentTimeMillis();
 					double pageTime3 = (pageTime2 - pageTime1);
-					pageLoadTimeLabel.setHTML("Page generated in " + pageTime3 + " msec");
+					pageLoadTimeLabel.setHTML("Page generated in " + pageTime3
+							+ " msec");
 				}
 			};
 
@@ -304,7 +339,8 @@ public class Application implements EntryPoint {
 			private void getMainListingByPageFromServer() {
 
 				homeButton.setEnabled(false);
-				gwtService.getMainListing(getPageNumber(), getMainListingByPageFromServerAsyncCall);
+				gwtService.getMainListing(getPageNumber(),
+						getMainListingByPageFromServerAsyncCall);
 			}
 
 			public int getPageNumber() {
@@ -326,6 +362,14 @@ public class Application implements EntryPoint {
 
 				this.homeButtonCliclHandlerTotalAds = mainButtonCliclHandlerTotalAds;
 			}
+
+			public boolean isButtonViewAdsPressed() {
+				return buttonViewAdsPressed;
+			}
+
+			public void setButtonViewAdsPressed(boolean buttonViewAdsPressed) {
+				this.buttonViewAdsPressed = buttonViewAdsPressed;
+			}
 		}
 
 		// Add a handler refresh Flex Table
@@ -334,13 +378,14 @@ public class Application implements EntryPoint {
 
 		// Initialise()
 		switch (currentAppPage) {
-		case 1:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-			mainButtonClickHandler.getTotalAdsFromServer();
-			mainButtonClickHandler.getMainListingByPageFromServer();
-			break;
-		default:
-			break;
+			case 1 :
+				menuTable.getCellFormatter().setStyleName(0, 0,
+						"cw-FlexTable-navigation-current-page");
+				mainButtonClickHandler.getTotalAdsFromServer();
+				mainButtonClickHandler.getMainListingByPageFromServer();
+				break;
+			default :
+				break;
 		}
 
 		/*
