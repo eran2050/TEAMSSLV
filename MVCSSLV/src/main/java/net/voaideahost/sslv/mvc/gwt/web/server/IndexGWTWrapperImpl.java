@@ -6,9 +6,7 @@ import net.voaideahost.sslv.mvc.gwt.web.client.IndexGWTWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
-public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
-		implements
-			IndexGWTWrapper {
+public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet implements IndexGWTWrapper {
 	private static final long serialVersionUID = 1L;
 
 	private IndexService service;
@@ -17,11 +15,6 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
 	@Required
 	public void setIndexService(IndexService service) {
 		this.service = service;
-	}
-
-	public String greet(String name) {
-
-		return service.greet(name);
 	}
 
 	@Override
@@ -35,10 +28,17 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet
 
 		return service.getTotalAds();
 	}
-	
+
 	@Override
 	public String getAdDesc(int adDescId) {
-		
+
 		return service.getAdDesc(adDescId);
+	}
+
+	@Override
+	public String doLogin(String userName) {
+
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

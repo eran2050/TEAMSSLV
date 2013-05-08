@@ -7,7 +7,6 @@ import net.voaideahost.sslv.dao.ads.AdsDAO;
 import net.voaideahost.sslv.dao.users.UsersDAO;
 import net.voaideahost.sslv.domain.addesc.AdDesc;
 import net.voaideahost.sslv.domain.ads.Ads;
-import net.voaideahost.sslv.domain.users.Users;
 import net.voaideahost.sslv.mvc.gwt.app.client.IndexService;
 
 import org.slf4j.Logger;
@@ -30,19 +29,6 @@ public class IndexServiceImpl implements IndexService {
 
 	@Autowired
 	private AdDescDAO dDao;
-
-	@Override
-	public String greet(String name) {
-
-		try {
-			Users usr = uDao.getUserById(name);
-			return usr.getName() + " " + usr.getSurName();
-		} catch (Exception e) {
-			logger.error("greet() " + e.getMessage());
-		}
-
-		return "Hello, " + name;
-	}
 
 	@Override
 	public String getMainListing(int page) {
@@ -86,6 +72,13 @@ public class IndexServiceImpl implements IndexService {
 			logger.error("getAdDesc() " + e.getMessage());
 		}
 
+		return null;
+	}
+
+	@Override
+	public String doLogin(String userName) {
+
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -14,7 +14,7 @@
 				<tr>
 					<td id="header1"></td>
 				</tr>
-			</table>
+			</table>			
 		</div>
 		<div class="body">
 			<table>
