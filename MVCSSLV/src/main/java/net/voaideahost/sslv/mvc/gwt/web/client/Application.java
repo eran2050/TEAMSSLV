@@ -18,7 +18,9 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -65,17 +67,28 @@ public class Application implements EntryPoint {
 	}
 
 	// Application wide params
-	private String loginUserName = "sux";
+	private String loginUserName = "SUX";
 	private String loginState = appConst.STATUS_LOGGED_IN();
-	private String actionState = "Status: " + appConst.VAL_INITIALIZING();
+	private String actionState = appConst.VAL_INITIALIZING();
 	private int currentAppPage = 1;
 	private String appViewMode = appConst.VIEW_MODE_ALL();
 	private int idleTime = 0;
+	private double pageLoadingStartTime = getMillis();
+	private int mainListingPageNumber = 1;
+	private int totalAds = 0;
+	private boolean buttonViewAdsPressed = false;
+	private int viewAdSelectedRow = 0;
 
 	// Global Widgets
 	FlexTable menuTable = new FlexTable();
 	final FlexTable flex = new FlexTable();
-	final HTML adCountLabel = new HTML(appConst.VAL_EMPTY());
+	final HTML appActionLabel = new HTML(appConst.VAL_EMPTY());
+	final HTML pageLoadTimeLabel = new HTML();
+
+	// Resources
+	final Image imageLoading = new Image();
+	final Image imageCross = new Image();
+	final Image imagePlus = new Image();
 
 	public void onModuleLoad() {
 
@@ -103,7 +116,9 @@ public class Application implements EntryPoint {
 		// Ad Count Label
 		HorizontalPanel statusPanel = new HorizontalPanel();
 		setActionState(getActionState());
-		statusPanel.add(adCountLabel);
+		statusPanel.add(appActionLabel);
+		statusPanel.add(imageLoading);
+		imageLoading.setVisible(false);
 		RootPanel.get("body0").add(statusPanel);
 
 		// MAIN CONTAINER
@@ -121,6 +136,7 @@ public class Application implements EntryPoint {
 		HorizontalPanel pagesPanel = new HorizontalPanel();
 		final FlexTable pageNumberTable = new FlexTable();
 		pageNumberTable.setHTML(0, 0, "Pages");
+		pageNumberTable.setVisible(false);
 		pagesPanel.add(pageNumberTable);
 		RootPanel.get("body2").add(pagesPanel);
 
@@ -138,28 +154,25 @@ public class Application implements EntryPoint {
 
 		// Page Load Timer
 		HorizontalPanel pageLoadTimerPanel = new HorizontalPanel();
-		final HTML pageLoadTimeLabel = new HTML();
 		pageLoadTimerPanel.add(pageLoadTimeLabel);
 		RootPanel.get("footer2").add(pageLoadTimerPanel);
+
+		// Init Resources
+		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading.gif");
 
 		// HANDLERS
 		// Create a handler for the sendButton and nameField
 		class HomeButtonClickHandler implements ClickHandler {
 
-			private int homeButtonClickHandlerPageNumber = 1;
-			private int homeButtonCliclHandlerTotalAds = 0;
-			private boolean buttonViewAdsPressed = false;
-			private int viewAdSelectedRow = 0;
-			private double pageTime1 = getMillis();
-
 			public void onClick(ClickEvent event) {
 
 				// Sort of Initialize block
-				pageTime1 = getMillis();
+				setPageLoadingStartTime(getMillis());
 				setIdleTime(0);
-				setMainListingTablePageNumber(1);
+				setMainListingPageNumber(1);
 				setCurrentAppPage(1);
 				setButtonViewAdsPressed(false);
+				setActionState(appConst.VAL_LOADING());
 
 				// Async Calls
 				getTotalAdsFromServer();
@@ -180,7 +193,7 @@ public class Application implements EntryPoint {
 				public void onSuccess(Integer result) {
 
 					setTotalAds(result.intValue());
-					adCountLabel.setHTML("<p>Total Ads: " + getTotalAds() + "</p>");
+					setActionState(appConst.VAL_TOTAL_ADS());
 				}
 
 			};
@@ -189,10 +202,8 @@ public class Application implements EntryPoint {
 
 				// Draw ViewEditBox
 				int currentTableRow = 0;
-
-				// Flex
-				flex.insertRow(getViewAdSelectedRow());
-				flex.getFlexCellFormatter().setColSpan(getViewAdSelectedRow(), 0, 4);
+				String ownerName = flex.getText(getViewAdSelectedRow() - 1, 3);
+				boolean isEditor = isLoggedIn() && ownerName.equals(getLoginUserName());
 
 				// View / Edit Box
 				HorizontalPanel viewEditPanel = new HorizontalPanel();
@@ -210,7 +221,7 @@ public class Application implements EntryPoint {
 				Anchor adsName = (Anchor) flex.getWidget(getViewAdSelectedRow() - 1, 1);
 				nameTextBox.setText(adsName.getHTML());
 				nameTextBox.setWidth("290px");
-				nameTextBox.setEnabled(false);
+				nameTextBox.setEnabled(isEditor);
 				viewEditTable.setWidget(currentTableRow++, 1, nameTextBox);
 				viewEditTable.getColumnFormatter().setWidth(1, "300px");
 
@@ -231,17 +242,37 @@ public class Application implements EntryPoint {
 				for (i = 0; i < array.size(); i++) {
 					v = array.get(i).isObject();
 
+					// Criteria Box
 					TextBox criteriaBox = new TextBox();
 					criteriaBox.setWidth("290px");
 					criteriaBox.setText(new HTML(v.get("criteria").isString().stringValue()).getHTML());
-					criteriaBox.setEnabled(false);
+					criteriaBox.setEnabled(isEditor);
 					viewEditTable.setWidget(currentTableRow, 1, criteriaBox);
 
+					// Value Box
 					TextBox valueBox = new TextBox();
 					valueBox.setWidth("290px");
 					valueBox.setText(new HTML(v.get("value").isString().stringValue()).getHTML());
-					valueBox.setEnabled(false);
-					viewEditTable.setWidget(currentTableRow++, 2, valueBox);
+					valueBox.setEnabled(isEditor);
+					viewEditTable.setWidget(currentTableRow, 2, valueBox);
+
+					// Image Cross
+					if (isEditor) {
+						final Image newCrossImage = new Image();
+						newCrossImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/cross.png");
+						viewEditTable.setWidget(currentTableRow, 3, newCrossImage);
+						viewEditTable.getCellFormatter().setAlignment(currentTableRow, 3, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					}
+
+					// Increase iterator
+					currentTableRow++;
+				}
+
+				// Image Pluss
+				if (isEditor) {
+					final Image newPlusImage = new Image();
+					newPlusImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/plus.gif");
+					viewEditTable.setWidget(currentTableRow++, 1, newPlusImage);
 				}
 
 				// Separator 2
@@ -267,26 +298,28 @@ public class Application implements EntryPoint {
 				closeAndSaveButtonPanel.add(viewEditCloseButton);
 
 				// Separator
-				HTML buttonSeparator = new HTML("&nbsp;");
+				HTML buttonSeparator = new HTML("&nbsp;&nbsp;");
 				closeAndSaveButtonPanel.add(buttonSeparator);
 
 				// Save Button
 				Button viewEditSaveButton = new Button("Save");
-				viewEditSaveButton.setEnabled(false);
+				viewEditSaveButton.setEnabled(isEditor);
+				viewEditSaveButton.setVisible(isEditor);
 				closeAndSaveButtonPanel.add(viewEditSaveButton);
 				viewEditTable.setWidget(currentTableRow, 1, closeAndSaveButtonPanel);
 				viewEditPanel.add(viewEditTable);
 
 				// Flex
+				// TODO check for validity
+				flex.insertRow(getViewAdSelectedRow());
+				flex.getFlexCellFormatter().setColSpan(getViewAdSelectedRow(), 0, 4);
 				flex.setWidget(getViewAdSelectedRow(), 0, viewEditPanel);
 
 				// Ad Count
-				adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds() + "</p>");
+				setActionState(appConst.VAL_TOTAL_ADS());
 
 				// Timing
-				double pageTime2 = getMillis();
-				double pageTime3 = (pageTime2 - pageTime1);
-				pageLoadTimeLabel.setHTML("Page generated in " + pageTime3 + " msec");
+				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
 			AsyncCallback<String> getAdDescFromServer = new AsyncCallback<String>() {
@@ -303,12 +336,10 @@ public class Application implements EntryPoint {
 
 					drawViewEditTable(result);
 				}
-
 			};
 
 			void drawMainListingTable(String result) {
 
-				adCountLabel.setHTML("<p>Total Ads:&nbsp;" + getTotalAds() + "</p>");
 				flex.clear();
 				flex.removeAllRows();
 
@@ -349,10 +380,12 @@ public class Application implements EntryPoint {
 						@Override
 						public void onClick(ClickEvent event) {
 
-							// Disable all buttons from click, if there is
-							// one open box
+							// General
 							setIdleTime(0);
 							setCurrentAppPage(1);
+
+							// Disable all buttons from click, if there is
+							// one open box
 							if (isButtonViewAdsPressed()) {
 								DialogBox buttonPressedBox = alertWidget("Information", "Please, close opened edit box first!",
 										buttonViewAds.getAbsoluteLeft(), buttonViewAds.getAbsoluteTop());
@@ -363,8 +396,8 @@ public class Application implements EntryPoint {
 							setViewAdSelectedRow(selectedRow);
 
 							// General
-							pageTime1 = getMillis();
-							adCountLabel.setHTML("<p>" + appConst.VAL_LOADING() + "</p>");
+							setPageLoadingStartTime(getMillis());
+							setActionState(appConst.VAL_LOADING());
 
 							// Async call
 							getGetAdDescFromServer(Integer.parseInt(adsId));
@@ -372,6 +405,18 @@ public class Application implements EntryPoint {
 					});
 					flex.setWidget(i1 + 1, 1, buttonViewAds);
 				}
+
+				// Page Buttons
+				drawPageButtons();
+
+				// Ad Count
+				setActionState(appConst.VAL_TOTAL_ADS());
+
+				// Timing
+				setLoadingTime(getMillis() - getPageLoadingStartTime());
+			}
+
+			void drawPageButtons() {
 
 				// Draw buttons
 				int buttonsToDraw = Math.round(getTotalAds() / appConst.VAL_ADS_PER_MAIN_PAGE());
@@ -387,7 +432,7 @@ public class Application implements EntryPoint {
 						pageButton.setSize("25px", "25px");
 
 						final int iPage = i2;
-						if (i2 == getMainListingTablePageNumber()) {
+						if (i2 == getMainListingPageNumber()) {
 							pageButton.setHTML("<b>" + iPage + "</b>");
 						}
 
@@ -396,10 +441,10 @@ public class Application implements EntryPoint {
 							public void onClick(ClickEvent event) {
 
 								// General
-								pageTime1 = getMillis();
+								setPageLoadingStartTime(getMillis());
 								setIdleTime(0);
 								setCurrentAppPage(1);
-								adCountLabel.setHTML("<p>" + appConst.VAL_LOADING() + "</p>");
+								setActionState(appConst.VAL_LOADING());
 								setButtonViewAdsPressed(false);
 
 								// Page Button
@@ -411,7 +456,7 @@ public class Application implements EntryPoint {
 										button.setHTML("<b>" + iPage + "</b>");
 									}
 								}
-								setMainListingTablePageNumber(iPage);
+								setMainListingPageNumber(iPage);
 
 								// Async call
 								getMainListingByPageFromServer();
@@ -420,11 +465,7 @@ public class Application implements EntryPoint {
 						pageNumberTable.setWidget(0, i2, pageButton);
 					}
 				}
-
-				// Timing
-				double pageTime2 = getMillis();
-				double pageTime3 = (pageTime2 - pageTime1);
-				pageLoadTimeLabel.setHTML("Page generated in " + pageTime3 + " msec");
+				pageNumberTable.setVisible(true);
 			}
 
 			AsyncCallback<String> getMainListingByPageFromServer = new AsyncCallback<String>() {
@@ -449,72 +490,35 @@ public class Application implements EntryPoint {
 			private void getMainListingByPageFromServer() {
 
 				homeButton.setEnabled(false);
-				gwtService.getMainListing(getMainListingTablePageNumber(), getMainListingByPageFromServer);
-			}
-
-			public int getMainListingTablePageNumber() {
-
-				return homeButtonClickHandlerPageNumber;
-			}
-
-			public void setMainListingTablePageNumber(int mainButtonClickHandlerPageNumber) {
-
-				this.homeButtonClickHandlerPageNumber = mainButtonClickHandlerPageNumber;
-			}
-
-			public int getTotalAds() {
-
-				return homeButtonCliclHandlerTotalAds;
-			}
-
-			public void setTotalAds(int mainButtonCliclHandlerTotalAds) {
-
-				this.homeButtonCliclHandlerTotalAds = mainButtonCliclHandlerTotalAds;
-			}
-
-			public boolean isButtonViewAdsPressed() {
-				return buttonViewAdsPressed;
-			}
-
-			public void setButtonViewAdsPressed(boolean buttonViewAdsPressed) {
-				this.buttonViewAdsPressed = buttonViewAdsPressed;
+				gwtService.getMainListing(getMainListingPageNumber(), getMainListingByPageFromServer);
 			}
 
 			public void getGetAdDescFromServer(int adDescId) {
 
 				gwtService.getAdDesc(adDescId, getAdDescFromServer);
 			}
-
-			public int getViewAdSelectedRow() {
-				return viewAdSelectedRow;
-			}
-
-			public void setViewAdSelectedRow(int viewAdSelectedRow) {
-				this.viewAdSelectedRow = viewAdSelectedRow;
-			}
 		}
 
 		// Login Handler
 		class LoginButtonClickHandler implements ClickHandler {
 
-			@SuppressWarnings("unused")
-			private double pageTime1 = getMillis();
-
 			@Override
 			public void onClick(ClickEvent event) {
 
 				// Sort of Initialize block
-				pageTime1 = getMillis();
 				// setIdleTime(0);
 				setCurrentAppPage(4);
 				showLoginPanel();
 			}
 
 			public void showLoginPanel() {
-				DialogBox newBox = alertWidget("Login Panel", "Idle time is: " + getIdleTime(), 0, 0);
+
+				String various = "<br> " + getLoginState();
+				DialogBox newBox = alertWidget("Login Panel", "Idle time is: " + getIdleTime() + various, 0, 0);
 				newBox.show();
 
 				// Panel
+				// TODO
 			}
 		}
 
@@ -532,7 +536,10 @@ public class Application implements EntryPoint {
 		// InitializeUser()
 		setLoginState(getLoginState());
 
-		// InitializeIdleTime()
+		// InitializeColours()
+		changeMenuItemColorAsSelected();
+
+		// InitializeIdleIdleTimer()
 		RepeatingCommand idleTimer = new Scheduler.RepeatingCommand() {
 
 			@Override
@@ -547,16 +554,16 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-			case 1 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-				break;
-			case 4 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-				break;
-			default :
-				break;
+		case 1:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+			break;
+		case 4:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -579,6 +586,7 @@ public class Application implements EntryPoint {
 		}
 		loginAnchor.setText(loginAnchorText);
 	}
+
 	public String getLoginUserName() {
 
 		return loginUserName;
@@ -641,9 +649,12 @@ public class Application implements EntryPoint {
 
 		// Async Call for updating the session
 		// TODO
+		setLoginState(appConst.STATUS_LOGGED_OUT());
 	}
 
 	void doLogin() {
+
+		setLoginState(appConst.STATUS_LOGGING_IN());
 
 		// Async Call for updating the session
 		// TODO
@@ -657,6 +668,76 @@ public class Application implements EntryPoint {
 	public void setActionState(String actionState) {
 
 		this.actionState = actionState;
-		adCountLabel.setText(actionState);
+		if (actionState.equals(appConst.VAL_TOTAL_ADS())) {
+			imageLoading.setVisible(false);
+			appActionLabel.setHTML("<p>Showing total of " + getTotalAds() + " ads.</p>");
+		} else if (actionState.equals(appConst.VAL_INITIALIZING()) || actionState.equals(appConst.VAL_LOADING())
+				|| actionState.equals(appConst.STATUS_LOGGING_IN()) || actionState.equals(appConst.STATUS_LOGGING_OUT())) {
+			imageLoading.setVisible(true);
+			appActionLabel.setHTML("<p>Status: " + actionState + "</p");
+		} else {
+			imageLoading.setVisible(false);
+			appActionLabel.setHTML("<p>Status: " + actionState + "</p>");
+		}
+	}
+
+	public void setLoadingTime(double loadTime) {
+
+		pageLoadTimeLabel.setHTML("Page generated in " + loadTime + " msec");
+	}
+
+	public double getPageLoadingStartTime() {
+
+		return pageLoadingStartTime;
+	}
+
+	public void setPageLoadingStartTime(double pageLoadingStartTime) {
+
+		this.pageLoadingStartTime = pageLoadingStartTime;
+	}
+
+	public boolean isLoggedIn() {
+
+		return getLoginState().equals(appConst.STATUS_LOGGED_IN());
+	}
+
+	public int getMainListingPageNumber() {
+
+		return mainListingPageNumber;
+	}
+
+	public void setMainListingPageNumber(int mainListingPageNumber) {
+
+		this.mainListingPageNumber = mainListingPageNumber;
+	}
+
+	public int getTotalAds() {
+
+		return totalAds;
+	}
+
+	public void setTotalAds(int totalAds) {
+
+		this.totalAds = totalAds;
+	}
+
+	public boolean isButtonViewAdsPressed() {
+
+		return buttonViewAdsPressed;
+	}
+
+	public void setButtonViewAdsPressed(boolean buttonViewAdsPressed) {
+
+		this.buttonViewAdsPressed = buttonViewAdsPressed;
+	}
+
+	public int getViewAdSelectedRow() {
+
+		return viewAdSelectedRow;
+	}
+
+	public void setViewAdSelectedRow(int viewAdSelectedRow) {
+
+		this.viewAdSelectedRow = viewAdSelectedRow;
 	}
 }

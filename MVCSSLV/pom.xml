@@ -140,6 +140,8 @@
 								<include>**${file.separator}*.jsp</include>
 								<include>**${file.separator}*.css</include>
 								<include>**${file.separator}*.jpg</include>
+								<include>**${file.separator}*.gif</include>
+								<include>**${file.separator}*.png</include>
 							</includes>
 						</resource>
 						<resource>

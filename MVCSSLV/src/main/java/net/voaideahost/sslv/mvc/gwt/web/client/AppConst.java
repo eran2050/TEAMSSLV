@@ -3,7 +3,11 @@ package net.voaideahost.sslv.mvc.gwt.web.client;
 import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
-	@DefaultStringValue("v5.0.2_4")
+
+	@DefaultStringValue("/java2/")
+	String VAL_CONTEXT_ROOT();
+
+	@DefaultStringValue("v5.0.3_1")
 	String APP_VERSION();
 
 	@DefaultStringValue("")
@@ -21,7 +25,7 @@ public interface AppConst extends Constants {
 	@DefaultIntValue(15)
 	int VAL_PAGES_IN_LINE();
 
-	@DefaultIntValue(30)
+	@DefaultIntValue(60)
 	int VAL_MAX_IDLE_TIME();
 
 	@DefaultStringValue("Initializing ..")
@@ -29,6 +33,9 @@ public interface AppConst extends Constants {
 
 	@DefaultStringValue("Loading ..")
 	String VAL_LOADING();
+
+	@DefaultStringValue("Total Ads: ")
+	String VAL_TOTAL_ADS();
 
 	@DefaultStringValue("Not Logged In")
 	String STATUS_NOT_LOGGED_IN();
