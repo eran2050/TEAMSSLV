@@ -27,6 +27,7 @@ div.footer {
 }
 
 .cw-FlexTable-view-edit-box {
+	margin: 5px;
 	border-collapse: collapse;
 }
 

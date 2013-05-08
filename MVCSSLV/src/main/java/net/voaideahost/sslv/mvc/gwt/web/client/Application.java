@@ -190,26 +190,27 @@ public class Application implements EntryPoint {
 
 					// View / Edit Box
 					HorizontalPanel viewEditPanel = new HorizontalPanel();
-					// viewEditPanel.setWidth("100%");
+					viewEditPanel.setWidth("100%");
 					FlexTable viewEditTable = new FlexTable();
 					viewEditTable.addStyleName("cw-FlexTable-view-edit-box");
-					// viewEditTable.setWidth("100%");
+					viewEditTable.setWidth("100%");
 
 					// Name Label
-					viewEditTable.setWidget(currentTableRow, 0, new Label("Name"));
-					// viewEditTable.getColumnFormatter().setWidth(currentTableRow,
-					// "7%");
+					viewEditTable.setWidget(currentTableRow, 0, new HTML("<b>Name</b>"));
+					viewEditTable.getColumnFormatter().setWidth(0, "50px");
 
 					// Text Box
 					TextBox nameTextBox = new TextBox();
-					nameTextBox.setText(flex.getHTML(getViewAdSelectedRow() - 1, 1));
-					viewEditTable.setWidget(currentTableRow, 1, nameTextBox);
-					// viewEditTable.getColumnFormatter().setWidth(currentTableRow++,
-					// "75%");
+					Anchor adsName = (Anchor) flex.getWidget(getViewAdSelectedRow() - 1, 1);
+					nameTextBox.setText(adsName.getHTML());
+					nameTextBox.setWidth("290px");
+					nameTextBox.setEnabled(false);
+					viewEditTable.setWidget(currentTableRow++, 1, nameTextBox);
+					viewEditTable.getColumnFormatter().setWidth(1, "300px");
 
 					// Separator
 					HTML htmlSeparator = new HTML("<hr />");
-					viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 2);
+					viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 4);
 					viewEditTable.setWidget(currentTableRow++, 0, htmlSeparator);
 
 					// Parse JSON
@@ -224,17 +225,25 @@ public class Application implements EntryPoint {
 					for (i = 0; i < array.size(); i++) {
 						v = array.get(i).isObject();
 
-						viewEditTable.setHTML(currentTableRow, 1, v.get("CRITERIA").isString().stringValue());
-						viewEditTable.setHTML(currentTableRow++, 2, v.get("VALUE").isString().stringValue());
+						TextBox criteriaBox = new TextBox();
+						criteriaBox.setWidth("290px");
+						criteriaBox.setText(new HTML(v.get("criteria").isString().stringValue()).getHTML());
+						criteriaBox.setEnabled(false);
+						viewEditTable.setWidget(currentTableRow, 1, criteriaBox);
+
+						TextBox valueBox = new TextBox();
+						valueBox.setWidth("290px");
+						valueBox.setText(new HTML(v.get("value").isString().stringValue()).getHTML());
+						valueBox.setEnabled(false);
+						viewEditTable.setWidget(currentTableRow++, 2, valueBox);
 					}
 
 					// Separator 2
 					HTML htmlSeparator2 = new HTML("<hr />");
-					viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 2);
+					viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 4);
 					viewEditTable.setWidget(currentTableRow++, 0, htmlSeparator2);
 
 					// Buttons Panel
-					viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 2);
 					HorizontalPanel closeAndSaveButtonPanel = new HorizontalPanel();
 
 					// Close Button
@@ -250,10 +259,15 @@ public class Application implements EntryPoint {
 					});
 					closeAndSaveButtonPanel.add(viewEditCloseButton);
 
+					// Separator
+					HTML buttonSeparator = new HTML("&nbsp;");
+					closeAndSaveButtonPanel.add(buttonSeparator);
+
 					// Save Button
 					Button viewEditSaveButton = new Button("Save");
+					viewEditSaveButton.setEnabled(false);
 					closeAndSaveButtonPanel.add(viewEditSaveButton);
-					viewEditTable.setWidget(currentTableRow, 0, closeAndSaveButtonPanel);
+					viewEditTable.setWidget(currentTableRow, 1, closeAndSaveButtonPanel);
 					viewEditPanel.add(viewEditTable);
 
 					// Flex
@@ -453,13 +467,13 @@ public class Application implements EntryPoint {
 
 		// Initialise()
 		switch (currentAppPage) {
-		case 1:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-			mainButtonClickHandler.getTotalAdsFromServer();
-			mainButtonClickHandler.getMainListingByPageFromServer();
-			break;
-		default:
-			break;
+			case 1 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+				mainButtonClickHandler.getTotalAdsFromServer();
+				mainButtonClickHandler.getMainListingByPageFromServer();
+				break;
+			default :
+				break;
 		}
 
 		/*

@@ -1,5 +1,7 @@
 package net.voaideahost.sslv.domain.addesc;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,45 +9,48 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ad_desc")
-public class AdDesc {
-    @Id
-    private int id;
-    @Column(name = "ADS_ID")
-    private int adsId;
-    @Column(name = "CRITERIA")
-    private String criteria;
-    @Column(name = "VALUE")
-    private String value;
+public class AdDesc implements Serializable {
 
-    public int getId() {
-        return id;
-    }
+	private static final long serialVersionUID = 8559991212130610180L;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	@Id
+	private int id;
+	@Column(name = "ADS_ID")
+	private int adsId;
+	@Column(name = "CRITERIA")
+	private String criteria;
+	@Column(name = "VALUE")
+	private String value;
 
-    public int getAdsId() {
-        return adsId;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setAdsId(int adsId) {
-        this.adsId = adsId;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public String getCriteria() {
-        return criteria;
-    }
+	public int getAdsId() {
+		return adsId;
+	}
 
-    public void setCriteria(String criteria) {
-        this.criteria = criteria;
-    }
+	public void setAdsId(int adsId) {
+		this.adsId = adsId;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public String getCriteria() {
+		return criteria;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public void setCriteria(String criteria) {
+		this.criteria = criteria;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

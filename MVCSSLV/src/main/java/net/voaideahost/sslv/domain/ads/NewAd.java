@@ -1,5 +1,6 @@
 package net.voaideahost.sslv.domain.ads;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,10 +14,11 @@ import javax.persistence.Table;
 
 import net.voaideahost.sslv.domain.addesc.NewAdDesc;
 
-
 @Entity
 @Table(name = "ads")
-public class NewAd {
+public class NewAd implements Serializable {
+
+	private static final long serialVersionUID = 7852837879661341258L;
 
 	@Id
 	@GeneratedValue

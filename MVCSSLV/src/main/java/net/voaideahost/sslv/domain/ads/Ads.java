@@ -1,50 +1,54 @@
 package net.voaideahost.sslv.domain.ads;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Entity
 @Table(name = "ads")
-public class Ads {
+public class Ads implements Serializable {
 
-    @Id
-    private int id;
-    private String name;
-    private String owner;
-    private Date created;
+	private static final long serialVersionUID = -8519676543168198183L;
 
-    public int getId() {
-        return id;
-    }
+	@Id
+	private int id;
+	private String name;
+	private String owner;
+	private Date created;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getOwner() {
-        return owner;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
+	public String getOwner() {
+		return owner;
+	}
 
-    public Date getCreated() {
-        return created;
-    }
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 
-    public void setCreated(Date created) {
-        this.created = created;
-    }
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
 
 }

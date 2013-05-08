@@ -2,13 +2,13 @@ package net.voaideahost.sslv.common;
 
 public class Config {
 
-	public static final String VAL_APP_VERSION = "v5.0.0";
+	public static final String VAL_APP_VERSION = "v4.3.0";
 	public static final String VAL_CONTEXT_ROOT = "/java2/";
 	public static final String VAL_EMPTY = "";
 	public static final String VAL_USERNAME = "username";
-	public static final int VAL_ADS_PER_MAIN_PAGE = 15;
-	public static final int VAL_ADS_PER_LOGIN_PAGE = 8;
-	public static final int VAL_PAGES_IN_LINE = 10;
+	public static final int VAL_ADS_PER_MAIN_PAGE = 20;
+	public static final int VAL_ADS_PER_LOGIN_PAGE = 10;
+	public static final int VAL_PAGES_IN_LINE = 15;
 	public static final String STATUS_NOT_LOGGED_IN = "Not Logged In";
 	public static final String STATUS_LOGGED_IN = "Logged In";
 	public static final String STATUS_NO_SUCH_USER = "No Such User";

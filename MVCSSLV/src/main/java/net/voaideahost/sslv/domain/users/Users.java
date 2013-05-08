@@ -1,12 +1,16 @@
 package net.voaideahost.sslv.domain.users;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class Users implements Serializable {
+
+	private static final long serialVersionUID = 3425149483586841684L;
 
 	@Id
 	private String id;
