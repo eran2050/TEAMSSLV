@@ -1,5 +1,7 @@
 package net.voaideahost.sslv.mvc.gwt.app.client;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,4 +14,6 @@ public interface IndexService {
 	String getAdDesc(int adDescId);
 
 	String doLogin(String userName);
+
+	HttpSession session();
 }

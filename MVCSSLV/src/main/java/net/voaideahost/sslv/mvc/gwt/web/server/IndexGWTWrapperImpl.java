@@ -14,6 +14,7 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet imple
 	@Autowired
 	@Required
 	public void setIndexService(IndexService service) {
+
 		this.service = service;
 	}
 
@@ -38,7 +39,6 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet imple
 	@Override
 	public String doLogin(String userName) {
 
-		// TODO Auto-generated method stub
-		return null;
+		return service.doLogin(userName);
 	}
 }

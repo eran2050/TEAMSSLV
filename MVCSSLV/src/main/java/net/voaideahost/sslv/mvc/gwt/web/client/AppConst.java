@@ -7,7 +7,7 @@ public interface AppConst extends Constants {
 	@DefaultStringValue("/java2/")
 	String VAL_CONTEXT_ROOT();
 
-	@DefaultStringValue("v5.0.3_1")
+	@DefaultStringValue("v5.0.4_0")
 	String APP_VERSION();
 
 	@DefaultStringValue("")
@@ -25,7 +25,7 @@ public interface AppConst extends Constants {
 	@DefaultIntValue(15)
 	int VAL_PAGES_IN_LINE();
 
-	@DefaultIntValue(60)
+	@DefaultIntValue(300)
 	int VAL_MAX_IDLE_TIME();
 
 	@DefaultStringValue("Initializing ..")
@@ -57,6 +57,9 @@ public interface AppConst extends Constants {
 
 	@DefaultStringValue("Advertisment has been removed")
 	String ACTION_AD_DELETED();
+
+	@DefaultStringValue("Saving..")
+	String ACTION_SAVING();
 
 	@DefaultStringValue("Advertisment has been updated")
 	String ACTION_AD_UPDATED();

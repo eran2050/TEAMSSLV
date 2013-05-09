@@ -2,17 +2,22 @@ package net.voaideahost.sslv.mvc.gwt.app.server;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
 import net.voaideahost.sslv.dao.addesc.AdDescDAO;
 import net.voaideahost.sslv.dao.ads.AdsDAO;
 import net.voaideahost.sslv.dao.users.UsersDAO;
 import net.voaideahost.sslv.domain.addesc.AdDesc;
 import net.voaideahost.sslv.domain.ads.Ads;
+import net.voaideahost.sslv.domain.users.Users;
 import net.voaideahost.sslv.mvc.gwt.app.client.IndexService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.gson.Gson;
 
@@ -78,7 +83,36 @@ public class IndexServiceImpl implements IndexService {
 	@Override
 	public String doLogin(String userName) {
 
-		// TODO Auto-generated method stub
+		try {
+			Users user = uDao.getUserById(userName);
+			Gson gson = new Gson();
+			String toJson = gson.toJson(user);
+
+			String userNameSession = session().getAttribute("username").toString();
+			if (null == userNameSession) {
+				if (userName.equals(user.getId())) {
+					session().setAttribute("username", userName);
+					return toJson;
+				} else {
+					return null;
+				}
+			} else {
+				if (userName.equals(userNameSession)) {
+					return toJson;
+				} else {
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			logger.error("doLogin() " + e.getMessage());
+		}
+
 		return null;
+	}
+
+	public HttpSession session() {
+
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		return attr.getRequest().getSession(true);
 	}
 }

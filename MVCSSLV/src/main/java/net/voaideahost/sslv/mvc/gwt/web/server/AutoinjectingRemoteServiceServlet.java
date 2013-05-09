@@ -9,18 +9,16 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public abstract class AutoinjectingRemoteServiceServlet extends
-		RemoteServiceServlet {
+public abstract class AutoinjectingRemoteServiceServlet extends RemoteServiceServlet {
 
 	private static final long serialVersionUID = 4881880984017015751L;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+
 		super.init(config);
-		WebApplicationContext ctx = WebApplicationContextUtils
-				.getRequiredWebApplicationContext(config.getServletContext());
-		AutowireCapableBeanFactory beanFactory = ctx
-				.getAutowireCapableBeanFactory();
+		WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+		AutowireCapableBeanFactory beanFactory = ctx.getAutowireCapableBeanFactory();
 		beanFactory.autowireBean(this);
 	}
 }

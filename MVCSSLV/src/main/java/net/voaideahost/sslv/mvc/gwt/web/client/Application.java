@@ -67,8 +67,8 @@ public class Application implements EntryPoint {
 	}
 
 	// Application wide params
-	private String loginUserName = "SUX";
-	private String loginState = appConst.STATUS_LOGGED_IN();
+	private String loginUserName = appConst.VAL_EMPTY();
+	private String loginState = appConst.STATUS_NOT_LOGGED_IN();
 	private String actionState = appConst.VAL_INITIALIZING();
 	private int currentAppPage = 1;
 	private String appViewMode = appConst.VIEW_MODE_ALL();
@@ -78,12 +78,18 @@ public class Application implements EntryPoint {
 	private int totalAds = 0;
 	private boolean buttonViewAdsPressed = false;
 	private int viewAdSelectedRow = 0;
+	private int currentViewEditTableRow = 0;
 
 	// Global Widgets
-	FlexTable menuTable = new FlexTable();
+	final FlexTable menuTable = new FlexTable();
 	final FlexTable flex = new FlexTable();
 	final HTML appActionLabel = new HTML(appConst.VAL_EMPTY());
 	final HTML pageLoadTimeLabel = new HTML();
+
+	// Panels
+	final VerticalPanel loginPanel = new VerticalPanel();
+	final HorizontalPanel mainPanel = new HorizontalPanel();
+	final HorizontalPanel pagesPanel = new HorizontalPanel();
 
 	// Resources
 	final Image imageLoading = new Image();
@@ -92,15 +98,16 @@ public class Application implements EntryPoint {
 
 	public void onModuleLoad() {
 
-		// Header / Main Container / Footer
+		// Init Resources
+		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading.gif");
 
-		// HEADER
-		HorizontalPanel headerPanel = new HorizontalPanel();
+		// HEADER - Navigation Menu
+		final HorizontalPanel menuPanel = new HorizontalPanel();
 		menuTable.addStyleName("cw-FlexTable");
 		menuTable.setWidth("1024px");
 		menuTable.getRowFormatter().setStyleName(0, "cw-FlexTable-navigation");
 
-		// Buttons
+		// Navigation Menu Buttons
 		final Anchor homeButton = new Anchor("Home");
 		menuTable.setWidget(0, 0, homeButton);
 		menuTable.getCellFormatter().setWidth(0, 0, "16%");
@@ -110,19 +117,18 @@ public class Application implements EntryPoint {
 		menuTable.getCellFormatter().setWidth(0, 2, "16%");
 		final Anchor loginButton = new Anchor("Login");
 		menuTable.setWidget(0, 3, loginButton);
-		headerPanel.add(menuTable);
-		RootPanel.get("header1").add(headerPanel);
+		menuPanel.add(menuTable);
+		RootPanel.get("header1").add(menuPanel);
 
-		// Ad Count Label
-		HorizontalPanel statusPanel = new HorizontalPanel();
+		// Action Status Label
+		final HorizontalPanel statusPanel = new HorizontalPanel();
 		setActionState(getActionState());
 		statusPanel.add(appActionLabel);
 		statusPanel.add(imageLoading);
-		imageLoading.setVisible(false);
 		RootPanel.get("body0").add(statusPanel);
+		setActionState(appConst.VAL_INITIALIZING());
 
 		// MAIN CONTAINER
-		HorizontalPanel mainPanel = new HorizontalPanel();
 		flex.addStyleName("cw-FlexTable");
 		flex.setWidth("1024px");
 		flex.getColumnFormatter().setWidth(0, "5%");
@@ -130,18 +136,16 @@ public class Application implements EntryPoint {
 		flex.getColumnFormatter().setWidth(2, "18%");
 		flex.getColumnFormatter().setWidth(3, "14%");
 		mainPanel.add(flex);
-		RootPanel.get("body1").add(mainPanel);
+		RootPanel.get("body2").add(mainPanel);
 
-		// Page numbers
-		HorizontalPanel pagesPanel = new HorizontalPanel();
+		// MAIN CONTAINER - Page numbers
 		final FlexTable pageNumberTable = new FlexTable();
 		pageNumberTable.setHTML(0, 0, "Pages");
-		pageNumberTable.setVisible(false);
 		pagesPanel.add(pageNumberTable);
-		RootPanel.get("body2").add(pagesPanel);
+		RootPanel.get("body3").add(pagesPanel);
 
 		// FOOTER
-		HorizontalPanel footerPanel = new HorizontalPanel();
+		final HorizontalPanel footerPanel = new HorizontalPanel();
 		FlexTable footerTable = new FlexTable();
 		footerTable.addStyleName("cw-FlexTable");
 		footerTable.setWidth("1024px");
@@ -153,12 +157,11 @@ public class Application implements EntryPoint {
 		RootPanel.get("footer1").add(footerPanel);
 
 		// Page Load Timer
-		HorizontalPanel pageLoadTimerPanel = new HorizontalPanel();
+		final HorizontalPanel pageLoadTimerPanel = new HorizontalPanel();
 		pageLoadTimerPanel.add(pageLoadTimeLabel);
 		RootPanel.get("footer2").add(pageLoadTimerPanel);
 
-		// Init Resources
-		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading.gif");
+		// Async Calls
 
 		// HANDLERS
 		// Create a handler for the sendButton and nameField
@@ -179,14 +182,20 @@ public class Application implements EntryPoint {
 				getMainListingByPageFromServer();
 			}
 
+			/*
+			 * 
+			 * 
+			 * ASYNC METHODS
+			 */
+
 			AsyncCallback<Integer> getTotalAdsFromServer = new AsyncCallback<Integer>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
 
+					setIdleTime(0);
 					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
 					box.show();
-					setIdleTime(0);
 				}
 
 				@Override
@@ -198,37 +207,79 @@ public class Application implements EntryPoint {
 
 			};
 
+			AsyncCallback<String> getAdDescFromServer = new AsyncCallback<String>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+
+					setIdleTime(0);
+					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
+					box.show();
+				}
+
+				@Override
+				public void onSuccess(String result) {
+
+					drawViewEditTable(result);
+				}
+			};
+
+			AsyncCallback<String> getMainListingByPageFromServer = new AsyncCallback<String>() {
+				public void onFailure(Throwable caught) {
+
+					setIdleTime(0);
+					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
+					box.show();
+				}
+
+				public void onSuccess(String result) {
+
+					drawMainListingTable(result);
+				}
+			};
+
+			/*
+			 * 
+			 * 
+			 * DRAW TABLE METHODS
+			 */
+
 			void drawViewEditTable(String result) {
 
 				// Draw ViewEditBox
-				int currentTableRow = 0;
+
 				String ownerName = flex.getText(getViewAdSelectedRow() - 1, 3);
-				boolean isEditor = isLoggedIn() && ownerName.equals(getLoginUserName());
+				final boolean isEditor = isLoggedIn() && ownerName.equals(getLoginUserName());
 
 				// View / Edit Box
 				HorizontalPanel viewEditPanel = new HorizontalPanel();
+				viewEditPanel.setVisible(false);
 				viewEditPanel.setWidth("100%");
-				FlexTable viewEditTable = new FlexTable();
+				final FlexTable viewEditTable = new FlexTable();
 				viewEditTable.addStyleName("cw-FlexTable-view-edit-box");
 				viewEditTable.setWidth("100%");
+				viewEditTable.getColumnFormatter().setWidth(0, "50px");
+				viewEditTable.getColumnFormatter().setWidth(1, "300px");
+				viewEditTable.getColumnFormatter().setWidth(2, "300px");
+				viewEditTable.getColumnFormatter().setWidth(3, "30px");
 
 				// Name Label
-				viewEditTable.setWidget(currentTableRow, 0, new HTML("<b>Name</b>"));
-				viewEditTable.getColumnFormatter().setWidth(0, "50px");
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, new HTML("<b>Name</b>"));
 
 				// Text Box
 				TextBox nameTextBox = new TextBox();
 				Anchor adsName = (Anchor) flex.getWidget(getViewAdSelectedRow() - 1, 1);
 				nameTextBox.setText(adsName.getHTML());
-				nameTextBox.setWidth("290px");
+				nameTextBox.setWidth("95%");
 				nameTextBox.setEnabled(isEditor);
-				viewEditTable.setWidget(currentTableRow++, 1, nameTextBox);
-				viewEditTable.getColumnFormatter().setWidth(1, "300px");
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, nameTextBox);
+				setCurrentViewEditTableRow(1);
 
 				// Separator
-				HTML htmlSeparator = new HTML("<hr />");
-				viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 4);
-				viewEditTable.setWidget(currentTableRow++, 0, htmlSeparator);
+				HTML htmlSeparator1 = new HTML("<hr />");
+				viewEditTable.getFlexCellFormatter().setColSpan(currentViewEditTableRow, 0, 4);
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator1);
+				setCurrentViewEditTableRow(1);
 
 				// Parse JSON
 				String json = result;
@@ -236,48 +287,48 @@ public class Application implements EntryPoint {
 				JSONObject v;
 
 				// AdDesc
-				viewEditTable.setHTML(currentTableRow, 1, "<b>CRITERIA</b>");
-				viewEditTable.setHTML(currentTableRow++, 2, "<b>VALUE</b>");
+				viewEditTable.setHTML(getCurrentViewEditTableRow(), 1, "<b>CRITERIA</b>");
+				viewEditTable.setHTML(getCurrentViewEditTableRow(), 2, "<b>VALUE</b>");
+				setCurrentViewEditTableRow(1);
+
 				int i = 0;
 				for (i = 0; i < array.size(); i++) {
 					v = array.get(i).isObject();
 
-					// Criteria Box
-					TextBox criteriaBox = new TextBox();
-					criteriaBox.setWidth("290px");
-					criteriaBox.setText(new HTML(v.get("criteria").isString().stringValue()).getHTML());
-					criteriaBox.setEnabled(isEditor);
-					viewEditTable.setWidget(currentTableRow, 1, criteriaBox);
-
-					// Value Box
-					TextBox valueBox = new TextBox();
-					valueBox.setWidth("290px");
-					valueBox.setText(new HTML(v.get("value").isString().stringValue()).getHTML());
-					valueBox.setEnabled(isEditor);
-					viewEditTable.setWidget(currentTableRow, 2, valueBox);
-
-					// Image Cross
-					if (isEditor) {
-						final Image newCrossImage = new Image();
-						newCrossImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/cross.png");
-						viewEditTable.setWidget(currentTableRow, 3, newCrossImage);
-						viewEditTable.getCellFormatter().setAlignment(currentTableRow, 3, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
-					}
+					// Adding vetRow
+					String vetCriteria = v.get("criteria").isString().stringValue();
+					String vetValue = v.get("value").isString().stringValue();
+					setViewEditTableRow(viewEditTable, vetCriteria, vetValue, getCurrentViewEditTableRow(), isEditor);
 
 					// Increase iterator
-					currentTableRow++;
+					setCurrentViewEditTableRow(1);
 				}
 
 				// Image Pluss
 				if (isEditor) {
 					final Image newPlusImage = new Image();
 					newPlusImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/plus.gif");
-					viewEditTable.setWidget(currentTableRow++, 1, newPlusImage);
+					newPlusImage.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							setIdleTime(0);
+							int rowIndex = viewEditTable.getCellForEvent(event).getRowIndex();
+							viewEditTable.insertRow(rowIndex);
+							setViewEditTableRow(viewEditTable, appConst.VAL_EMPTY(), appConst.VAL_EMPTY(), rowIndex, isEditor);
+						}
+					});
+					viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, newPlusImage);
+					setCurrentViewEditTableRow(1);
 				}
 
 				// Separator 2
-				viewEditTable.getFlexCellFormatter().setColSpan(currentTableRow, 0, 4);
-				viewEditTable.setWidget(currentTableRow++, 0, htmlSeparator);
+				HTML htmlSeparator2 = new HTML("<hr />");
+				viewEditTable.getFlexCellFormatter().setColSpan(currentViewEditTableRow, 0, 4);
+				htmlSeparator2.setWidth("98%");
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator2);
+				setCurrentViewEditTableRow(1);
 
 				// Buttons Panel
 				HorizontalPanel closeAndSaveButtonPanel = new HorizontalPanel();
@@ -306,14 +357,14 @@ public class Application implements EntryPoint {
 				viewEditSaveButton.setEnabled(isEditor);
 				viewEditSaveButton.setVisible(isEditor);
 				closeAndSaveButtonPanel.add(viewEditSaveButton);
-				viewEditTable.setWidget(currentTableRow, 1, closeAndSaveButtonPanel);
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, closeAndSaveButtonPanel);
 				viewEditPanel.add(viewEditTable);
 
 				// Flex
-				// TODO check for validity
 				flex.insertRow(getViewAdSelectedRow());
 				flex.getFlexCellFormatter().setColSpan(getViewAdSelectedRow(), 0, 4);
 				flex.setWidget(getViewAdSelectedRow(), 0, viewEditPanel);
+				viewEditPanel.setVisible(true);
 
 				// Ad Count
 				setActionState(appConst.VAL_TOTAL_ADS());
@@ -322,21 +373,40 @@ public class Application implements EntryPoint {
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
-			AsyncCallback<String> getAdDescFromServer = new AsyncCallback<String>() {
+			void setViewEditTableRow(final FlexTable vetTable, String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
 
-				@Override
-				public void onFailure(Throwable caught) {
+				// Criteria Box
+				TextBox criteriaBox = new TextBox();
+				criteriaBox.setWidth("95%");
+				criteriaBox.setText(new HTML(vetCriteria).getHTML());
+				criteriaBox.setEnabled(vetIsEditor);
+				vetTable.setWidget(vetRowNumber, 1, criteriaBox);
 
-					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
-					box.show();
+				// Value Box
+				TextBox valueBox = new TextBox();
+				valueBox.setWidth("95%");
+				valueBox.setText(new HTML(vetValue).getHTML());
+				valueBox.setEnabled(vetIsEditor);
+				vetTable.setWidget(vetRowNumber, 2, valueBox);
+
+				// Image Cross
+				if (vetIsEditor) {
+					final Image newCrossImage = new Image();
+					newCrossImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/cross.png");
+					newCrossImage.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							setIdleTime(0);
+							int rowIndex = vetTable.getCellForEvent(event).getRowIndex();
+							vetTable.removeRow(rowIndex);
+						}
+					});
+					vetTable.setWidget(vetRowNumber, 3, newCrossImage);
+					vetTable.getCellFormatter().setAlignment(vetRowNumber, 3, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 				}
-
-				@Override
-				public void onSuccess(String result) {
-
-					drawViewEditTable(result);
-				}
-			};
+			}
 
 			void drawMainListingTable(String result) {
 
@@ -465,22 +535,13 @@ public class Application implements EntryPoint {
 						pageNumberTable.setWidget(0, i2, pageButton);
 					}
 				}
-				pageNumberTable.setVisible(true);
 			}
 
-			AsyncCallback<String> getMainListingByPageFromServer = new AsyncCallback<String>() {
-				public void onFailure(Throwable caught) {
-
-					homeButton.setEnabled(true);
-					homeButton.setFocus(true);
-					setIdleTime(0);
-				}
-
-				public void onSuccess(String result) {
-
-					drawMainListingTable(result);
-				}
-			};
+			/*
+			 * 
+			 * 
+			 * ASYNC METHOD CALLS
+			 */
 
 			private void getTotalAdsFromServer() {
 
@@ -506,21 +567,93 @@ public class Application implements EntryPoint {
 			public void onClick(ClickEvent event) {
 
 				// Sort of Initialize block
-				// setIdleTime(0);
+				setIdleTime(0);
 				setCurrentAppPage(4);
 				showLoginPanel();
 			}
 
+			/*
+			 * 
+			 * 
+			 * ASYNC METHODS
+			 */
+
+			AsyncCallback<String> doLoginToServerAsync = new AsyncCallback<String>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+
+					setIdleTime(0);
+					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
+					box.show();
+				}
+
+				@Override
+				public void onSuccess(String result) {
+
+					setIdleTime(0);
+					DialogBox box = alertWidget("JSon", result, 0, 0);
+					box.show();
+				}
+
+			};
+
+			/*
+			 * 
+			 * 
+			 * DRAW TABLE METHODS
+			 */
+
 			public void showLoginPanel() {
 
-				String various = "<br> " + getLoginState();
-				DialogBox newBox = alertWidget("Login Panel", "Idle time is: " + getIdleTime() + various, 0, 0);
-				newBox.show();
-
 				// Panel
-				// TODO
+				if (!isLoggedIn()) {
+					final FlexTable loginForm1 = new FlexTable();
+					loginForm1.setWidget(0, 0, new Label("Username"));
+					final TextBox textUsername = new TextBox();
+					loginForm1.setWidget(0, 1, textUsername);
+					loginForm1.setWidget(1, 0, new Label("Password"));
+					final TextBox textPassword = new TextBox();
+					loginForm1.setWidget(1, 1, textPassword);
+					final FlexTable loginForm = new FlexTable();
+					loginForm.setWidget(0, 0, loginForm1);
+					final Button loginButton = new Button("Login");
+					loginButton.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							setIdleTime(0);
+							setActionState(appConst.STATUS_LOGGING_IN());
+							doLoginToServer(textUsername.getText());
+						}
+					});
+					loginForm.setWidget(0, 1, loginButton);
+					loginPanel.add(loginForm);
+					RootPanel.get("body1").add(loginPanel);
+				} else {
+
+					// TODO Draw Panel if Logged In
+				}
+			}
+
+			/*
+			 * 
+			 * 
+			 * ASYNC METHOD CALLS
+			 */
+
+			private void doLoginToServer(String userName) {
+
+				gwtService.doLogin(userName, doLoginToServerAsync);
 			}
 		}
+
+		/*
+		 * 
+		 * 
+		 * INITIALIZE APPLICATION BLOCK - finally onModuleLoad()
+		 */
 
 		// Add handlers to anchors
 		HomeButtonClickHandler mainButtonClickHandler = new HomeButtonClickHandler();
@@ -539,6 +672,8 @@ public class Application implements EntryPoint {
 		// InitializeColours()
 		changeMenuItemColorAsSelected();
 
+		// Show Panels
+
 		// InitializeIdleIdleTimer()
 		RepeatingCommand idleTimer = new Scheduler.RepeatingCommand() {
 
@@ -551,19 +686,31 @@ public class Application implements EntryPoint {
 		Scheduler.get().scheduleFixedPeriod(idleTimer, appConst.VAL_SECOND_MS());
 	}
 
+	/*
+	 * 
+	 * 
+	 * GLOBAL SERVICE METHODS BLOCK
+	 */
+
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-		case 1:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-			break;
-		case 4:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-			break;
-		default:
-			break;
+			case 1 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+				loginPanel.setVisible(false);
+				mainPanel.setVisible(true);
+				pagesPanel.setVisible(true);
+				break;
+			case 4 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+				loginPanel.setVisible(true);
+				mainPanel.setVisible(false);
+				pagesPanel.setVisible(false);
+				break;
+			default :
+				break;
 		}
 	}
 
@@ -607,7 +754,6 @@ public class Application implements EntryPoint {
 		this.currentAppPage = currentAppPage;
 		changeMenuItemColorAsSelected();
 	}
-
 	public String getAppViewMode() {
 
 		return appViewMode;
@@ -632,6 +778,11 @@ public class Application implements EntryPoint {
 
 		this.idleTime = idleTime;
 		checkLoginStatus();
+
+		// Restore Total Ads message after different actions
+		if (idleTime > 10 && !getActionState().equals(appConst.VAL_TOTAL_ADS())) {
+			setActionState(appConst.VAL_TOTAL_ADS());
+		}
 	}
 
 	void checkLoginStatus() {
@@ -648,7 +799,7 @@ public class Application implements EntryPoint {
 		setLoginUserName(appConst.VAL_EMPTY());
 
 		// Async Call for updating the session
-		// TODO
+		// TODO Async Call doLogout()
 		setLoginState(appConst.STATUS_LOGGED_OUT());
 	}
 
@@ -657,7 +808,7 @@ public class Application implements EntryPoint {
 		setLoginState(appConst.STATUS_LOGGING_IN());
 
 		// Async Call for updating the session
-		// TODO
+		// TODO Async Call doLogin()
 	}
 
 	public String getActionState() {
@@ -739,5 +890,15 @@ public class Application implements EntryPoint {
 	public void setViewAdSelectedRow(int viewAdSelectedRow) {
 
 		this.viewAdSelectedRow = viewAdSelectedRow;
+	}
+
+	public int getCurrentViewEditTableRow() {
+
+		return currentViewEditTableRow;
+	}
+
+	public void setCurrentViewEditTableRow(int currentViewEditTableRow) {
+
+		this.currentViewEditTableRow += currentViewEditTableRow;
 	}
 }
