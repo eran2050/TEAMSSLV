@@ -1,5 +1,7 @@
 package net.voaideahost.sslv.mvc.gwt.web.client;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -10,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -79,6 +82,7 @@ public class Application implements EntryPoint {
 	private boolean buttonViewAdsPressed = false;
 	private int viewAdSelectedRow = 0;
 	private int currentViewEditTableRow = 0;
+	private JSONObject user;
 
 	// Global Widgets
 	final FlexTable menuTable = new FlexTable();
@@ -563,6 +567,9 @@ public class Application implements EntryPoint {
 		// Login Handler
 		class LoginButtonClickHandler implements ClickHandler {
 
+			// Class Wide
+			final FlexTable loginForm1 = new FlexTable();
+
 			@Override
 			public void onClick(ClickEvent event) {
 
@@ -584,16 +591,22 @@ public class Application implements EntryPoint {
 				public void onFailure(Throwable caught) {
 
 					setIdleTime(0);
+					setLoginState(appConst.STATUS_NOT_LOGGED_IN());
+					setActionState(appConst.ACTION_LOGGING_IN_FAILED());
+
+					// Alert
 					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
 					box.show();
+
 				}
 
 				@Override
 				public void onSuccess(String result) {
 
 					setIdleTime(0);
-					DialogBox box = alertWidget("JSon", result, 0, 0);
-					box.show();
+
+					// Actions
+					doLogin(result);
 				}
 
 			};
@@ -608,7 +621,7 @@ public class Application implements EntryPoint {
 
 				// Panel
 				if (!isLoggedIn()) {
-					final FlexTable loginForm1 = new FlexTable();
+					loginForm1.clear();
 					loginForm1.setWidget(0, 0, new Label("Username"));
 					final TextBox textUsername = new TextBox();
 					loginForm1.setWidget(0, 1, textUsername);
@@ -625,7 +638,7 @@ public class Application implements EntryPoint {
 
 							setIdleTime(0);
 							setActionState(appConst.STATUS_LOGGING_IN());
-							doLoginToServer(textUsername.getText());
+							doLoginToServer(textUsername.getText(), getCookie());
 						}
 					});
 					loginForm.setWidget(0, 1, loginButton);
@@ -643,9 +656,9 @@ public class Application implements EntryPoint {
 			 * ASYNC METHOD CALLS
 			 */
 
-			private void doLoginToServer(String userName) {
+			private void doLoginToServer(String userName, String cookie) {
 
-				gwtService.doLogin(userName, doLoginToServerAsync);
+				gwtService.doLogin(userName, cookie, doLoginToServerAsync);
 			}
 		}
 
@@ -665,6 +678,7 @@ public class Application implements EntryPoint {
 		// InitializeApp()
 		mainButtonClickHandler.getTotalAdsFromServer();
 		mainButtonClickHandler.getMainListingByPageFromServer();
+		loginButtonClickHandler.doLoginToServer(getLoginUserName(), getCookie());
 
 		// InitializeUser()
 		setLoginState(getLoginState());
@@ -695,22 +709,22 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-			case 1 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-				loginPanel.setVisible(false);
-				mainPanel.setVisible(true);
-				pagesPanel.setVisible(true);
-				break;
-			case 4 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-				loginPanel.setVisible(true);
-				mainPanel.setVisible(false);
-				pagesPanel.setVisible(false);
-				break;
-			default :
-				break;
+		case 1:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+			loginPanel.setVisible(false);
+			mainPanel.setVisible(true);
+			pagesPanel.setVisible(true);
+			break;
+		case 4:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+			loginPanel.setVisible(true);
+			mainPanel.setVisible(false);
+			pagesPanel.setVisible(false);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -754,6 +768,7 @@ public class Application implements EntryPoint {
 		this.currentAppPage = currentAppPage;
 		changeMenuItemColorAsSelected();
 	}
+
 	public String getAppViewMode() {
 
 		return appViewMode;
@@ -799,16 +814,35 @@ public class Application implements EntryPoint {
 		setLoginUserName(appConst.VAL_EMPTY());
 
 		// Async Call for updating the session
-		// TODO Async Call doLogout()
-		setLoginState(appConst.STATUS_LOGGED_OUT());
+		// TODO Async Call result parse - doLogout()
 	}
 
-	void doLogin() {
+	void doLogin(String result) {
 
-		setLoginState(appConst.STATUS_LOGGING_IN());
+		// Parse JSON
+		String json = result;
+		JSONArray array = (JSONArray) JSONParser.parseStrict(json);
+		JSONObject v;
 
-		// Async Call for updating the session
-		// TODO Async Call doLogin()
+		// Login Actions
+		if (array.size() == 0) {
+			setLoginState(appConst.STATUS_NOT_LOGGED_IN());
+			setActionState(appConst.ACTION_LOGGING_IN_FAILED());
+		} else {
+			v = array.get(0).isObject();
+
+			// {"id":"SUX","name":"SASHKO","surName":"VOLKOFF","eMail":"suxlv@gov.us","phone":"113"}
+			String id = v.get("id").isString().stringValue();
+			// String name = v.get("name").isString().stringValue();
+			// String surname = v.get("surName").isString().stringValue();
+			// String email = v.get("eMail").isString().stringValue();
+			// String phone = v.get("phone").isString().stringValue();
+
+			setLoginUserName(id);
+			setLoginState(appConst.STATUS_LOGGED_IN());
+			setActionState(appConst.STATUS_LOGGED_IN());
+			setUser(v);
+		}
 	}
 
 	public String getActionState() {
@@ -900,5 +934,27 @@ public class Application implements EntryPoint {
 	public void setCurrentViewEditTableRow(int currentViewEditTableRow) {
 
 		this.currentViewEditTableRow += currentViewEditTableRow;
+	}
+
+	public void createCookie() {
+
+		Date date = new Date();
+		long nowLong = date.getTime();
+		nowLong = nowLong + (1000 * 60 * 10);
+		date.setTime(nowLong);
+		Cookies.setCookie("SessionID", "1", date);
+	}
+
+	public String getCookie() {
+
+		return Cookies.getCookie("SessionID") == null ? appConst.VAL_EMPTY() : Cookies.getCookie("SessionID");
+	}
+
+	public JSONObject getUser() {
+		return user;
+	}
+
+	public void setUser(JSONObject user) {
+		this.user = user;
 	}
 }

@@ -37,8 +37,8 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet imple
 	}
 
 	@Override
-	public String doLogin(String userName) {
+	public String doLogin(String userName, String sessionID) {
 
-		return service.doLogin(userName);
+		return service.doLogin(userName, sessionID);
 	}
 }

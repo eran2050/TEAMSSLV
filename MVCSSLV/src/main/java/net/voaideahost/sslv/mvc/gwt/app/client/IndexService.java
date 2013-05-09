@@ -13,7 +13,7 @@ public interface IndexService {
 
 	String getAdDesc(int adDescId);
 
-	String doLogin(String userName);
+	String doLogin(String userName, String sessionID);
 
 	HttpSession session();
 }

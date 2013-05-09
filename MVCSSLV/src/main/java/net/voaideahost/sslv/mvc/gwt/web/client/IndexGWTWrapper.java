@@ -12,5 +12,5 @@ public interface IndexGWTWrapper extends RemoteService {
 
 	String getAdDesc(int adDescId);
 
-	String doLogin(String userName);
+	String doLogin(String userName, String sessionID);
 }

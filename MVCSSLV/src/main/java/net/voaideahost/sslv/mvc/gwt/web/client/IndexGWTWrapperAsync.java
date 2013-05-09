@@ -10,5 +10,5 @@ public interface IndexGWTWrapperAsync {
 
 	void getAdDesc(int adDescId, AsyncCallback<String> asyncCallback);
 
-	void doLogin(String userName, AsyncCallback<String> asyncCallback);
+	void doLogin(String userName, String sessionID, AsyncCallback<String> asyncCallback);
 }

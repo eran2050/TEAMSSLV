@@ -46,9 +46,6 @@ public interface AppConst extends Constants {
 	@DefaultStringValue("Logged In")
 	String STATUS_LOGGED_IN();
 
-	@DefaultStringValue("No Such User")
-	String STATUS_NO_SUCH_USER();
-
 	@DefaultStringValue("Logging Out ..")
 	String STATUS_LOGGING_OUT();
 
@@ -66,6 +63,9 @@ public interface AppConst extends Constants {
 
 	@DefaultStringValue("Not Authorized!")
 	String ACTION_NOT_AUTHORIZED();
+
+	@DefaultStringValue("Failed logging in")
+	String ACTION_LOGGING_IN_FAILED();
 
 	@DefaultStringValue("view_mode_all")
 	String VIEW_MODE_ALL();
