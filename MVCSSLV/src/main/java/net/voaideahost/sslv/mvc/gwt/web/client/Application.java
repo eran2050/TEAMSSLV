@@ -70,6 +70,7 @@ public class Application implements EntryPoint {
 	}
 
 	// Application wide params
+	private boolean initializing = true;
 	private String loginUserName = appConst.VAL_EMPTY();
 	private String loginState = appConst.STATUS_NOT_LOGGED_IN();
 	private String actionState = appConst.VAL_INITIALIZING();
@@ -976,10 +977,22 @@ public class Application implements EntryPoint {
 	}
 
 	public JSONObject getUser() {
+
 		return user;
 	}
 
 	public void setUser(JSONObject user) {
+
 		this.user = user;
+	}
+
+	public boolean isInitializing() {
+
+		return initializing;
+	}
+
+	public void setInitializing(boolean initializing) {
+
+		this.initializing = initializing;
 	}
 }
