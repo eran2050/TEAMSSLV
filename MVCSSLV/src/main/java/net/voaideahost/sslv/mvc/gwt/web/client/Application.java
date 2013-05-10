@@ -569,6 +569,7 @@ public class Application implements EntryPoint {
 
 			// Class Wide
 			final FlexTable loginForm1 = new FlexTable();
+			final FlexTable loginForm = new FlexTable();
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -622,13 +623,15 @@ public class Application implements EntryPoint {
 				// Panel
 				if (!isLoggedIn()) {
 					loginForm1.clear();
+					loginForm.clear();
+
 					loginForm1.setWidget(0, 0, new Label("Username"));
 					final TextBox textUsername = new TextBox();
 					loginForm1.setWidget(0, 1, textUsername);
 					loginForm1.setWidget(1, 0, new Label("Password"));
 					final TextBox textPassword = new TextBox();
 					loginForm1.setWidget(1, 1, textPassword);
-					final FlexTable loginForm = new FlexTable();
+
 					loginForm.setWidget(0, 0, loginForm1);
 					final Button loginButton = new Button("Login");
 					loginButton.addClickHandler(new ClickHandler() {
@@ -638,10 +641,25 @@ public class Application implements EntryPoint {
 
 							setIdleTime(0);
 							setActionState(appConst.STATUS_LOGGING_IN());
+							setLoginUserName(textUsername.getText());
 							doLoginToServer(textUsername.getText(), getCookie());
 						}
 					});
 					loginForm.setWidget(0, 1, loginButton);
+
+					// GetCookie
+					final Button getCookieButton = new Button(appConst.VAL_COOKIE());
+					getCookieButton.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							DialogBox box = alertWidget(appConst.VAL_COOKIE(), getCookie(), 0, 0);
+							box.show();
+						}
+					});
+					loginForm1.setWidget(2, 0, getCookieButton);
+
 					loginPanel.add(loginForm);
 					RootPanel.get("body1").add(loginPanel);
 				} else {
@@ -709,22 +727,22 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-		case 1:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-			loginPanel.setVisible(false);
-			mainPanel.setVisible(true);
-			pagesPanel.setVisible(true);
-			break;
-		case 4:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-			loginPanel.setVisible(true);
-			mainPanel.setVisible(false);
-			pagesPanel.setVisible(false);
-			break;
-		default:
-			break;
+			case 1 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+				loginPanel.setVisible(false);
+				mainPanel.setVisible(true);
+				pagesPanel.setVisible(true);
+				break;
+			case 4 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+				loginPanel.setVisible(true);
+				mainPanel.setVisible(false);
+				pagesPanel.setVisible(false);
+				break;
+			default :
+				break;
 		}
 	}
 
@@ -826,22 +844,28 @@ public class Application implements EntryPoint {
 
 		// Login Actions
 		if (array.size() == 0) {
+
+			setLoginUserName(appConst.VAL_EMPTY());
 			setLoginState(appConst.STATUS_NOT_LOGGED_IN());
 			setActionState(appConst.ACTION_LOGGING_IN_FAILED());
+			createCookie(appConst.VAL_EMPTY());
+
 		} else {
+
+			// USER
 			v = array.get(0).isObject();
-
-			// {"id":"SUX","name":"SASHKO","surName":"VOLKOFF","eMail":"suxlv@gov.us","phone":"113"}
 			String id = v.get("id").isString().stringValue();
-			// String name = v.get("name").isString().stringValue();
-			// String surname = v.get("surName").isString().stringValue();
-			// String email = v.get("eMail").isString().stringValue();
-			// String phone = v.get("phone").isString().stringValue();
-
-			setLoginUserName(id);
+			if (getLoginUserName().equals(appConst.VAL_EMPTY())) {
+				setLoginUserName(id);
+			}
 			setLoginState(appConst.STATUS_LOGGED_IN());
 			setActionState(appConst.STATUS_LOGGED_IN());
 			setUser(v);
+
+			// Session ID
+			v = array.get(1).isObject();
+			id = v.get("id").isString().stringValue();
+			createCookie(id);
 		}
 	}
 
@@ -936,18 +960,19 @@ public class Application implements EntryPoint {
 		this.currentViewEditTableRow += currentViewEditTableRow;
 	}
 
-	public void createCookie() {
+	public void createCookie(String cookie) {
 
 		Date date = new Date();
 		long nowLong = date.getTime();
-		nowLong = nowLong + (1000 * 60 * 10);
+		nowLong = nowLong + (1000 * 60 * 60);
 		date.setTime(nowLong);
-		Cookies.setCookie("SessionID", "1", date);
+		Cookies.setCookie(appConst.VAL_COOKIE(), cookie, date);
 	}
 
 	public String getCookie() {
 
-		return Cookies.getCookie("SessionID") == null ? appConst.VAL_EMPTY() : Cookies.getCookie("SessionID");
+		String cookie = Cookies.getCookie(appConst.VAL_COOKIE()).toString();
+		return cookie == null ? appConst.VAL_EMPTY() : cookie;
 	}
 
 	public JSONObject getUser() {

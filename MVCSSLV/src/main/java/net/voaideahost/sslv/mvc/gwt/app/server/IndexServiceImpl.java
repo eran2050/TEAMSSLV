@@ -88,56 +88,68 @@ public class IndexServiceImpl implements IndexService {
 	@Override
 	public String doLogin(String clientUserName, String clientSessionID) {
 
+		String serverSessionID = session().getId();
+
+		logger.info("doLogin() start");
+		logger.info("doLogin() clientUserName=" + clientUserName);
+		logger.info("doLogin() clientSessionID=" + clientSessionID);
+		logger.info("doLogin() serverSessionID=" + serverSessionID);
+
 		try {
+			ArrayList<Users> list = new ArrayList<Users>();
 			Users user = uDao.getUserById(clientUserName);
 			Gson gson = new Gson();
-			String toJson = gson.toJson(user);
+			String toJson;
 
 			String serverUserName = Config.VAL_EMPTY;
-			String serverSessionID = Config.VAL_EMPTY;
 			String serverUserDAO = Config.VAL_EMPTY;
 
 			if (user != null && user.getId() != null) {
 				serverUserDAO = user.getId();
 			}
 
-			// Step 1 - Getting Session Params
-			if (session().getAttribute(Config.VAL_USERNAME) != null && session().getAttribute(Config.VAL_SESSIONID) != null) {
+			// Register Session
+			if (!serverUserDAO.equals(Config.VAL_EMPTY) && clientUserName.equals(serverUserDAO)) {
 
-				serverUserName = session().getAttribute(Config.VAL_USERNAME).toString();
-				serverSessionID = session().getAttribute(Config.VAL_SESSIONID).toString();
-				logger.info("doLogin() " + "using userNameSession=" + serverUserName + " as session() attribute");
-				logger.info("doLogin() " + "using serverSessionID=" + serverSessionID + " as session() attribute");
-				logger.info("doLogin() proceed");
+				session().setAttribute(Config.VAL_USERNAME, clientUserName);
+				logger.info("doLogin() " + "saved clientUserName=" + clientUserName + " in session()");
+				logger.info("doLogin() " + "passed serverSessionID=" + serverSessionID + " to Client");
+
+				list.add(user);
+				Users u2 = new Users();
+				u2.setId(serverSessionID);
+				list.add(u2);
+				toJson = gson.toJson(list);
+				logger.info(toJson);
+
+				logger.info("doLogin() success");
+
+				return toJson;
 			}
 
-			// Step 2A - Restoring Session
-			if (clientSessionID.equals(serverSessionID) && !clientUserName.equals(serverUserName)) {
+			// Step 1 - Restoring Session
+			if (session().getAttribute(Config.VAL_USERNAME) != null) {
+
+				serverUserName = session().getAttribute(Config.VAL_USERNAME).toString();
+				logger.info("doLogin() " + "using userNameSession=" + serverUserName + " as session() attribute");
+				logger.info("doLogin() proceed");
 
 				logger.info("doLogin() " + "got userNameSession=" + serverUserName + " in session()");
 				logger.info("doLogin() " + "got serverSessionID=" + serverSessionID + " in session()");
 
 				user = uDao.getUserById(serverUserName);
-				toJson = gson.toJson(user);
-
-				logger.info("doLogin() restorred session");
-
-				return toJson;
-			}
-
-			// Step 2B - Register Session
-			if (!serverUserDAO.equals(Config.VAL_EMPTY) && clientUserName.equals(serverUserDAO) && serverSessionID.equals(Config.VAL_EMPTY)) {
-
-				session().setAttribute(Config.VAL_USERNAME, clientUserName);
-				session().setAttribute(Config.VAL_SESSIONID, clientSessionID);
-				logger.info("doLogin() " + "saved clientUserName=" + clientUserName + " in session()");
-				logger.info("doLogin() " + "saved clientSessionID=" + clientSessionID + " in session()");
-				logger.info("doLogin() success login");
+				list.add(user);
+				Users u2 = new Users();
+				u2.setId(serverSessionID);
+				list.add(u2);
+				toJson = gson.toJson(list);
+				logger.info(toJson);
+				logger.info("doLogin() session restorred");
 
 				return toJson;
 			}
-			logger.info("doLogin() " + " failed login");
 
+			logger.info("doLogin() failed");
 			return null;
 
 		} catch (Exception e) {

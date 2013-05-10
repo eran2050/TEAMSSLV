@@ -4,11 +4,14 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
+	@DefaultStringValue("v5.0.4_0")
+	String APP_VERSION();
+
 	@DefaultStringValue("/java2/")
 	String VAL_CONTEXT_ROOT();
 
-	@DefaultStringValue("v5.0.4_0")
-	String APP_VERSION();
+	@DefaultStringValue("SessionID")
+	String VAL_COOKIE();
 
 	@DefaultStringValue("")
 	String VAL_EMPTY();
