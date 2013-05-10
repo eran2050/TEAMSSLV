@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
-	@DefaultStringValue("v5.0.4_0")
+	@DefaultStringValue("v5.0.4_7")
 	String APP_VERSION();
 
 	@DefaultStringValue("/java2/")
@@ -28,7 +28,7 @@ public interface AppConst extends Constants {
 	@DefaultIntValue(15)
 	int VAL_PAGES_IN_LINE();
 
-	@DefaultIntValue(300)
+	@DefaultIntValue(1812)
 	int VAL_MAX_IDLE_TIME();
 
 	@DefaultStringValue("Initializing ..")
@@ -55,6 +55,9 @@ public interface AppConst extends Constants {
 	@DefaultStringValue("Logged Out")
 	String STATUS_LOGGED_OUT();
 
+	@DefaultStringValue("Logged Out (idle timeout)")
+	String STATUS_LOGGED_OUT_IDLE();
+
 	@DefaultStringValue("Advertisment has been removed")
 	String ACTION_AD_DELETED();
 
@@ -69,6 +72,9 @@ public interface AppConst extends Constants {
 
 	@DefaultStringValue("Failed logging in")
 	String ACTION_LOGGING_IN_FAILED();
+
+	@DefaultStringValue("Ready")
+	String ACTION_READY();
 
 	@DefaultStringValue("view_mode_all")
 	String VIEW_MODE_ALL();

@@ -16,4 +16,6 @@ public interface IndexService {
 	String doLogin(String userName, String sessionID);
 
 	HttpSession session();
+
+	String doLogout(String userName, String sessionID);
 }

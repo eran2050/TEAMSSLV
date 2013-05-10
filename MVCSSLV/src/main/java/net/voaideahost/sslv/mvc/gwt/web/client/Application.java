@@ -90,6 +90,7 @@ public class Application implements EntryPoint {
 	final FlexTable flex = new FlexTable();
 	final HTML appActionLabel = new HTML(appConst.VAL_EMPTY());
 	final HTML pageLoadTimeLabel = new HTML();
+	final FlexTable userTable = new FlexTable();
 
 	// Panels
 	final VerticalPanel loginPanel = new VerticalPanel();
@@ -100,11 +101,15 @@ public class Application implements EntryPoint {
 	final Image imageLoading = new Image();
 	final Image imageCross = new Image();
 	final Image imagePlus = new Image();
+	final Image imageLogin = new Image();
+	final Image imageLogout = new Image();
 
 	public void onModuleLoad() {
 
 		// Init Resources
 		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading.gif");
+		imageLogin.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/login.jpg");
+		imageLogout.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/logout.jpg");
 
 		// HEADER - Navigation Menu
 		final HorizontalPanel menuPanel = new HorizontalPanel();
@@ -169,6 +174,7 @@ public class Application implements EntryPoint {
 		// Async Calls
 
 		// HANDLERS
+
 		// Create a handler for the sendButton and nameField
 		class HomeButtonClickHandler implements ClickHandler {
 
@@ -576,9 +582,10 @@ public class Application implements EntryPoint {
 			public void onClick(ClickEvent event) {
 
 				// Sort of Initialize block
+				setPageLoadingStartTime(getMillis());
 				setIdleTime(0);
 				setCurrentAppPage(4);
-				showLoginPanel();
+				drawLoginPanel();
 			}
 
 			/*
@@ -609,6 +616,36 @@ public class Application implements EntryPoint {
 
 					// Actions
 					doLogin(result);
+					drawLoginPanel();
+				}
+
+			};
+
+			AsyncCallback<String> doLogoutFromServerAsync = new AsyncCallback<String>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+
+					setIdleTime(0);
+					setLoginState(appConst.STATUS_NOT_LOGGED_IN());
+					setActionState(appConst.STATUS_LOGGED_OUT());
+					setLoginUserName(appConst.VAL_EMPTY());
+					setCookie(appConst.VAL_EMPTY());
+
+					// Alert
+					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
+					box.show();
+
+				}
+
+				@Override
+				public void onSuccess(String result) {
+
+					setIdleTime(0);
+
+					// Actions
+					doLogout(result);
+					drawLoginPanel();
 				}
 
 			};
@@ -619,12 +656,102 @@ public class Application implements EntryPoint {
 			 * DRAW TABLE METHODS
 			 */
 
-			public void showLoginPanel() {
+			public void drawLoginPanel() {
 
-				// Panel
-				if (!isLoggedIn()) {
+				if (isLoggedIn()) {
+
+					setActionState(appConst.ACTION_READY());
+
+					loginPanel.clear();
+					loginPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+					userTable.clear();
 					loginForm1.clear();
 					loginForm.clear();
+					loginForm.setStyleName("cw-FlexTable-view-edit-box");
+
+					loginForm1.addStyleName("cw-FlexTable");
+					loginForm1.setWidth("1024px");
+					loginForm1.setHTML(0, 0, "<b>Id</b>");
+					loginForm1.setHTML(0, 1, "<b>Name</b>");
+					loginForm1.setHTML(0, 2, "<b>Surname</b>");
+					loginForm1.setHTML(0, 3, "<b>e-mail</b>");
+					loginForm1.setHTML(0, 4, "<b>Phone</b>");
+
+					loginForm1.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
+
+					loginForm1.getColumnFormatter().setWidth(0, "10%");
+					loginForm1.getColumnFormatter().setWidth(1, "25%");
+					loginForm1.getColumnFormatter().setWidth(2, "25%");
+					loginForm1.getColumnFormatter().setWidth(3, "20%");
+					loginForm1.getColumnFormatter().setWidth(4, "20%");
+
+					loginForm1.setHTML(1, 0, getUser().get("id").isString().stringValue());
+					loginForm1.setHTML(1, 1, getUser().get("name").isString().stringValue());
+					loginForm1.setHTML(1, 2, getUser().get("surName").isString().stringValue());
+					loginForm1.setHTML(1, 3, getUser().get("eMail").isString().stringValue());
+					loginForm1.setHTML(1, 4, getUser().get("phone").isString().stringValue());
+
+					loginPanel.add(loginForm1);
+
+					// Separator
+					loginPanel.add(new HTML("&nbsp;&nbsp;"));
+
+					// SessionID & Idle Time
+					userTable.addStyleName("cw-FlexTable");
+					userTable.setWidth("1024px");
+					userTable.setHTML(0, 0, "<b>SessionID</b>");
+					userTable.setHTML(0, 1, "<b>Idle Time (sec)</b>");
+
+					userTable.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
+
+					userTable.getColumnFormatter().setWidth(0, "50%");
+					userTable.getColumnFormatter().setWidth(1, "50%");
+
+					userTable.setHTML(1, 0, getCookie());
+					userTable.setHTML(1, 1, Integer.toString(getIdleTime()));
+
+					loginPanel.add(userTable);
+
+					// Separator
+					loginPanel.add(new HTML("&nbsp;&nbsp;"));
+					loginPanel.add(new HTML("&nbsp;&nbsp;"));
+
+					// TODO AppViewMode()
+
+					// Logout Button
+					final FlexTable logoutFlexTable = new FlexTable();
+					logoutFlexTable.clear();
+					final Button logoutButton = new Button("Logout");
+					logoutButton.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							setPageLoadingStartTime(getMillis());
+							setIdleTime(0);
+							setActionState(appConst.STATUS_LOGGING_OUT());
+							doLogoutFromServer(getLoginUserName(), getCookie());
+						}
+					});
+					logoutFlexTable.setWidget(0, 0, logoutButton);
+					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+					logoutFlexTable.setWidget(0, 1, imageLogout);
+					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_MIDDLE);
+					loginPanel.add(logoutFlexTable);
+
+					// Panel
+					RootPanel.get("body1").clear();
+					RootPanel.get("body1").add(loginPanel);
+
+				} else {
+
+					// TODO Fix Bug with incorrect table when logged out
+					setActionState(appConst.ACTION_READY());
+
+					loginPanel.clear();
+					loginForm1.clear();
+					loginForm.clear();
+					loginForm.setStyleName("cw-FlexTable-view-edit-box");
 
 					loginForm1.setWidget(0, 0, new Label("Username"));
 					final TextBox textUsername = new TextBox();
@@ -632,14 +759,17 @@ public class Application implements EntryPoint {
 					loginForm1.setWidget(1, 0, new Label("Password"));
 					final TextBox textPassword = new TextBox();
 					loginForm1.setWidget(1, 1, textPassword);
-
 					loginForm.setWidget(0, 0, loginForm1);
+					loginForm.getFlexCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+
+					// Login Button
 					final Button loginButton = new Button("Login");
 					loginButton.addClickHandler(new ClickHandler() {
 
 						@Override
 						public void onClick(ClickEvent event) {
 
+							setPageLoadingStartTime(getMillis());
 							setIdleTime(0);
 							setActionState(appConst.STATUS_LOGGING_IN());
 							setLoginUserName(textUsername.getText());
@@ -647,26 +777,18 @@ public class Application implements EntryPoint {
 						}
 					});
 					loginForm.setWidget(0, 1, loginButton);
+					loginForm.getFlexCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					loginForm.setWidget(0, 2, imageLogin);
+					loginForm.getFlexCellFormatter().setAlignment(0, 2, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 
-					// GetCookie
-					final Button getCookieButton = new Button(appConst.VAL_COOKIE());
-					getCookieButton.addClickHandler(new ClickHandler() {
-
-						@Override
-						public void onClick(ClickEvent event) {
-
-							DialogBox box = alertWidget(appConst.VAL_COOKIE(), getCookie(), 0, 0);
-							box.show();
-						}
-					});
-					loginForm1.setWidget(2, 0, getCookieButton);
-
+					// Panel
 					loginPanel.add(loginForm);
+					RootPanel.get("body1").clear();
 					RootPanel.get("body1").add(loginPanel);
-				} else {
-
-					// TODO Draw Panel if Logged In
 				}
+
+				// Timing
+				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
 			/*
@@ -679,6 +801,19 @@ public class Application implements EntryPoint {
 
 				gwtService.doLogin(userName, cookie, doLoginToServerAsync);
 			}
+
+			private void doLogoutFromServer(String userName, String cookie) {
+
+				gwtService.doLogout(userName, cookie, doLogoutFromServerAsync);
+			}
+
+			/*
+			 * 
+			 * 
+			 * SERVICE
+			 */
+
+			// TODO Login & Logout Imaged addClickHandler()
 		}
 
 		/*
@@ -728,22 +863,22 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-			case 1 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-				loginPanel.setVisible(false);
-				mainPanel.setVisible(true);
-				pagesPanel.setVisible(true);
-				break;
-			case 4 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-				loginPanel.setVisible(true);
-				mainPanel.setVisible(false);
-				pagesPanel.setVisible(false);
-				break;
-			default :
-				break;
+		case 1:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+			loginPanel.setVisible(false);
+			mainPanel.setVisible(true);
+			pagesPanel.setVisible(true);
+			break;
+		case 4:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+			loginPanel.setVisible(true);
+			mainPanel.setVisible(false);
+			pagesPanel.setVisible(false);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -812,28 +947,33 @@ public class Application implements EntryPoint {
 
 		this.idleTime = idleTime;
 		checkLoginStatus();
-
-		// Restore Total Ads message after different actions
-		if (idleTime > 10 && !getActionState().equals(appConst.VAL_TOTAL_ADS())) {
-			setActionState(appConst.VAL_TOTAL_ADS());
-		}
 	}
 
 	void checkLoginStatus() {
 
 		if ((getLoginState().equals(appConst.STATUS_LOGGED_IN()) || getLoginState().equals(appConst.STATUS_LOGGING_IN()))
 				&& getIdleTime() >= appConst.VAL_MAX_IDLE_TIME()) {
-			doLogout();
+			doLogout(appConst.STATUS_LOGGED_OUT_IDLE());
+		}
+
+		if (getCurrentAppPage() == 4 && isLoggedIn()) {
+
+			userTable.setHTML(1, 1, Integer.toString(getIdleTime()));
 		}
 	}
 
-	void doLogout() {
+	void doLogout(String result) {
 
-		setLoginState(appConst.STATUS_LOGGING_OUT());
 		setLoginUserName(appConst.VAL_EMPTY());
+		setLoginState(appConst.STATUS_NOT_LOGGED_IN());
 
-		// Async Call for updating the session
-		// TODO Async Call result parse - doLogout()
+		if (result.equals(appConst.STATUS_LOGGED_OUT_IDLE())) {
+			setActionState(result);
+		} else {
+			setActionState(appConst.STATUS_LOGGED_OUT());
+		}
+
+		setCookie(appConst.VAL_EMPTY());
 	}
 
 	void doLogin(String result) {
@@ -849,7 +989,7 @@ public class Application implements EntryPoint {
 			setLoginUserName(appConst.VAL_EMPTY());
 			setLoginState(appConst.STATUS_NOT_LOGGED_IN());
 			setActionState(appConst.ACTION_LOGGING_IN_FAILED());
-			createCookie(appConst.VAL_EMPTY());
+			setCookie(appConst.VAL_EMPTY());
 
 		} else {
 
@@ -866,7 +1006,7 @@ public class Application implements EntryPoint {
 			// Session ID
 			v = array.get(1).isObject();
 			id = v.get("id").isString().stringValue();
-			createCookie(id);
+			setCookie(id);
 		}
 	}
 
@@ -961,7 +1101,7 @@ public class Application implements EntryPoint {
 		this.currentViewEditTableRow += currentViewEditTableRow;
 	}
 
-	public void createCookie(String cookie) {
+	public void setCookie(String cookie) {
 
 		Date date = new Date();
 		long nowLong = date.getTime();

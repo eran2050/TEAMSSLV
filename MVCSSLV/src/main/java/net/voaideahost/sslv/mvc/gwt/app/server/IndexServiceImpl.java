@@ -175,4 +175,37 @@ public class IndexServiceImpl implements IndexService {
 
 		return null;
 	}
+
+	@Override
+	public String doLogout(String clientUserName, String clientSessionID) {
+
+		String serverSessionID = session().getId();
+
+		logger.info("doLogout() start");
+		logger.info("doLogout() clientUserName=" + clientUserName);
+		logger.info("doLogout() clientSessionID=" + clientSessionID);
+		logger.info("doLogout() serverSessionID=" + serverSessionID);
+
+		try {
+			if (session().getAttribute(Config.VAL_USERNAME) != null) {
+
+				String serverUserName = session().getAttribute(Config.VAL_USERNAME).toString();
+
+				if (serverUserName.equals(clientUserName) && serverSessionID.equals(clientSessionID)) {
+
+					session().removeAttribute(Config.VAL_USERNAME);
+					session().invalidate();
+					logger.info("doLogout() success");
+
+					return serverSessionID;
+				}
+			}
+		} catch (Exception e) {
+
+			logger.error("doLogout() " + e.getMessage());
+		}
+
+		logger.info("doLogout() failed");
+		return null;
+	}
 }
