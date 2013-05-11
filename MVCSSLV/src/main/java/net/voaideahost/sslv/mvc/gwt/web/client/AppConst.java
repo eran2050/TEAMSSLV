@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
-	@DefaultStringValue("v5.0.4_8")
+	@DefaultStringValue("v5.0.5_6")
 	String APP_VERSION();
 
 	@DefaultStringValue("/java2/")
@@ -20,10 +20,10 @@ public interface AppConst extends Constants {
 	int VAL_SECOND_MS();
 
 	@DefaultIntValue(20)
-	int VAL_ADS_PER_MAIN_PAGE();
+	int VAL_ADS_PER_VIEW_MODE_ALL();
 
 	@DefaultIntValue(10)
-	int VAL_ADS_PER_LOGIN_PAGE();
+	int VAL_ADS_PER_VIEW_MODE_USER();
 
 	@DefaultIntValue(15)
 	int VAL_PAGES_IN_LINE();
@@ -31,25 +31,31 @@ public interface AppConst extends Constants {
 	@DefaultIntValue(1812)
 	int VAL_MAX_IDLE_TIME();
 
-	@DefaultStringValue("Initializing ..")
+	@DefaultStringValue("Initializing&nbsp;")
 	String VAL_INITIALIZING();
 
-	@DefaultStringValue("Loading ..")
+	@DefaultStringValue("Loading&nbsp;")
 	String VAL_LOADING();
 
 	@DefaultStringValue("Total Ads: ")
 	String VAL_TOTAL_ADS();
 
+	@DefaultStringValue("View Mode: All")
+	String VAL_VIEW_MODE_ALL();
+
+	@DefaultStringValue("View Mode: User Only")
+	String VAL_VIEW_MODE_USER();
+
 	@DefaultStringValue("Not Logged In")
 	String STATUS_NOT_LOGGED_IN();
 
-	@DefaultStringValue("Logging In ..")
+	@DefaultStringValue("Logging In&nbsp;")
 	String STATUS_LOGGING_IN();
 
 	@DefaultStringValue("Logged In")
 	String STATUS_LOGGED_IN();
 
-	@DefaultStringValue("Logging Out ..")
+	@DefaultStringValue("Logging Out&nbsp;")
 	String STATUS_LOGGING_OUT();
 
 	@DefaultStringValue("Logged Out")
@@ -61,7 +67,7 @@ public interface AppConst extends Constants {
 	@DefaultStringValue("Advertisment has been removed")
 	String ACTION_AD_DELETED();
 
-	@DefaultStringValue("Saving..")
+	@DefaultStringValue("Saving&nbsp;")
 	String ACTION_SAVING();
 
 	@DefaultStringValue("Advertisment has been updated")
@@ -70,15 +76,9 @@ public interface AppConst extends Constants {
 	@DefaultStringValue("Not Authorized!")
 	String ACTION_NOT_AUTHORIZED();
 
-	@DefaultStringValue("Failed logging in")
+	@DefaultStringValue("Failed logging in!")
 	String ACTION_LOGGING_IN_FAILED();
 
 	@DefaultStringValue("Ready")
 	String ACTION_READY();
-
-	@DefaultStringValue("view_mode_all")
-	String VIEW_MODE_ALL();
-
-	@DefaultStringValue("view_mode_user")
-	String VIEW_MODE_USER();
 }

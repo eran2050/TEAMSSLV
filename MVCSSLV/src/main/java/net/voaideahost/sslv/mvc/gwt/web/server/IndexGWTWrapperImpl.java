@@ -19,15 +19,15 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet imple
 	}
 
 	@Override
-	public String getMainListing(int page) {
+	public String getMainListing(String viewMode, int page, String userName) {
 
-		return service.getMainListing(page);
+		return service.getMainListing(viewMode, page, userName);
 	}
 
 	@Override
-	public Integer getTotalAds() {
+	public Integer getTotalAds(String viewMode, String userName) {
 
-		return service.getTotalAds();
+		return service.getTotalAds(viewMode, userName);
 	}
 
 	@Override

@@ -9,6 +9,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -25,6 +27,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -75,7 +78,7 @@ public class Application implements EntryPoint {
 	private String loginState = appConst.STATUS_NOT_LOGGED_IN();
 	private String actionState = appConst.VAL_INITIALIZING();
 	private int currentAppPage = 1;
-	private String appViewMode = appConst.VIEW_MODE_ALL();
+	private String appViewMode = appConst.VAL_VIEW_MODE_ALL();
 	private int idleTime = 0;
 	private double pageLoadingStartTime = getMillis();
 	private int mainListingPageNumber = 1;
@@ -88,7 +91,7 @@ public class Application implements EntryPoint {
 	// Global Widgets
 	final FlexTable menuTable = new FlexTable();
 	final FlexTable flex = new FlexTable();
-	final HTML appActionLabel = new HTML(appConst.VAL_EMPTY());
+	final HTML appActionLabel = new HTML();
 	final HTML pageLoadTimeLabel = new HTML();
 	final FlexTable userTable = new FlexTable();
 
@@ -108,7 +111,7 @@ public class Application implements EntryPoint {
 	public void onModuleLoad() {
 
 		// Init Resources
-		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading.gif");
+		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading4.gif");
 		imageLogin.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/login.jpg");
 		imageLogout.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/logout.jpg");
 
@@ -155,7 +158,6 @@ public class Application implements EntryPoint {
 
 		// MAIN CONTAINER - Page numbers
 		final FlexTable pageNumberTable = new FlexTable();
-		pageNumberTable.setHTML(0, 0, "Pages");
 		pagesPanel.add(pageNumberTable);
 		RootPanel.get("body3").add(pagesPanel);
 
@@ -195,7 +197,6 @@ public class Application implements EntryPoint {
 
 				// Async Calls
 				getTotalAdsFromServer();
-				getMainListingByPageFromServer();
 			}
 
 			/*
@@ -218,7 +219,8 @@ public class Application implements EntryPoint {
 				public void onSuccess(Integer result) {
 
 					setTotalAds(result.intValue());
-					setActionState(appConst.VAL_TOTAL_ADS());
+					// Get Ads only when know how much to get
+					getMainListingByPageFromServer();
 				}
 
 			};
@@ -314,7 +316,7 @@ public class Application implements EntryPoint {
 					// Adding vetRow
 					String vetCriteria = v.get("criteria").isString().stringValue();
 					String vetValue = v.get("value").isString().stringValue();
-					setViewEditTableRow(viewEditTable, vetCriteria, vetValue, getCurrentViewEditTableRow(), isEditor);
+					addViewEditTableRow(viewEditTable, vetCriteria, vetValue, getCurrentViewEditTableRow(), isEditor);
 
 					// Increase iterator
 					setCurrentViewEditTableRow(1);
@@ -332,7 +334,7 @@ public class Application implements EntryPoint {
 							setIdleTime(0);
 							int rowIndex = viewEditTable.getCellForEvent(event).getRowIndex();
 							viewEditTable.insertRow(rowIndex);
-							setViewEditTableRow(viewEditTable, appConst.VAL_EMPTY(), appConst.VAL_EMPTY(), rowIndex, isEditor);
+							addViewEditTableRow(viewEditTable, appConst.VAL_EMPTY(), appConst.VAL_EMPTY(), rowIndex, isEditor);
 						}
 					});
 					viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, newPlusImage);
@@ -389,7 +391,7 @@ public class Application implements EntryPoint {
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
-			void setViewEditTableRow(final FlexTable vetTable, String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
+			void addViewEditTableRow(final FlexTable vetTable, String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
 
 				// Criteria Box
 				TextBox criteriaBox = new TextBox();
@@ -505,12 +507,19 @@ public class Application implements EntryPoint {
 			void drawPageButtons() {
 
 				// Draw buttons
-				int buttonsToDraw = Math.round(getTotalAds() / appConst.VAL_ADS_PER_MAIN_PAGE());
+				int ads_per_page;
+				if (getAppViewMode().equals(appConst.VAL_VIEW_MODE_ALL())) {
+					ads_per_page = appConst.VAL_ADS_PER_VIEW_MODE_ALL();
+				} else {
+					ads_per_page = appConst.VAL_ADS_PER_VIEW_MODE_USER();
+				}
+				int buttonsToDraw = Math.round(getTotalAds() / ads_per_page);
 
 				if (buttonsToDraw > 0) {
-					if (buttonsToDraw * appConst.VAL_ADS_PER_MAIN_PAGE() == getTotalAds())
+					if (buttonsToDraw * ads_per_page == getTotalAds())
 						buttonsToDraw -= 1;
 					pageNumberTable.clear();
+					pageNumberTable.setHTML(0, 0, "Pages");
 
 					int i2 = 1;
 					for (i2 = 1; i2 <= buttonsToDraw + 1; i2++) {
@@ -545,7 +554,7 @@ public class Application implements EntryPoint {
 								setMainListingPageNumber(iPage);
 
 								// Async call
-								getMainListingByPageFromServer();
+								getTotalAdsFromServer();
 							}
 						});
 						pageNumberTable.setWidget(0, i2, pageButton);
@@ -561,13 +570,13 @@ public class Application implements EntryPoint {
 
 			private void getTotalAdsFromServer() {
 
-				gwtService.getTotalAds(getTotalAdsFromServer);
+				gwtService.getTotalAds(getAppViewMode(), getLoginUserName(), getTotalAdsFromServer);
 			}
 
 			private void getMainListingByPageFromServer() {
 
 				homeButton.setEnabled(false);
-				gwtService.getMainListing(getMainListingPageNumber(), getMainListingByPageFromServer);
+				gwtService.getMainListing(getAppViewMode(), getMainListingPageNumber(), getLoginUserName(), getMainListingByPageFromServer);
 			}
 
 			public void getGetAdDescFromServer(int adDescId) {
@@ -729,7 +738,45 @@ public class Application implements EntryPoint {
 					loginPanel.add(new HTML("&nbsp;&nbsp;"));
 					loginPanel.add(new HTML("&nbsp;&nbsp;"));
 
-					// TODO AppViewMode()
+					// AppViewMode
+					loginPanel.add(new HTML("View Mode Selector"));
+					RadioButton viewModeAll = new RadioButton("viewMode", "All");
+					RadioButton viewModeUser = new RadioButton("viewMode", "User only");
+
+					viewModeAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+						@Override
+						public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+							if (event.getValue() == true)
+								setAppViewMode(appConst.VAL_VIEW_MODE_ALL());
+						}
+					});
+
+					viewModeUser.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+						@Override
+						public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+							if (event.getValue() == true)
+								setAppViewMode(appConst.VAL_VIEW_MODE_USER());
+						}
+					});
+
+					if (getAppViewMode().equals(appConst.VAL_VIEW_MODE_ALL())) {
+						viewModeUser.setValue(false);
+						viewModeAll.setValue(true);
+					} else {
+						viewModeUser.setValue(true);
+						viewModeAll.setValue(false);
+					}
+
+					loginPanel.add(viewModeAll);
+					loginPanel.add(viewModeUser);
+
+					// Separator
+					loginPanel.add(new HTML("&nbsp;&nbsp;"));
+					loginPanel.add(new HTML("&nbsp;&nbsp;"));
 
 					// Logout Button
 					final FlexTable logoutFlexTable = new FlexTable();
@@ -748,6 +795,17 @@ public class Application implements EntryPoint {
 					});
 					logoutFlexTable.setWidget(0, 0, logoutButton);
 					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+					imageLogout.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							setPageLoadingStartTime(getMillis());
+							setIdleTime(0);
+							setActionState(appConst.STATUS_LOGGING_OUT());
+							doLogoutFromServer(getLoginUserName(), getCookie());
+						}
+					});
 					logoutFlexTable.setWidget(0, 1, imageLogout);
 					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -791,6 +849,18 @@ public class Application implements EntryPoint {
 					});
 					logoutForm.setWidget(0, 1, loginButton);
 					logoutForm.getFlexCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					imageLogin.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+
+							setPageLoadingStartTime(getMillis());
+							setIdleTime(0);
+							setActionState(appConst.STATUS_LOGGING_IN());
+							setLoginUserName(textUsername.getText());
+							doLoginToServer(textUsername.getText(), getCookie());
+						}
+					});
 					logoutForm.setWidget(0, 2, imageLogin);
 					logoutForm.getFlexCellFormatter().setAlignment(0, 2, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -817,14 +887,6 @@ public class Application implements EntryPoint {
 
 				gwtService.doLogout(userName, cookie, doLogoutFromServerAsync);
 			}
-
-			/*
-			 * 
-			 * 
-			 * SERVICE
-			 */
-
-			// TODO Login & Logout Images addClickHandler()
 		}
 
 		/*
@@ -842,7 +904,6 @@ public class Application implements EntryPoint {
 
 		// InitializeApp()
 		mainButtonClickHandler.getTotalAdsFromServer();
-		mainButtonClickHandler.getMainListingByPageFromServer();
 		loginButtonClickHandler.doLoginToServer(getLoginUserName(), getCookie());
 
 		// InitializeUser()
@@ -885,8 +946,12 @@ public class Application implements EntryPoint {
 		case 4:
 			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
 			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-			loginPanel.setVisible(!isLoggedIn());
-			logoutPanel.setVisible(isLoggedIn());
+			loginPanel.setVisible(isLoggedIn());
+			if (isLoggedIn()) {
+				logoutPanel.setVisible(false);
+			} else {
+				logoutPanel.setVisible(true);
+			}
 			mainPanel.setVisible(false);
 			pagesPanel.setVisible(false);
 			break;
@@ -1033,14 +1098,14 @@ public class Application implements EntryPoint {
 		this.actionState = actionState;
 		if (actionState.equals(appConst.VAL_TOTAL_ADS())) {
 			imageLoading.setVisible(false);
-			appActionLabel.setHTML("<p>Showing total of " + getTotalAds() + " ads.</p>");
+			appActionLabel.setHTML("Showing total of " + getTotalAds() + " ads&nbsp;|&nbsp;" + getAppViewMode() + "");
 		} else if (actionState.equals(appConst.VAL_INITIALIZING()) || actionState.equals(appConst.VAL_LOADING())
 				|| actionState.equals(appConst.STATUS_LOGGING_IN()) || actionState.equals(appConst.STATUS_LOGGING_OUT())) {
 			imageLoading.setVisible(true);
-			appActionLabel.setHTML("<p>Status: " + actionState + "</p");
+			appActionLabel.setHTML("Status: " + actionState + "");
 		} else {
 			imageLoading.setVisible(false);
-			appActionLabel.setHTML("<p>Status: " + actionState + "</p>");
+			appActionLabel.setHTML("Status: " + actionState + "");
 		}
 	}
 

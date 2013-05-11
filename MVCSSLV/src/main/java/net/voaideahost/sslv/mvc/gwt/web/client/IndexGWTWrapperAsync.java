@@ -4,9 +4,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface IndexGWTWrapperAsync {
 
-	void getMainListing(int page, AsyncCallback<String> asyncCallback);
+	void getMainListing(String viewMode, int page, String userName, AsyncCallback<String> asyncCallback);
 
-	void getTotalAds(AsyncCallback<Integer> asyncCallback);
+	void getTotalAds(String viewMode, String userName, AsyncCallback<Integer> asyncCallback);
 
 	void getAdDesc(int adDescId, AsyncCallback<String> asyncCallback);
 

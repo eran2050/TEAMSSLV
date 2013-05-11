@@ -38,10 +38,15 @@ public class IndexServiceImpl implements IndexService {
 	private AdDescDAO dDao;
 
 	@Override
-	public String getMainListing(int page) {
+	public String getMainListing(String viewMode, int page, String userName) {
 
 		try {
-			ArrayList<Ads> ads = aDao.getMainListing(page);
+			ArrayList<Ads> ads;
+			if (viewMode.equals(Config.VAL_VIEW_MODE_ALL)) {
+				ads = aDao.getMainListing(page);
+			} else {
+				ads = aDao.getAdsListByUserAndPage(userName, page);
+			}
 			Gson gson = new Gson();
 			String toJson = gson.toJson(ads);
 
@@ -55,9 +60,14 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	@Override
-	public Integer getTotalAds() {
+	public Integer getTotalAds(String viewMode, String userName) {
 		try {
-			int num = aDao.getTotalAdsCount();
+			int num;
+			if (viewMode.equals(Config.VAL_VIEW_MODE_ALL)) {
+				num = aDao.getTotalAdsCount();
+			} else {
+				num = aDao.getAdsCountByUser(userName);
+			}
 
 			return new Integer(num);
 		} catch (Exception e) {

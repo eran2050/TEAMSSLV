@@ -19,6 +19,7 @@ div.footer {
 }
 
 .cw-FlexTable {
+	margin: 5px;
 	border-collapse: collapse;
 }
 
@@ -36,11 +37,13 @@ div.footer {
 }
 
 .cw-FlexTable-main-list {
+	margin: 5px;
 	background-color: #009966;
 	color: white;
 }
 
 .cw-FlexTable-navigation {
+	margin: 5px;
 	background-color: #99CC33;
 	color: white;
 }
@@ -58,6 +61,7 @@ div.footer {
 }
 
 .cw-FlexTable-footer {
+	margin: 5px;
 	background-color: #99CC33;
 	color: white;
 }

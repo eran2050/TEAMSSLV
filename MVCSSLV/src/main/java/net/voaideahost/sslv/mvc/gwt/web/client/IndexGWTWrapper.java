@@ -6,9 +6,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("gwtService")
 public interface IndexGWTWrapper extends RemoteService {
 
-	String getMainListing(int page);
+	String getMainListing(String viewMode, int page, String userName);
 
-	Integer getTotalAds();
+	Integer getTotalAds(String viewMode, String userName);
 
 	String getAdDesc(int adDescId);
 
