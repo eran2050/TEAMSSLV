@@ -94,6 +94,7 @@ public class Application implements EntryPoint {
 
 	// Panels
 	final VerticalPanel loginPanel = new VerticalPanel();
+	final VerticalPanel logoutPanel = new VerticalPanel();
 	final HorizontalPanel mainPanel = new HorizontalPanel();
 	final HorizontalPanel pagesPanel = new HorizontalPanel();
 
@@ -137,6 +138,10 @@ public class Application implements EntryPoint {
 		statusPanel.add(imageLoading);
 		RootPanel.get("body0").add(statusPanel);
 		setActionState(appConst.VAL_INITIALIZING());
+
+		// LOGIN PANEL
+		RootPanel.get("body1a").add(loginPanel);
+		RootPanel.get("body1b").add(logoutPanel);
 
 		// MAIN CONTAINER
 		flex.addStyleName("cw-FlexTable");
@@ -577,6 +582,8 @@ public class Application implements EntryPoint {
 			// Class Wide
 			final FlexTable loginForm1 = new FlexTable();
 			final FlexTable loginForm = new FlexTable();
+			final FlexTable logoutForm1 = new FlexTable();
+			final FlexTable logoutForm = new FlexTable();
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -617,6 +624,9 @@ public class Application implements EntryPoint {
 					// Actions
 					doLogin(result);
 					drawLoginPanel();
+
+					// Show proper screen
+					setCurrentAppPage(getCurrentAppPage());
 				}
 
 			};
@@ -662,11 +672,14 @@ public class Application implements EntryPoint {
 
 					setActionState(appConst.ACTION_READY());
 
+					logoutPanel.setVisible(false);
+					loginPanel.setVisible(true);
+
 					loginPanel.clear();
-					loginPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 					userTable.clear();
 					loginForm1.clear();
 					loginForm.clear();
+					loginPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 					loginForm.setStyleName("cw-FlexTable-view-edit-box");
 
 					loginForm1.addStyleName("cw-FlexTable");
@@ -737,30 +750,30 @@ public class Application implements EntryPoint {
 					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 					logoutFlexTable.setWidget(0, 1, imageLogout);
 					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_MIDDLE);
-					loginPanel.add(logoutFlexTable);
 
 					// Panel
-					RootPanel.get("body1").clear();
-					RootPanel.get("body1").add(loginPanel);
+					loginPanel.add(logoutFlexTable);
 
 				} else {
 
-					// TODO Fix Bug with incorrect table when logged out
 					setActionState(appConst.ACTION_READY());
 
-					loginPanel.clear();
-					loginForm1.clear();
-					loginForm.clear();
-					loginForm.setStyleName("cw-FlexTable-view-edit-box");
+					loginPanel.setVisible(false);
+					logoutPanel.setVisible(true);
 
-					loginForm1.setWidget(0, 0, new Label("Username"));
+					logoutPanel.clear();
+					logoutForm1.clear();
+					logoutForm.clear();
+					logoutForm.setStyleName("cw-FlexTable-view-edit-box");
+
+					logoutForm1.setWidget(0, 0, new Label("Username"));
 					final TextBox textUsername = new TextBox();
-					loginForm1.setWidget(0, 1, textUsername);
-					loginForm1.setWidget(1, 0, new Label("Password"));
+					logoutForm1.setWidget(0, 1, textUsername);
+					logoutForm1.setWidget(1, 0, new Label("Password"));
 					final TextBox textPassword = new TextBox();
-					loginForm1.setWidget(1, 1, textPassword);
-					loginForm.setWidget(0, 0, loginForm1);
-					loginForm.getFlexCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					logoutForm1.setWidget(1, 1, textPassword);
+					logoutForm.setWidget(0, 0, logoutForm1);
+					logoutForm.getFlexCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 
 					// Login Button
 					final Button loginButton = new Button("Login");
@@ -776,15 +789,13 @@ public class Application implements EntryPoint {
 							doLoginToServer(textUsername.getText(), getCookie());
 						}
 					});
-					loginForm.setWidget(0, 1, loginButton);
-					loginForm.getFlexCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
-					loginForm.setWidget(0, 2, imageLogin);
-					loginForm.getFlexCellFormatter().setAlignment(0, 2, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					logoutForm.setWidget(0, 1, loginButton);
+					logoutForm.getFlexCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					logoutForm.setWidget(0, 2, imageLogin);
+					logoutForm.getFlexCellFormatter().setAlignment(0, 2, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 
 					// Panel
-					loginPanel.add(loginForm);
-					RootPanel.get("body1").clear();
-					RootPanel.get("body1").add(loginPanel);
+					logoutPanel.add(logoutForm);
 				}
 
 				// Timing
@@ -813,7 +824,7 @@ public class Application implements EntryPoint {
 			 * SERVICE
 			 */
 
-			// TODO Login & Logout Imaged addClickHandler()
+			// TODO Login & Logout Images addClickHandler()
 		}
 
 		/*
@@ -867,13 +878,15 @@ public class Application implements EntryPoint {
 			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
 			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
 			loginPanel.setVisible(false);
+			logoutPanel.setVisible(false);
 			mainPanel.setVisible(true);
 			pagesPanel.setVisible(true);
 			break;
 		case 4:
 			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
 			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-			loginPanel.setVisible(true);
+			loginPanel.setVisible(!isLoggedIn());
+			logoutPanel.setVisible(isLoggedIn());
 			mainPanel.setVisible(false);
 			pagesPanel.setVisible(false);
 			break;

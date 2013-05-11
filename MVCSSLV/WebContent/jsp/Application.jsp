@@ -24,7 +24,10 @@
 			</table>
 			<table>
 				<tr>
-					<td id="body1"></td>
+					<td id="body1a"></td>
+				</tr>
+				<tr>
+					<td id="body1b"></td>
 				</tr>
 			</table>
 			<table>
