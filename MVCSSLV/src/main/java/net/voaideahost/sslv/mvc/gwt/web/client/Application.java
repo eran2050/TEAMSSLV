@@ -7,16 +7,19 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -111,7 +114,7 @@ public class Application implements EntryPoint {
 	public void onModuleLoad() {
 
 		// Init Resources
-		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading4.gif");
+		imageLoading.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading.gif");
 		imageLogin.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/login.jpg");
 		imageLogout.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/logout.jpg");
 
@@ -122,15 +125,19 @@ public class Application implements EntryPoint {
 		menuTable.getRowFormatter().setStyleName(0, "cw-FlexTable-navigation");
 
 		// Navigation Menu Buttons
-		final Anchor homeButton = new Anchor("Home");
+		final HTML homeButton = new HTML("Home");
 		menuTable.setWidget(0, 0, homeButton);
 		menuTable.getCellFormatter().setWidth(0, 0, "16%");
-		menuTable.setWidget(0, 1, new Anchor("Add"));
+		menuTable.getFlexCellFormatter().getElement(0, 0).getStyle().setCursor(Cursor.POINTER);
+		menuTable.setWidget(0, 1, new HTML("Add"));
 		menuTable.getCellFormatter().setWidth(0, 1, "16%");
-		menuTable.setWidget(0, 2, new Anchor("Admin"));
+		menuTable.getFlexCellFormatter().getElement(0, 1).getStyle().setCursor(Cursor.POINTER);
+		menuTable.setWidget(0, 2, new HTML("Admin"));
 		menuTable.getCellFormatter().setWidth(0, 2, "16%");
-		final Anchor loginButton = new Anchor("Login");
+		menuTable.getFlexCellFormatter().getElement(0, 2).getStyle().setCursor(Cursor.POINTER);
+		final HTML loginButton = new HTML("Login");
 		menuTable.setWidget(0, 3, loginButton);
+		menuTable.getFlexCellFormatter().getElement(0, 3).getStyle().setCursor(Cursor.POINTER);
 		menuPanel.add(menuTable);
 		RootPanel.get("header1").add(menuPanel);
 
@@ -286,7 +293,7 @@ public class Application implements EntryPoint {
 
 				// Text Box
 				TextBox nameTextBox = new TextBox();
-				Anchor adsName = (Anchor) flex.getWidget(getViewAdSelectedRow() - 1, 1);
+				HTML adsName = (HTML) flex.getWidget(getViewAdSelectedRow() - 1, 1);
 				nameTextBox.setText(adsName.getHTML());
 				nameTextBox.setWidth("95%");
 				nameTextBox.setEnabled(isEditor);
@@ -326,6 +333,14 @@ public class Application implements EntryPoint {
 				if (isEditor) {
 					final Image newPlusImage = new Image();
 					newPlusImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/plus.gif");
+					newPlusImage.addMouseOverHandler(new MouseOverHandler() {
+
+						@Override
+						public void onMouseOver(MouseOverEvent event) {
+
+							newPlusImage.getElement().getStyle().setCursor(Cursor.POINTER);
+						}
+					});
 					newPlusImage.addClickHandler(new ClickHandler() {
 
 						@Override
@@ -411,6 +426,14 @@ public class Application implements EntryPoint {
 				if (vetIsEditor) {
 					final Image newCrossImage = new Image();
 					newCrossImage.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/cross.png");
+					newCrossImage.addMouseOverHandler(new MouseOverHandler() {
+
+						@Override
+						public void onMouseOver(MouseOverEvent event) {
+
+							newCrossImage.getElement().getStyle().setCursor(Cursor.POINTER);
+						}
+					});
 					newCrossImage.addClickHandler(new ClickHandler() {
 
 						@Override
@@ -450,38 +473,46 @@ public class Application implements EntryPoint {
 				for (i1 = 0; i1 < arrayBoundary; i1++) {
 					v = array.get(i1).isObject();
 
+					// ID
 					final String adsId = v.get("id").isNumber().toString();
 					flex.setText(i1 + 1, 0, adsId);
 
+					// Name
+					flex.setWidget(i1 + 1, 1, new HTML(v.get("name").isString().stringValue()));
+
 					// Date
-					String dateCreated = v.get("created").isString().stringValue();
-					flex.setHTML(i1 + 1, 2, dateCreated);
+					final String dateCreatedS = v.get("created").isString().stringValue();
+					final Date dateCreatedD = DateTimeFormat.getFormat("M d, y h:m:s a").parse(dateCreatedS);
+					flex.setHTML(i1 + 1, 2, DateTimeFormat.getFormat("yyyy.MM.dd HH:mm:ss").format(dateCreatedD).toString());
+
+					// Owner
 					flex.setHTML(i1 + 1, 3, v.get("owner").isString().stringValue());
 
 					// Creating Edit Click Handler
-					final int selectedRow = i1 + 2;
-					final Anchor buttonViewAds = new Anchor();
-					String adsName = v.get("name").isString().stringValue();
-					buttonViewAds.setText(new HTML(adsName).getHTML());
-					buttonViewAds.addClickHandler(new ClickHandler() {
+					flex.getFlexCellFormatter().getElement(i1 + 1, 0).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1 + 1, 1).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1 + 1, 2).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1 + 1, 3).getStyle().setCursor(Cursor.POINTER);
+
+					flex.addClickHandler(new ClickHandler() {
 
 						@Override
 						public void onClick(ClickEvent event) {
 
+							int row = flex.getCellForEvent(event).getRowIndex() + 1;
+
 							// General
 							setIdleTime(0);
-							setCurrentAppPage(1);
 
-							// Disable all buttons from click, if there is
+							// Disable all button clicks, if there is
 							// one open box
-							if (isButtonViewAdsPressed()) {
-								DialogBox buttonPressedBox = alertWidget("Information", "Please, close opened edit box first!",
-										buttonViewAds.getAbsoluteLeft(), buttonViewAds.getAbsoluteTop());
-								buttonPressedBox.show();
+							if (isButtonViewAdsPressed())
+								// TODO create DialogBox that one instance of
+								// ViewEditTable is open
 								return;
-							}
+
 							setButtonViewAdsPressed(true);
-							setViewAdSelectedRow(selectedRow);
+							setViewAdSelectedRow(row);
 
 							// General
 							setPageLoadingStartTime(getMillis());
@@ -491,7 +522,6 @@ public class Application implements EntryPoint {
 							getGetAdDescFromServer(Integer.parseInt(adsId));
 						}
 					});
-					flex.setWidget(i1 + 1, 1, buttonViewAds);
 				}
 
 				// Page Buttons
@@ -575,7 +605,6 @@ public class Application implements EntryPoint {
 
 			private void getMainListingByPageFromServer() {
 
-				homeButton.setEnabled(false);
 				gwtService.getMainListing(getAppViewMode(), getMainListingPageNumber(), getLoginUserName(), getMainListingByPageFromServer);
 			}
 
@@ -795,6 +824,14 @@ public class Application implements EntryPoint {
 					});
 					logoutFlexTable.setWidget(0, 0, logoutButton);
 					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+					imageLogout.addMouseOverHandler(new MouseOverHandler() {
+
+						@Override
+						public void onMouseOver(MouseOverEvent event) {
+
+							imageLogout.getElement().getStyle().setCursor(Cursor.POINTER);
+						}
+					});
 					imageLogout.addClickHandler(new ClickHandler() {
 
 						@Override
@@ -849,6 +886,14 @@ public class Application implements EntryPoint {
 					});
 					logoutForm.setWidget(0, 1, loginButton);
 					logoutForm.getFlexCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					imageLogin.addMouseOverHandler(new MouseOverHandler() {
+
+						@Override
+						public void onMouseOver(MouseOverEvent event) {
+
+							imageLogin.getElement().getStyle().setCursor(Cursor.POINTER);
+						}
+					});
 					imageLogin.addClickHandler(new ClickHandler() {
 
 						@Override
@@ -895,12 +940,31 @@ public class Application implements EntryPoint {
 		 * INITIALIZE APPLICATION BLOCK - finally onModuleLoad()
 		 */
 
-		// Add handlers to anchors
-		HomeButtonClickHandler mainButtonClickHandler = new HomeButtonClickHandler();
+		// Add handlers to menu buttons
+		final HomeButtonClickHandler mainButtonClickHandler = new HomeButtonClickHandler();
 		homeButton.addClickHandler(mainButtonClickHandler);
 
-		LoginButtonClickHandler loginButtonClickHandler = new LoginButtonClickHandler();
+		final LoginButtonClickHandler loginButtonClickHandler = new LoginButtonClickHandler();
 		loginButton.addClickHandler(loginButtonClickHandler);
+
+		menuTable.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+
+				int cell = menuTable.getCellForEvent(event).getCellIndex();
+				switch (cell) {
+				case 0:
+					mainButtonClickHandler.getTotalAdsFromServer();
+					break;
+				case 3:
+					loginButtonClickHandler.drawLoginPanel();
+					break;
+				default:
+					break;
+				}
+			}
+		});
 
 		// InitializeApp()
 		mainButtonClickHandler.getTotalAdsFromServer();
@@ -970,7 +1034,7 @@ public class Application implements EntryPoint {
 		this.loginState = action;
 
 		// Update Status
-		Anchor loginAnchor = (Anchor) menuTable.getWidget(0, 3);
+		HTML loginAnchor = (HTML) menuTable.getWidget(0, 3);
 		String loginAnchorText;
 		if (action.equals(appConst.STATUS_LOGGED_IN()) || action.equals(appConst.STATUS_LOGGING_IN())) {
 			loginAnchorText = "Status: " + action + " as " + getLoginUserName();
@@ -1052,6 +1116,7 @@ public class Application implements EntryPoint {
 		}
 
 		setCookie(appConst.VAL_EMPTY());
+		setAppViewMode(appConst.VAL_VIEW_MODE_ALL());
 	}
 
 	void doLogin(String result) {

@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
-	@DefaultStringValue("v5.0.5_6")
+	@DefaultStringValue("v5.0.6_1")
 	String APP_VERSION();
 
 	@DefaultStringValue("/java2/")
@@ -75,6 +75,9 @@ public interface AppConst extends Constants {
 
 	@DefaultStringValue("Not Authorized!")
 	String ACTION_NOT_AUTHORIZED();
+
+	@DefaultStringValue("Not Allowed to open Two or more View/Edit boxes!")
+	String ACTION_SECOND_AD_VIEW_EDIT();
 
 	@DefaultStringValue("Failed logging in!")
 	String ACTION_LOGGING_IN_FAILED();
