@@ -154,7 +154,8 @@ public class Application implements EntryPoint {
 		RootPanel.get("body1b").add(logoutPanel);
 
 		// MAIN CONTAINER
-		flex.addStyleName("cw-FlexTable");
+		// TODO fix css
+		flex.addStyleName("cw-FlexTable-main-list");
 		flex.setWidth("1024px");
 		flex.getColumnFormatter().setWidth(0, "5%");
 		flex.getColumnFormatter().setWidth(1, "50%");
@@ -504,12 +505,10 @@ public class Application implements EntryPoint {
 							// General
 							setIdleTime(0);
 
-							// Disable all button clicks, if there is
-							// one open box
-							if (isButtonViewAdsPressed())
-								// TODO create DialogBox that one instance of
-								// ViewEditTable is open
+							// Disable multiple view/edit boxes
+							if (isButtonViewAdsPressed()) {
 								return;
+							}
 
 							setButtonViewAdsPressed(true);
 							setViewAdSelectedRow(row);
