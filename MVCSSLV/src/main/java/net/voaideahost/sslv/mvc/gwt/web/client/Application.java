@@ -154,8 +154,7 @@ public class Application implements EntryPoint {
 		RootPanel.get("body1b").add(logoutPanel);
 
 		// MAIN CONTAINER
-		// TODO fix css
-		flex.addStyleName("cw-FlexTable-main-list");
+		flex.addStyleName("cw-FlexTable");
 		flex.setWidth("1024px");
 		flex.getColumnFormatter().setWidth(0, "5%");
 		flex.getColumnFormatter().setWidth(1, "50%");
@@ -465,7 +464,7 @@ public class Application implements EntryPoint {
 				flex.setHTML(0, 1, "<b>Summary</b>");
 				flex.setHTML(0, 2, "<b>Date</b>");
 				flex.setHTML(0, 3, "<b>User</b>");
-				flex.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
+				flex.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list-th");
 
 				// Data rows
 				int arrayBoundary = array.size();
@@ -494,6 +493,7 @@ public class Application implements EntryPoint {
 					flex.getFlexCellFormatter().getElement(i1 + 1, 1).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 2).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 3).getStyle().setCursor(Cursor.POINTER);
+					flex.getRowFormatter().setStyleName(i1 + 1, "cw-FlexTable-main-list-tr");
 
 					flex.addClickHandler(new ClickHandler() {
 
@@ -727,7 +727,7 @@ public class Application implements EntryPoint {
 					loginForm1.setHTML(0, 3, "<b>e-mail</b>");
 					loginForm1.setHTML(0, 4, "<b>Phone</b>");
 
-					loginForm1.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
+					loginForm1.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list-th");
 
 					loginForm1.getColumnFormatter().setWidth(0, "10%");
 					loginForm1.getColumnFormatter().setWidth(1, "25%");
@@ -740,6 +740,8 @@ public class Application implements EntryPoint {
 					loginForm1.setHTML(1, 2, getUser().get("surName").isString().stringValue());
 					loginForm1.setHTML(1, 3, getUser().get("eMail").isString().stringValue());
 					loginForm1.setHTML(1, 4, getUser().get("phone").isString().stringValue());
+					// TODO
+					loginForm1.getRowFormatter().setStyleName(1, "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(loginForm1);
 
@@ -752,13 +754,15 @@ public class Application implements EntryPoint {
 					userTable.setHTML(0, 0, "<b>SessionID</b>");
 					userTable.setHTML(0, 1, "<b>Idle Time (sec)</b>");
 
-					userTable.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list");
+					userTable.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list-th");
 
 					userTable.getColumnFormatter().setWidth(0, "50%");
 					userTable.getColumnFormatter().setWidth(1, "50%");
 
 					userTable.setHTML(1, 0, getCookie());
 					userTable.setHTML(1, 1, Integer.toString(getIdleTime()));
+					// TODO
+					userTable.getRowFormatter().setStyleName(1, "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(userTable);
 
@@ -953,14 +957,14 @@ public class Application implements EntryPoint {
 
 				int cell = menuTable.getCellForEvent(event).getCellIndex();
 				switch (cell) {
-				case 0:
-					mainButtonClickHandler.getTotalAdsFromServer();
-					break;
-				case 3:
-					loginButtonClickHandler.drawLoginPanel();
-					break;
-				default:
-					break;
+					case 0 :
+						mainButtonClickHandler.getTotalAdsFromServer();
+						break;
+					case 3 :
+						loginButtonClickHandler.drawLoginPanel();
+						break;
+					default :
+						break;
 				}
 			}
 		});
@@ -998,28 +1002,28 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-		case 1:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-			loginPanel.setVisible(false);
-			logoutPanel.setVisible(false);
-			mainPanel.setVisible(true);
-			pagesPanel.setVisible(true);
-			break;
-		case 4:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-			loginPanel.setVisible(isLoggedIn());
-			if (isLoggedIn()) {
+			case 1 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+				loginPanel.setVisible(false);
 				logoutPanel.setVisible(false);
-			} else {
-				logoutPanel.setVisible(true);
-			}
-			mainPanel.setVisible(false);
-			pagesPanel.setVisible(false);
-			break;
-		default:
-			break;
+				mainPanel.setVisible(true);
+				pagesPanel.setVisible(true);
+				break;
+			case 4 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+				loginPanel.setVisible(isLoggedIn());
+				if (isLoggedIn()) {
+					logoutPanel.setVisible(false);
+				} else {
+					logoutPanel.setVisible(true);
+				}
+				mainPanel.setVisible(false);
+				pagesPanel.setVisible(false);
+				break;
+			default :
+				break;
 		}
 	}
 

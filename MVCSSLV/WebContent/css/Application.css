@@ -36,17 +36,24 @@ div.footer {
 	border: 0px;
 }
 
-.cw-FlexTable-main-list {
+.cw-FlexTable-main-list-th {
 	margin: 5px;
 	border-collapse: collapse;
 	color: white;
 }
 
-.cw-FlexTable-main-list td {
+.cw-FlexTable-main-list-th td {
 	border: 1px solid green;
+	background-color: #009966;
 }
 
-.cw-FlexTable-main-list td:hover {
+.cw-FlexTable-main-list-tr {
+	margin: 5px;
+	border-collapse: collapse;
+	color: black;
+}
+
+.cw-FlexTable-main-list-tr td:hover {
 	font-weight: bold;
 	background-color: #99FFCC;
 }

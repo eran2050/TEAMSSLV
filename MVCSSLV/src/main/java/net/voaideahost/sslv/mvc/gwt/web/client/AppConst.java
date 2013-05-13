@@ -22,6 +22,7 @@ public interface AppConst extends Constants {
 	@DefaultIntValue(20)
 	int VAL_ADS_PER_VIEW_MODE_ALL();
 
+	// TODO Razobrat'sja s kol-vom Ads dlja User-Only-Mode - nuzhno 20!
 	@DefaultIntValue(10)
 	int VAL_ADS_PER_VIEW_MODE_USER();
 
