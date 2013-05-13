@@ -761,7 +761,8 @@ public class Application implements EntryPoint {
 
 					userTable.setHTML(1, 0, getCookie());
 					userTable.setHTML(1, 1, Integer.toString(getIdleTime()));
-					// TODO
+					// TODO : sovet ot avdeeva: th:hover td { background-color:
+					// green; }
 					userTable.getRowFormatter().setStyleName(1, "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(userTable);
