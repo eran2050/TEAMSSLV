@@ -159,7 +159,6 @@ public class Application implements EntryPoint {
 		RootPanel.get("body1b").add(logoutPanel);
 
 		// MAIN CONTAINER
-		// TODO css issues
 		flex.addStyleName("cw-FlexTable-main-list-tr");
 		flex.setWidth("1024px");
 		flex.getColumnFormatter().setWidth(0, "5%");
@@ -499,7 +498,6 @@ public class Application implements EntryPoint {
 					flex.getFlexCellFormatter().getElement(i1 + 1, 1).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 2).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 3).getStyle().setCursor(Cursor.POINTER);
-					// TODO css issues
 					// flex.getRowFormatter().setStyleName(i1 + 1,
 					// "cw-FlexTable-main-list-tr");
 
@@ -752,9 +750,6 @@ public class Application implements EntryPoint {
 					loginForm1.setHTML(1, 2, getUser().get("surName").isString().stringValue());
 					loginForm1.setHTML(1, 3, getUser().get("eMail").isString().stringValue());
 					loginForm1.setHTML(1, 4, getUser().get("phone").isString().stringValue());
-					// TODO fix css
-					// loginForm1.getRowFormatter().setStyleName(1,
-					// "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(loginForm1);
 
@@ -775,9 +770,6 @@ public class Application implements EntryPoint {
 
 					userTable.setHTML(1, 0, getCookie());
 					userTable.setHTML(1, 1, Integer.toString(getIdleTime()));
-					// TODO : tr:hover td { background-color: #99FFCC; }
-					// userTable.getRowFormatter().setStyleName(1,
-					// "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(userTable);
 
