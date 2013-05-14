@@ -10,6 +10,9 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -37,7 +40,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Application implements EntryPoint {
 
-	private static final String SERVER_ERROR = "An error occurred while " + "attempting to contact the server. Please check your network "
+	private static final String SERVER_ERROR = "WARNING! An error occurred while " + "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 
 	public final AppConst appConst = GWT.create(AppConst.class);
@@ -97,12 +100,14 @@ public class Application implements EntryPoint {
 	final HTML appActionLabel = new HTML();
 	final HTML pageLoadTimeLabel = new HTML();
 	final FlexTable userTable = new FlexTable();
+	final FlexTable viewEditTable = new FlexTable();
 
 	// Panels
 	final VerticalPanel loginPanel = new VerticalPanel();
 	final VerticalPanel logoutPanel = new VerticalPanel();
 	final HorizontalPanel mainPanel = new HorizontalPanel();
 	final HorizontalPanel pagesPanel = new HorizontalPanel();
+	final HorizontalPanel viewEditPanel = new HorizontalPanel();
 
 	// Resources
 	final Image imageLoading = new Image();
@@ -154,7 +159,8 @@ public class Application implements EntryPoint {
 		RootPanel.get("body1b").add(logoutPanel);
 
 		// MAIN CONTAINER
-		flex.addStyleName("cw-FlexTable");
+		// TODO css issues
+		flex.addStyleName("cw-FlexTable-main-list-tr");
 		flex.setWidth("1024px");
 		flex.getColumnFormatter().setWidth(0, "5%");
 		flex.getColumnFormatter().setWidth(1, "50%");
@@ -170,7 +176,7 @@ public class Application implements EntryPoint {
 
 		// FOOTER
 		final HorizontalPanel footerPanel = new HorizontalPanel();
-		FlexTable footerTable = new FlexTable();
+		final FlexTable footerTable = new FlexTable();
 		footerTable.addStyleName("cw-FlexTable");
 		footerTable.setWidth("1024px");
 		footerTable.setHTML(0, 0, "T2CSupp&nbsp;Staff&nbsp;(c)&nbsp;" + appConst.APP_VERSION() + "&nbsp;");
@@ -226,7 +232,6 @@ public class Application implements EntryPoint {
 				public void onSuccess(Integer result) {
 
 					setTotalAds(result.intValue());
-					// Get Ads only when know how much to get
 					getMainListingByPageFromServer();
 				}
 
@@ -273,14 +278,13 @@ public class Application implements EntryPoint {
 
 				// Draw ViewEditBox
 
-				String ownerName = flex.getText(getViewAdSelectedRow() - 1, 3);
+				final String ownerName = flex.getText(getViewAdSelectedRow() - 1, 3);
 				final boolean isEditor = isLoggedIn() && ownerName.equals(getLoginUserName());
 
 				// View / Edit Box
-				HorizontalPanel viewEditPanel = new HorizontalPanel();
-				viewEditPanel.setVisible(false);
-				viewEditPanel.setWidth("100%");
-				final FlexTable viewEditTable = new FlexTable();
+				viewEditPanel.clear();
+				viewEditTable.clear();
+				viewEditTable.removeAllRows();
 				viewEditTable.addStyleName("cw-FlexTable-view-edit-box");
 				viewEditTable.setWidth("100%");
 				viewEditTable.getColumnFormatter().setWidth(0, "50px");
@@ -292,8 +296,8 @@ public class Application implements EntryPoint {
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, new HTML("<b>Name</b>"));
 
 				// Text Box
-				TextBox nameTextBox = new TextBox();
-				HTML adsName = (HTML) flex.getWidget(getViewAdSelectedRow() - 1, 1);
+				final TextBox nameTextBox = new TextBox();
+				final HTML adsName = (HTML) flex.getWidget(getViewAdSelectedRow() - 1, 1);
 				nameTextBox.setText(adsName.getHTML());
 				nameTextBox.setWidth("95%");
 				nameTextBox.setEnabled(isEditor);
@@ -301,29 +305,31 @@ public class Application implements EntryPoint {
 				setCurrentViewEditTableRow(1);
 
 				// Separator
-				HTML htmlSeparator1 = new HTML("<hr />");
+				final HTML htmlSeparator1 = new HTML("<hr />");
 				viewEditTable.getFlexCellFormatter().setColSpan(currentViewEditTableRow, 0, 4);
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator1);
 				setCurrentViewEditTableRow(1);
 
 				// Parse JSON
-				String json = result;
-				JSONArray array = (JSONArray) JSONParser.parseStrict(json);
+				final String json = result;
+				final JSONArray array = (JSONArray) JSONParser.parseStrict(json);
 				JSONObject v;
 
 				// AdDesc
-				viewEditTable.setHTML(getCurrentViewEditTableRow(), 1, "<b>CRITERIA</b>");
-				viewEditTable.setHTML(getCurrentViewEditTableRow(), 2, "<b>VALUE</b>");
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, new HTML("<b>CRITERIA</b>"));
+				viewEditTable.setWidget(getCurrentViewEditTableRow(), 2, new HTML("<b>VALUE</b>"));
 				setCurrentViewEditTableRow(1);
 
+				String vetCriteria;
+				String vetValue;
 				int i = 0;
 				for (i = 0; i < array.size(); i++) {
 					v = array.get(i).isObject();
 
 					// Adding vetRow
-					String vetCriteria = v.get("criteria").isString().stringValue();
-					String vetValue = v.get("value").isString().stringValue();
-					addViewEditTableRow(viewEditTable, vetCriteria, vetValue, getCurrentViewEditTableRow(), isEditor);
+					vetCriteria = v.get("criteria").isString().stringValue();
+					vetValue = v.get("value").isString().stringValue();
+					addViewEditTableRow(vetCriteria, vetValue, getCurrentViewEditTableRow(), isEditor);
 
 					// Increase iterator
 					setCurrentViewEditTableRow(1);
@@ -347,9 +353,9 @@ public class Application implements EntryPoint {
 						public void onClick(ClickEvent event) {
 
 							setIdleTime(0);
-							int rowIndex = viewEditTable.getCellForEvent(event).getRowIndex();
+							final int rowIndex = viewEditTable.getCellForEvent(event).getRowIndex();
 							viewEditTable.insertRow(rowIndex);
-							addViewEditTableRow(viewEditTable, appConst.VAL_EMPTY(), appConst.VAL_EMPTY(), rowIndex, isEditor);
+							addViewEditTableRow(appConst.VAL_EMPTY(), appConst.VAL_EMPTY(), rowIndex, isEditor);
 						}
 					});
 					viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, newPlusImage);
@@ -357,17 +363,17 @@ public class Application implements EntryPoint {
 				}
 
 				// Separator 2
-				HTML htmlSeparator2 = new HTML("<hr />");
+				final HTML htmlSeparator2 = new HTML("<hr />");
 				viewEditTable.getFlexCellFormatter().setColSpan(currentViewEditTableRow, 0, 4);
 				htmlSeparator2.setWidth("98%");
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator2);
 				setCurrentViewEditTableRow(1);
 
 				// Buttons Panel
-				HorizontalPanel closeAndSaveButtonPanel = new HorizontalPanel();
+				final HorizontalPanel closeAndSaveButtonPanel = new HorizontalPanel();
 
 				// Close Button
-				Button viewEditCloseButton = new Button("Close");
+				final Button viewEditCloseButton = new Button("Close");
 				viewEditCloseButton.addClickHandler(new ClickHandler() {
 
 					@Override
@@ -382,11 +388,11 @@ public class Application implements EntryPoint {
 				closeAndSaveButtonPanel.add(viewEditCloseButton);
 
 				// Separator
-				HTML buttonSeparator = new HTML("&nbsp;&nbsp;");
+				final HTML buttonSeparator = new HTML("&nbsp;&nbsp;");
 				closeAndSaveButtonPanel.add(buttonSeparator);
 
 				// Save Button
-				Button viewEditSaveButton = new Button("Save");
+				final Button viewEditSaveButton = new Button("Save");
 				viewEditSaveButton.setEnabled(isEditor);
 				viewEditSaveButton.setVisible(isEditor);
 				closeAndSaveButtonPanel.add(viewEditSaveButton);
@@ -406,21 +412,21 @@ public class Application implements EntryPoint {
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
-			void addViewEditTableRow(final FlexTable vetTable, String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
+			void addViewEditTableRow(String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
 
 				// Criteria Box
-				TextBox criteriaBox = new TextBox();
+				final TextBox criteriaBox = new TextBox();
 				criteriaBox.setWidth("95%");
 				criteriaBox.setText(new HTML(vetCriteria).getHTML());
 				criteriaBox.setEnabled(vetIsEditor);
-				vetTable.setWidget(vetRowNumber, 1, criteriaBox);
+				viewEditTable.setWidget(vetRowNumber, 1, criteriaBox);
 
 				// Value Box
-				TextBox valueBox = new TextBox();
+				final TextBox valueBox = new TextBox();
 				valueBox.setWidth("95%");
 				valueBox.setText(new HTML(vetValue).getHTML());
 				valueBox.setEnabled(vetIsEditor);
-				vetTable.setWidget(vetRowNumber, 2, valueBox);
+				viewEditTable.setWidget(vetRowNumber, 2, valueBox);
 
 				// Image Cross
 				if (vetIsEditor) {
@@ -440,12 +446,12 @@ public class Application implements EntryPoint {
 						public void onClick(ClickEvent event) {
 
 							setIdleTime(0);
-							int rowIndex = vetTable.getCellForEvent(event).getRowIndex();
-							vetTable.removeRow(rowIndex);
+							final int rowIndex = viewEditTable.getCellForEvent(event).getRowIndex();
+							viewEditTable.removeRow(rowIndex);
 						}
 					});
-					vetTable.setWidget(vetRowNumber, 3, newCrossImage);
-					vetTable.getCellFormatter().setAlignment(vetRowNumber, 3, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
+					viewEditTable.setWidget(vetRowNumber, 3, newCrossImage);
+					viewEditTable.getCellFormatter().setAlignment(vetRowNumber, 3, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 				}
 			}
 
@@ -455,8 +461,8 @@ public class Application implements EntryPoint {
 				flex.removeAllRows();
 
 				// Parse JSON
-				String json = result;
-				JSONArray array = (JSONArray) JSONParser.parseStrict(json);
+				final String json = result;
+				final JSONArray array = (JSONArray) JSONParser.parseStrict(json);
 				JSONObject v;
 
 				// Header row
@@ -493,14 +499,16 @@ public class Application implements EntryPoint {
 					flex.getFlexCellFormatter().getElement(i1 + 1, 1).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 2).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 3).getStyle().setCursor(Cursor.POINTER);
-					flex.getRowFormatter().setStyleName(i1 + 1, "cw-FlexTable-main-list-tr");
+					// TODO css issues
+					// flex.getRowFormatter().setStyleName(i1 + 1,
+					// "cw-FlexTable-main-list-tr");
 
 					flex.addClickHandler(new ClickHandler() {
 
 						@Override
 						public void onClick(ClickEvent event) {
 
-							int row = flex.getCellForEvent(event).getRowIndex() + 1;
+							final int row = flex.getCellForEvent(event).getRowIndex() + 1;
 
 							// General
 							setIdleTime(0);
@@ -621,6 +629,10 @@ public class Application implements EntryPoint {
 			final FlexTable loginForm = new FlexTable();
 			final FlexTable logoutForm1 = new FlexTable();
 			final FlexTable logoutForm = new FlexTable();
+			final TextBox textUserName = new TextBox();
+			final TextBox textPassword = new TextBox();
+			final Button loginButton = new Button("Login");
+			final Button logoutButton = new Button("Logout");
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -707,6 +719,7 @@ public class Application implements EntryPoint {
 
 				if (isLoggedIn()) {
 
+					// LOGIN PANEL
 					setActionState(appConst.ACTION_READY());
 
 					logoutPanel.setVisible(false);
@@ -719,14 +732,13 @@ public class Application implements EntryPoint {
 					loginPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 					loginForm.setStyleName("cw-FlexTable-view-edit-box");
 
-					loginForm1.addStyleName("cw-FlexTable");
+					loginForm1.addStyleName("cw-FlexTable-main-list-tr");
 					loginForm1.setWidth("1024px");
 					loginForm1.setHTML(0, 0, "<b>Id</b>");
 					loginForm1.setHTML(0, 1, "<b>Name</b>");
 					loginForm1.setHTML(0, 2, "<b>Surname</b>");
 					loginForm1.setHTML(0, 3, "<b>e-mail</b>");
 					loginForm1.setHTML(0, 4, "<b>Phone</b>");
-
 					loginForm1.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list-th");
 
 					loginForm1.getColumnFormatter().setWidth(0, "10%");
@@ -740,8 +752,9 @@ public class Application implements EntryPoint {
 					loginForm1.setHTML(1, 2, getUser().get("surName").isString().stringValue());
 					loginForm1.setHTML(1, 3, getUser().get("eMail").isString().stringValue());
 					loginForm1.setHTML(1, 4, getUser().get("phone").isString().stringValue());
-					// TODO
-					loginForm1.getRowFormatter().setStyleName(1, "cw-FlexTable-main-list-tr");
+					// TODO fix css
+					// loginForm1.getRowFormatter().setStyleName(1,
+					// "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(loginForm1);
 
@@ -749,11 +762,12 @@ public class Application implements EntryPoint {
 					loginPanel.add(new HTML("&nbsp;&nbsp;"));
 
 					// SessionID & Idle Time
-					userTable.addStyleName("cw-FlexTable");
+					userTable.addStyleName("cw-FlexTable-main-list-tr");
 					userTable.setWidth("1024px");
+
+					// Header Row
 					userTable.setHTML(0, 0, "<b>SessionID</b>");
 					userTable.setHTML(0, 1, "<b>Idle Time (sec)</b>");
-
 					userTable.getRowFormatter().setStyleName(0, "cw-FlexTable-main-list-th");
 
 					userTable.getColumnFormatter().setWidth(0, "50%");
@@ -761,9 +775,9 @@ public class Application implements EntryPoint {
 
 					userTable.setHTML(1, 0, getCookie());
 					userTable.setHTML(1, 1, Integer.toString(getIdleTime()));
-					// TODO : sovet ot avdeeva: th:hover td { background-color:
-					// green; }
-					userTable.getRowFormatter().setStyleName(1, "cw-FlexTable-main-list-tr");
+					// TODO : tr:hover td { background-color: #99FFCC; }
+					// userTable.getRowFormatter().setStyleName(1,
+					// "cw-FlexTable-main-list-tr");
 
 					loginPanel.add(userTable);
 
@@ -773,8 +787,8 @@ public class Application implements EntryPoint {
 
 					// AppViewMode
 					loginPanel.add(new HTML("View Mode Selector"));
-					RadioButton viewModeAll = new RadioButton("viewMode", "All");
-					RadioButton viewModeUser = new RadioButton("viewMode", "User only");
+					final RadioButton viewModeAll = new RadioButton("viewMode", "All");
+					final RadioButton viewModeUser = new RadioButton("viewMode", "User only");
 
 					viewModeAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
@@ -814,16 +828,13 @@ public class Application implements EntryPoint {
 					// Logout Button
 					final FlexTable logoutFlexTable = new FlexTable();
 					logoutFlexTable.clear();
-					final Button logoutButton = new Button("Logout");
+					logoutButton.setEnabled(true);
 					logoutButton.addClickHandler(new ClickHandler() {
 
 						@Override
 						public void onClick(ClickEvent event) {
 
-							setPageLoadingStartTime(getMillis());
-							setIdleTime(0);
-							setActionState(appConst.STATUS_LOGGING_OUT());
-							doLogoutFromServer(getLoginUserName(), getCookie());
+							doOnLogoutButtonOrImagePress();
 						}
 					});
 					logoutFlexTable.setWidget(0, 0, logoutButton);
@@ -841,12 +852,12 @@ public class Application implements EntryPoint {
 						@Override
 						public void onClick(ClickEvent event) {
 
-							setPageLoadingStartTime(getMillis());
-							setIdleTime(0);
-							setActionState(appConst.STATUS_LOGGING_OUT());
-							doLogoutFromServer(getLoginUserName(), getCookie());
+							if (getActionState().equals(appConst.STATUS_LOGGING_OUT()))
+								return;
+							doOnLogoutButtonOrImagePress();
 						}
 					});
+					imageLogout.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/logout.jpg");
 					logoutFlexTable.setWidget(0, 1, imageLogout);
 					logoutFlexTable.getFlexCellFormatter().setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -854,7 +865,7 @@ public class Application implements EntryPoint {
 					loginPanel.add(logoutFlexTable);
 
 				} else {
-
+					// LOGOUT PANEL
 					setActionState(appConst.ACTION_READY());
 
 					loginPanel.setVisible(false);
@@ -866,26 +877,48 @@ public class Application implements EntryPoint {
 					logoutForm.setStyleName("cw-FlexTable-view-edit-box");
 
 					logoutForm1.setWidget(0, 0, new Label("Username"));
-					final TextBox textUsername = new TextBox();
-					logoutForm1.setWidget(0, 1, textUsername);
+					textUserName.setEnabled(true);
+					logoutForm1.setWidget(0, 1, textUserName);
 					logoutForm1.setWidget(1, 0, new Label("Password"));
-					final TextBox textPassword = new TextBox();
+					textPassword.setEnabled(true);
 					logoutForm1.setWidget(1, 1, textPassword);
 					logoutForm.setWidget(0, 0, logoutForm1);
 					logoutForm.getFlexCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 
+					// Key Handlers
+					textUserName.setText(appConst.VAL_EMPTY());
+					textUserName.addKeyDownHandler(new KeyDownHandler() {
+
+						@Override
+						public void onKeyDown(KeyDownEvent event) {
+
+							if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+
+								doOnLoginButtonOrImageOrEnterKeyPress();
+							}
+						}
+					});
+					textPassword.setText(appConst.VAL_EMPTY());
+					textPassword.addKeyDownHandler(new KeyDownHandler() {
+
+						@Override
+						public void onKeyDown(KeyDownEvent event) {
+
+							if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+
+								doOnLoginButtonOrImageOrEnterKeyPress();
+							}
+						}
+					});
+
 					// Login Button
-					final Button loginButton = new Button("Login");
+					loginButton.setEnabled(true);
 					loginButton.addClickHandler(new ClickHandler() {
 
 						@Override
 						public void onClick(ClickEvent event) {
 
-							setPageLoadingStartTime(getMillis());
-							setIdleTime(0);
-							setActionState(appConst.STATUS_LOGGING_IN());
-							setLoginUserName(textUsername.getText());
-							doLoginToServer(textUsername.getText(), getCookie());
+							doOnLoginButtonOrImageOrEnterKeyPress();
 						}
 					});
 					logoutForm.setWidget(0, 1, loginButton);
@@ -903,13 +936,10 @@ public class Application implements EntryPoint {
 						@Override
 						public void onClick(ClickEvent event) {
 
-							setPageLoadingStartTime(getMillis());
-							setIdleTime(0);
-							setActionState(appConst.STATUS_LOGGING_IN());
-							setLoginUserName(textUsername.getText());
-							doLoginToServer(textUsername.getText(), getCookie());
+							doOnLoginButtonOrImageOrEnterKeyPress();
 						}
 					});
+					imageLogin.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/login.jpg");
 					logoutForm.setWidget(0, 2, imageLogin);
 					logoutForm.getFlexCellFormatter().setAlignment(0, 2, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -919,6 +949,40 @@ public class Application implements EntryPoint {
 
 				// Timing
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
+			}
+
+			void doOnLoginButtonOrImageOrEnterKeyPress() {
+
+				// TIMING
+				setPageLoadingStartTime(getMillis());
+				setIdleTime(0);
+
+				// Disable Buttons and TextFields
+				loginButton.setEnabled(false);
+				textUserName.setEnabled(false);
+				textPassword.setEnabled(false);
+				imageLogin.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading32.gif");
+
+				// doLogin
+				setActionState(appConst.STATUS_LOGGING_IN());
+				setLoginUserName(textUserName.getText());
+				doLoginToServer(textUserName.getText(), getCookie());
+			}
+
+			void doOnLogoutButtonOrImagePress() {
+
+				// Timing
+				setPageLoadingStartTime(getMillis());
+				setIdleTime(0);
+
+				// Disable Buttons and TextFields
+				logoutButton.setEnabled(false);
+				imageLogout.setUrl(appConst.VAL_CONTEXT_ROOT() + "images/loading32.gif");
+
+				// doLogout
+				setActionState(appConst.STATUS_LOGGING_OUT());
+				doLogoutFromServer(getLoginUserName(), getCookie());
+
 			}
 
 			/*
@@ -983,7 +1047,7 @@ public class Application implements EntryPoint {
 		// Show Panels
 
 		// InitializeIdleIdleTimer()
-		RepeatingCommand idleTimer = new Scheduler.RepeatingCommand() {
+		final RepeatingCommand idleTimer = new Scheduler.RepeatingCommand() {
 
 			@Override
 			public boolean execute() {
@@ -1126,8 +1190,8 @@ public class Application implements EntryPoint {
 	void doLogin(String result) {
 
 		// Parse JSON
-		String json = result;
-		JSONArray array = (JSONArray) JSONParser.parseStrict(json);
+		final String json = result;
+		final JSONArray array = (JSONArray) JSONParser.parseStrict(json);
 		JSONObject v;
 
 		// Login Actions
@@ -1250,7 +1314,7 @@ public class Application implements EntryPoint {
 
 	public void setCookie(String cookie) {
 
-		Date date = new Date();
+		final Date date = new Date();
 		long nowLong = date.getTime();
 		nowLong = nowLong + (1000 * 60 * 60);
 		date.setTime(nowLong);
@@ -1259,7 +1323,7 @@ public class Application implements EntryPoint {
 
 	public String getCookie() {
 
-		String cookie = Cookies.getCookie(appConst.VAL_COOKIE()).toString();
+		final String cookie = Cookies.getCookie(appConst.VAL_COOKIE()).toString();
 		return cookie == null ? appConst.VAL_EMPTY() : cookie;
 	}
 

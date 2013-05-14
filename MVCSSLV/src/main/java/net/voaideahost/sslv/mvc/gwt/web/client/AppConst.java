@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
-	@DefaultStringValue("v5.0.6_1")
+	@DefaultStringValue("v5.0.6_5")
 	String APP_VERSION();
 
 	@DefaultStringValue("/java2/")
@@ -23,7 +23,7 @@ public interface AppConst extends Constants {
 	int VAL_ADS_PER_VIEW_MODE_ALL();
 
 	// TODO Razobrat'sja s kol-vom Ads dlja User-Only-Mode - nuzhno 20!
-	@DefaultIntValue(10)
+	@DefaultIntValue(20)
 	int VAL_ADS_PER_VIEW_MODE_USER();
 
 	@DefaultIntValue(15)

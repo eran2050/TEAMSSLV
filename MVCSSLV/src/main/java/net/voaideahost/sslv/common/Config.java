@@ -8,7 +8,7 @@ public class Config {
 	public static final String VAL_USERNAME = "username";
 	public static final String VAL_SESSIONID = "sessionID";
 	public static final int VAL_ADS_PER_MAIN_PAGE = 20;
-	public static final int VAL_ADS_PER_LOGIN_PAGE = 10;
+	public static final int VAL_ADS_PER_LOGIN_PAGE = 20;
 	public static final int VAL_PAGES_IN_LINE = 15;
 	public static final String VAL_VIEW_MODE_ALL = "View Mode: All";
 	public static final String VAL_VIEW_MODE_USER = "View Mode: User Only";
