@@ -206,16 +206,7 @@ public class Application implements EntryPoint {
 
 			public void onClick(ClickEvent event) {
 
-				// Sort of Initialize block
-				setPageLoadingStartTime(getMillis());
-				setIdleTime(0);
-				setMainListingPageNumber(1);
-				setCurrentAppPage(1);
-				setButtonViewAdsPressed(false);
-				setActionState(appConst.VAL_LOADING());
-
-				// Async Calls
-				getTotalAdsFromServer();
+				// Nothing here
 			}
 
 			/*
@@ -523,9 +514,8 @@ public class Application implements EntryPoint {
 
 							// Disable multiple view/edit boxes
 							// TODO bugfix: prevent double method call
-							if (isButtonViewAdsPressed() || getActionState().equals(appConst.VAL_LOADING())) {
+							if (isButtonViewAdsPressed() || getActionState().equals(appConst.VAL_LOADING()))
 								return;
-							}
 
 							setButtonViewAdsPressed(true);
 							setViewAdSelectedRow(row);
@@ -554,28 +544,31 @@ public class Application implements EntryPoint {
 
 				// Draw buttons
 				int ads_per_page;
-				if (getAppViewMode().equals(appConst.VAL_VIEW_MODE_ALL())) {
+				if (getAppViewMode().equals(appConst.VAL_VIEW_MODE_ALL()))
 					ads_per_page = appConst.VAL_ADS_PER_VIEW_MODE_ALL();
-				} else {
+				else
 					ads_per_page = appConst.VAL_ADS_PER_VIEW_MODE_USER();
-				}
+
 				int buttonsToDraw = Math.round(getTotalAds() / ads_per_page);
 
 				if (buttonsToDraw > 0) {
+
 					if (buttonsToDraw * ads_per_page == getTotalAds())
 						buttonsToDraw -= 1;
+
 					pageNumberTable.clear();
 					pageNumberTable.setHTML(0, 0, "Pages");
 
 					int i2 = 1;
 					for (i2 = 1; i2 <= buttonsToDraw + 1; i2++) {
+
 						final Button pageButton = new Button(Integer.toString(i2));
 						pageButton.setSize("25px", "25px");
 
 						final int iPage = i2;
-						if (i2 == getMainListingPageNumber()) {
+						final int fButtonToDraw = buttonsToDraw + 1;
+						if (i2 == getMainListingPageNumber())
 							pageButton.setHTML("<b>" + iPage + "</b>");
-						}
 
 						pageButton.addClickHandler(new ClickHandler() {
 
@@ -584,25 +577,33 @@ public class Application implements EntryPoint {
 								if (getActionState().equals(appConst.VAL_LOADING()))
 									return;
 
+								// Window.alert("1");
+
 								// General
 								setPageLoadingStartTime(getMillis());
 								setIdleTime(0);
 								setCurrentAppPage(1);
+								setMainListingPageNumber(iPage);
 								setActionState(appConst.VAL_LOADING());
 								setButtonViewAdsPressed(false);
 
+								// TODO bugfix for non functioning buttons for
+								// User Only view
+								// Window.alert("2");
+
 								// Page Button
 								int n;
-								for (n = 1; n < pageNumberTable.getCellCount(0); n++) {
+								for (n = 1; n <= fButtonToDraw; n++) {
+
 									Button button = (Button) pageNumberTable.getWidget(0, n);
 									button.setEnabled(false);
-									if (n == iPage) {
-										button.setHTML("<b>" + iPage + "</b>");
-									}
+
+									if (n == getMainListingPageNumber())
+										button.setHTML("<b>" + getMainListingPageNumber() + "</b>");
 								}
-								setMainListingPageNumber(iPage);
 
 								// Async call
+								// Window.alert("3");
 								getTotalAdsFromServer();
 							}
 						});
@@ -1004,7 +1005,6 @@ public class Application implements EntryPoint {
 				// doLogout
 				setActionState(appConst.STATUS_LOGGING_OUT());
 				doLogoutFromServer(getLoginUserName(), getCookie());
-
 			}
 
 			/*
@@ -1044,14 +1044,35 @@ public class Application implements EntryPoint {
 
 				int cell = menuTable.getCellForEvent(event).getCellIndex();
 				switch (cell) {
-					case 0 :
-						mainButtonClickHandler.getTotalAdsFromServer();
-						break;
-					case 3 :
-						loginButtonClickHandler.drawLoginPanel();
-						break;
-					default :
-						break;
+				case 0:
+
+					// General
+					setPageLoadingStartTime(getMillis());
+					setIdleTime(0);
+					setMainListingPageNumber(1);
+					setCurrentAppPage(1);
+					setButtonViewAdsPressed(false);
+
+					// Prevent double call
+					if (getActionState().equals(appConst.VAL_LOADING()))
+						return;
+					setActionState(appConst.VAL_LOADING());
+
+					// Async Call
+					mainButtonClickHandler.getTotalAdsFromServer();
+					break;
+				case 3:
+
+					// General
+					setPageLoadingStartTime(getMillis());
+					setIdleTime(0);
+					setCurrentAppPage(4);
+
+					// Draw Login Panel
+					loginButtonClickHandler.drawLoginPanel();
+					break;
+				default:
+					break;
 				}
 			}
 		});
@@ -1089,28 +1110,28 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-			case 1 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-				loginPanel.setVisible(false);
+		case 1:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+			loginPanel.setVisible(false);
+			logoutPanel.setVisible(false);
+			mainPanel.setVisible(true);
+			pagesPanel.setVisible(true);
+			break;
+		case 4:
+			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+			loginPanel.setVisible(isLoggedIn());
+			if (isLoggedIn()) {
 				logoutPanel.setVisible(false);
-				mainPanel.setVisible(true);
-				pagesPanel.setVisible(true);
-				break;
-			case 4 :
-				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-				loginPanel.setVisible(isLoggedIn());
-				if (isLoggedIn()) {
-					logoutPanel.setVisible(false);
-				} else {
-					logoutPanel.setVisible(true);
-				}
-				mainPanel.setVisible(false);
-				pagesPanel.setVisible(false);
-				break;
-			default :
-				break;
+			} else {
+				logoutPanel.setVisible(true);
+			}
+			mainPanel.setVisible(false);
+			pagesPanel.setVisible(false);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -1243,6 +1264,7 @@ public class Application implements EntryPoint {
 			setCookie(id);
 		}
 	}
+
 	public String getActionState() {
 
 		return actionState;
@@ -1338,6 +1360,7 @@ public class Application implements EntryPoint {
 			this.currentViewEditTableRow += currentViewEditTableRow;
 		}
 	}
+
 	public void setCookie(String cookie) {
 
 		final Date date = new Date();

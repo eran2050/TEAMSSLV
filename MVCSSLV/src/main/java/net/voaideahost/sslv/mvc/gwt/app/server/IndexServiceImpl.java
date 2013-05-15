@@ -50,6 +50,8 @@ public class IndexServiceImpl implements IndexService {
 			Gson gson = new Gson();
 			String toJson = gson.toJson(ads);
 
+			logger.info("getMainListing() viewMode=" + viewMode + ", page=" + page + ", userName=" + userName);
+
 			return toJson;
 		} catch (Exception e) {
 
@@ -68,6 +70,8 @@ public class IndexServiceImpl implements IndexService {
 			} else {
 				num = aDao.getAdsCountByUser(userName);
 			}
+
+			logger.info("getTotalAds() viewMode=" + viewMode + ", userName=" + userName);
 
 			return new Integer(num);
 		} catch (Exception e) {
@@ -100,10 +104,10 @@ public class IndexServiceImpl implements IndexService {
 
 		String serverSessionID = session().getId();
 
-		logger.info("doLogin() start");
-		logger.info("doLogin() clientUserName=" + clientUserName);
-		logger.info("doLogin() clientSessionID=" + clientSessionID);
-		logger.info("doLogin() serverSessionID=" + serverSessionID);
+		logger.info("doLogin(0) start");
+		logger.info("doLogin(0) clientUserName=" + clientUserName);
+		logger.info("doLogin(0) clientSessionID=" + clientSessionID);
+		logger.info("doLogin(0) serverSessionID=" + serverSessionID);
 
 		try {
 			ArrayList<Users> list = new ArrayList<Users>();
@@ -122,8 +126,8 @@ public class IndexServiceImpl implements IndexService {
 			if (!serverUserDAO.equals(Config.VAL_EMPTY) && clientUserName.equals(serverUserDAO)) {
 
 				session().setAttribute(Config.VAL_USERNAME, clientUserName);
-				logger.info("doLogin() " + "saved clientUserName=" + clientUserName + " in session()");
-				logger.info("doLogin() " + "passed serverSessionID=" + serverSessionID + " to Client");
+				logger.info("doLogin(1) " + "saved clientUserName=" + clientUserName + " in session()");
+				logger.info("doLogin(1) " + "passed serverSessionID=" + serverSessionID + " to Client");
 
 				list.add(user);
 				Users u2 = new Users();
@@ -132,7 +136,7 @@ public class IndexServiceImpl implements IndexService {
 				toJson = gson.toJson(list);
 				logger.info(toJson);
 
-				logger.info("doLogin() success");
+				logger.info("doLogin(1) success");
 
 				return toJson;
 			}
@@ -141,11 +145,11 @@ public class IndexServiceImpl implements IndexService {
 			if (session().getAttribute(Config.VAL_USERNAME) != null) {
 
 				serverUserName = session().getAttribute(Config.VAL_USERNAME).toString();
-				logger.info("doLogin() " + "using userNameSession=" + serverUserName + " as session() attribute");
-				logger.info("doLogin() proceed");
+				logger.info("doLogin(2) " + "using userNameSession=" + serverUserName + " as session() attribute");
+				logger.info("doLogin(2) proceed");
 
-				logger.info("doLogin() " + "got userNameSession=" + serverUserName + " in session()");
-				logger.info("doLogin() " + "got serverSessionID=" + serverSessionID + " in session()");
+				logger.info("doLogin(2) " + "got userNameSession=" + serverUserName + " in session()");
+				logger.info("doLogin(2) " + "got serverSessionID=" + serverSessionID + " in session()");
 
 				user = uDao.getUserById(serverUserName);
 				list.add(user);
@@ -154,17 +158,17 @@ public class IndexServiceImpl implements IndexService {
 				list.add(u2);
 				toJson = gson.toJson(list);
 				logger.info(toJson);
-				logger.info("doLogin() session restorred");
+				logger.info("doLogin(2) session restorred");
 
 				return toJson;
 			}
 
-			logger.info("doLogin() user not found");
+			logger.info("doLogin(3) user not found");
 			return Config.STATUS_NO_SUCH_USER;
 
 		} catch (Exception e) {
 
-			logger.error("doLogin() failed " + e.getMessage());
+			logger.error("doLogin(4) failed " + e.getMessage());
 			e.printStackTrace();
 
 		}
@@ -192,10 +196,10 @@ public class IndexServiceImpl implements IndexService {
 
 		String serverSessionID = session().getId();
 
-		logger.info("doLogout() start");
-		logger.info("doLogout() clientUserName=" + clientUserName);
-		logger.info("doLogout() clientSessionID=" + clientSessionID);
-		logger.info("doLogout() serverSessionID=" + serverSessionID);
+		logger.info("doLogout(0) start");
+		logger.info("doLogout(0) clientUserName=" + clientUserName);
+		logger.info("doLogout(0) clientSessionID=" + clientSessionID);
+		logger.info("doLogout(0) serverSessionID=" + serverSessionID);
 
 		try {
 			if (session().getAttribute(Config.VAL_USERNAME) != null) {
@@ -206,14 +210,14 @@ public class IndexServiceImpl implements IndexService {
 
 					session().removeAttribute(Config.VAL_USERNAME);
 					session().invalidate();
-					logger.info("doLogout() success");
+					logger.info("doLogout(1) success");
 
 					return serverSessionID;
 				}
 			}
 		} catch (Exception e) {
 
-			logger.error("doLogout() failed" + e.getMessage());
+			logger.error("doLogout(2) failed" + e.getMessage());
 		}
 
 		return Config.VAL_EMPTY;
