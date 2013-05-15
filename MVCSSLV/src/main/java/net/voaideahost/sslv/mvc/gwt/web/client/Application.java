@@ -81,7 +81,7 @@ public class Application implements EntryPoint {
 	// Application wide params
 	private boolean initializing = true;
 	private String loginUserName = appConst.VAL_EMPTY();
-	private String loginState = appConst.STATUS_NOT_LOGGED_IN();
+	private String loginState = appConst.VAL_INITIALIZING();
 	private String actionState = appConst.VAL_INITIALIZING();
 	private int currentAppPage = 1;
 	private String appViewMode = appConst.VAL_VIEW_MODE_ALL();
@@ -111,8 +111,6 @@ public class Application implements EntryPoint {
 
 	// Resources
 	final Image imageLoading = new Image();
-	final Image imageCross = new Image();
-	final Image imagePlus = new Image();
 	final Image imageLogin = new Image();
 	final Image imageLogout = new Image();
 
@@ -147,11 +145,15 @@ public class Application implements EntryPoint {
 		RootPanel.get("header1").add(menuPanel);
 
 		// Action Status Label
+		final HorizontalPanel statusPanelMain = new HorizontalPanel();
 		final HorizontalPanel statusPanel = new HorizontalPanel();
-		setActionState(getActionState());
+		final FlexTable statusPanelTable = new FlexTable();
+		statusPanelTable.addStyleName("cw-FlexTable-view-edit-box");
 		statusPanel.add(appActionLabel);
 		statusPanel.add(imageLoading);
-		RootPanel.get("body0").add(statusPanel);
+		statusPanelTable.setWidget(0, 0, statusPanel);
+		statusPanelMain.add(statusPanelTable);
+		RootPanel.get("body0").add(statusPanelMain);
 		setActionState(appConst.VAL_INITIALIZING());
 
 		// LOGIN PANEL
@@ -170,6 +172,8 @@ public class Application implements EntryPoint {
 
 		// MAIN CONTAINER - Page numbers
 		final FlexTable pageNumberTable = new FlexTable();
+		// TODO css table margin issue
+		pageNumberTable.addStyleName("cw-FlexTable-view-edit-box");
 		pagesPanel.add(pageNumberTable);
 		RootPanel.get("body3").add(pagesPanel);
 
@@ -187,7 +191,10 @@ public class Application implements EntryPoint {
 
 		// Page Load Timer
 		final HorizontalPanel pageLoadTimerPanel = new HorizontalPanel();
-		pageLoadTimerPanel.add(pageLoadTimeLabel);
+		final FlexTable pageLoadTimeTable = new FlexTable();
+		pageLoadTimeTable.addStyleName("cw-FlexTable-view-edit-box");
+		pageLoadTimeTable.setWidget(0, 0, pageLoadTimeLabel);
+		pageLoadTimerPanel.add(pageLoadTimeTable);
 		RootPanel.get("footer2").add(pageLoadTimerPanel);
 
 		// Async Calls
@@ -273,10 +280,12 @@ public class Application implements EntryPoint {
 			 * DRAW TABLE METHODS
 			 */
 
-			void drawViewEditTable(String result) {
+			private void drawViewEditTable(String result) {
+
+				// Init
+				setCurrentViewEditTableRow(0);
 
 				// Draw ViewEditBox
-
 				final String ownerName = flex.getText(getViewAdSelectedRow() - 1, 3);
 				final boolean isEditor = isLoggedIn() && ownerName.equals(getLoginUserName());
 
@@ -285,6 +294,7 @@ public class Application implements EntryPoint {
 				viewEditTable.clear();
 				viewEditTable.removeAllRows();
 				viewEditTable.addStyleName("cw-FlexTable-view-edit-box");
+				viewEditTable.setBorderWidth(0);
 				viewEditTable.setWidth("100%");
 				viewEditTable.getColumnFormatter().setWidth(0, "50px");
 				viewEditTable.getColumnFormatter().setWidth(1, "300px");
@@ -305,7 +315,7 @@ public class Application implements EntryPoint {
 
 				// Separator
 				final HTML htmlSeparator1 = new HTML("<hr />");
-				viewEditTable.getFlexCellFormatter().setColSpan(currentViewEditTableRow, 0, 4);
+				viewEditTable.getFlexCellFormatter().setColSpan(getCurrentViewEditTableRow(), 0, 4);
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator1);
 				setCurrentViewEditTableRow(1);
 
@@ -363,7 +373,7 @@ public class Application implements EntryPoint {
 
 				// Separator 2
 				final HTML htmlSeparator2 = new HTML("<hr />");
-				viewEditTable.getFlexCellFormatter().setColSpan(currentViewEditTableRow, 0, 4);
+				viewEditTable.getFlexCellFormatter().setColSpan(getCurrentViewEditTableRow(), 0, 4);
 				htmlSeparator2.setWidth("98%");
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator2);
 				setCurrentViewEditTableRow(1);
@@ -401,6 +411,8 @@ public class Application implements EntryPoint {
 				// Flex
 				flex.insertRow(getViewAdSelectedRow());
 				flex.getFlexCellFormatter().setColSpan(getViewAdSelectedRow(), 0, 4);
+				flex.getFlexCellFormatter().setWidth(getViewAdSelectedRow(), 0, "100%");
+				flex.getRowFormatter().setStyleName(getViewAdSelectedRow(), "cw-FlexTable-view-edit-box");
 				flex.setWidget(getViewAdSelectedRow(), 0, viewEditPanel);
 				viewEditPanel.setVisible(true);
 
@@ -411,7 +423,7 @@ public class Application implements EntryPoint {
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
-			void addViewEditTableRow(String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
+			private void addViewEditTableRow(String vetCriteria, String vetValue, final int vetRowNumber, boolean vetIsEditor) {
 
 				// Criteria Box
 				final TextBox criteriaBox = new TextBox();
@@ -454,7 +466,7 @@ public class Application implements EntryPoint {
 				}
 			}
 
-			void drawMainListingTable(String result) {
+			private void drawMainListingTable(String result) {
 
 				flex.clear();
 				flex.removeAllRows();
@@ -498,8 +510,6 @@ public class Application implements EntryPoint {
 					flex.getFlexCellFormatter().getElement(i1 + 1, 1).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 2).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1 + 1, 3).getStyle().setCursor(Cursor.POINTER);
-					// flex.getRowFormatter().setStyleName(i1 + 1,
-					// "cw-FlexTable-main-list-tr");
 
 					flex.addClickHandler(new ClickHandler() {
 
@@ -512,7 +522,8 @@ public class Application implements EntryPoint {
 							setIdleTime(0);
 
 							// Disable multiple view/edit boxes
-							if (isButtonViewAdsPressed()) {
+							// TODO bugfix: prevent double method call
+							if (isButtonViewAdsPressed() || getActionState().equals(appConst.VAL_LOADING())) {
 								return;
 							}
 
@@ -539,7 +550,7 @@ public class Application implements EntryPoint {
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
-			void drawPageButtons() {
+			private void drawPageButtons() {
 
 				// Draw buttons
 				int ads_per_page;
@@ -570,6 +581,9 @@ public class Application implements EntryPoint {
 
 							public void onClick(ClickEvent event) {
 
+								if (getActionState().equals(appConst.VAL_LOADING()))
+									return;
+
 								// General
 								setPageLoadingStartTime(getMillis());
 								setIdleTime(0);
@@ -594,6 +608,16 @@ public class Application implements EntryPoint {
 						});
 						pageNumberTable.setWidget(0, i2, pageButton);
 					}
+
+				} else {
+
+					// Draw one button, but disable it once
+					pageNumberTable.clear();
+					pageNumberTable.setHTML(0, 0, "Pages");
+					Button firstPageButton = new Button();
+					firstPageButton.setHTML("<b>1</b>");
+					firstPageButton.setEnabled(false);
+					pageNumberTable.setWidget(0, 1, firstPageButton);
 				}
 			}
 
@@ -613,7 +637,7 @@ public class Application implements EntryPoint {
 				gwtService.getMainListing(getAppViewMode(), getMainListingPageNumber(), getLoginUserName(), getMainListingByPageFromServer);
 			}
 
-			public void getGetAdDescFromServer(int adDescId) {
+			private void getGetAdDescFromServer(int adDescId) {
 
 				gwtService.getAdDesc(adDescId, getAdDescFromServer);
 			}
@@ -713,12 +737,12 @@ public class Application implements EntryPoint {
 			 * DRAW TABLE METHODS
 			 */
 
-			public void drawLoginPanel() {
+			private void drawLoginPanel() {
 
 				if (isLoggedIn()) {
 
 					// LOGIN PANEL
-					setActionState(appConst.ACTION_READY());
+					// setActionState(appConst.ACTION_READY());
 
 					logoutPanel.setVisible(false);
 					loginPanel.setVisible(true);
@@ -787,7 +811,7 @@ public class Application implements EntryPoint {
 						@Override
 						public void onValueChange(ValueChangeEvent<Boolean> event) {
 
-							if (event.getValue() == true)
+							if (event.getValue())
 								setAppViewMode(appConst.VAL_VIEW_MODE_ALL());
 						}
 					});
@@ -797,7 +821,7 @@ public class Application implements EntryPoint {
 						@Override
 						public void onValueChange(ValueChangeEvent<Boolean> event) {
 
-							if (event.getValue() == true)
+							if (event.getValue())
 								setAppViewMode(appConst.VAL_VIEW_MODE_USER());
 						}
 					});
@@ -858,7 +882,7 @@ public class Application implements EntryPoint {
 
 				} else {
 					// LOGOUT PANEL
-					setActionState(appConst.ACTION_READY());
+					// setActionState(appConst.ACTION_READY());
 
 					loginPanel.setVisible(false);
 					logoutPanel.setVisible(true);
@@ -943,7 +967,10 @@ public class Application implements EntryPoint {
 				setLoadingTime(getMillis() - getPageLoadingStartTime());
 			}
 
-			void doOnLoginButtonOrImageOrEnterKeyPress() {
+			private void doOnLoginButtonOrImageOrEnterKeyPress() {
+
+				if (getActionState().equals(appConst.STATUS_LOGGING_IN()))
+					return;
 
 				// TIMING
 				setPageLoadingStartTime(getMillis());
@@ -961,7 +988,10 @@ public class Application implements EntryPoint {
 				doLoginToServer(textUserName.getText(), getCookie());
 			}
 
-			void doOnLogoutButtonOrImagePress() {
+			private void doOnLogoutButtonOrImagePress() {
+
+				if (getActionState().equals(appConst.STATUS_LOGGING_OUT()))
+					return;
 
 				// Timing
 				setPageLoadingStartTime(getMillis());
@@ -1101,7 +1131,7 @@ public class Application implements EntryPoint {
 		} else {
 			loginAnchorText = "Status: " + action;
 		}
-		loginAnchor.setText(loginAnchorText);
+		loginAnchor.setHTML(loginAnchorText);
 	}
 
 	public String getLoginUserName() {
@@ -1151,7 +1181,7 @@ public class Application implements EntryPoint {
 		checkLoginStatus();
 	}
 
-	void checkLoginStatus() {
+	public void checkLoginStatus() {
 
 		if ((getLoginState().equals(appConst.STATUS_LOGGED_IN()) || getLoginState().equals(appConst.STATUS_LOGGING_IN()))
 				&& getIdleTime() >= appConst.VAL_MAX_IDLE_TIME()) {
@@ -1164,7 +1194,7 @@ public class Application implements EntryPoint {
 		}
 	}
 
-	void doLogout(String result) {
+	public void doLogout(String result) {
 
 		setLoginUserName(appConst.VAL_EMPTY());
 		setLoginState(appConst.STATUS_NOT_LOGGED_IN());
@@ -1179,22 +1209,23 @@ public class Application implements EntryPoint {
 		setAppViewMode(appConst.VAL_VIEW_MODE_ALL());
 	}
 
-	void doLogin(String result) {
+	public void doLogin(String result) {
 
 		// Parse JSON
-		final String json = result;
-		final JSONArray array = (JSONArray) JSONParser.parseStrict(json);
-		JSONObject v;
+		String json = result;
 
 		// Login Actions
-		if (array.size() == 0) {
+		if (json.equals(appConst.VAL_EMPTY()) || json.equals(appConst.STATUS_NO_SUCH_USER())) {
 
 			setLoginUserName(appConst.VAL_EMPTY());
 			setLoginState(appConst.STATUS_NOT_LOGGED_IN());
-			setActionState(appConst.ACTION_LOGGING_IN_FAILED());
+			setActionState(json);
 			setCookie(appConst.VAL_EMPTY());
 
 		} else {
+
+			JSONArray array = (JSONArray) JSONParser.parseStrict(json);
+			JSONObject v;
 
 			// USER
 			v = array.get(0).isObject();
@@ -1212,7 +1243,6 @@ public class Application implements EntryPoint {
 			setCookie(id);
 		}
 	}
-
 	public String getActionState() {
 
 		return actionState;
@@ -1220,6 +1250,7 @@ public class Application implements EntryPoint {
 
 	public void setActionState(String actionState) {
 
+		// TODO Introduce MSG_TYPE_????
 		this.actionState = actionState;
 		if (actionState.equals(appConst.VAL_TOTAL_ADS())) {
 			imageLoading.setVisible(false);
@@ -1301,9 +1332,12 @@ public class Application implements EntryPoint {
 
 	public void setCurrentViewEditTableRow(int currentViewEditTableRow) {
 
-		this.currentViewEditTableRow += currentViewEditTableRow;
+		if (currentViewEditTableRow == 0) {
+			this.currentViewEditTableRow = currentViewEditTableRow;
+		} else {
+			this.currentViewEditTableRow += currentViewEditTableRow;
+		}
 	}
-
 	public void setCookie(String cookie) {
 
 		final Date date = new Date();

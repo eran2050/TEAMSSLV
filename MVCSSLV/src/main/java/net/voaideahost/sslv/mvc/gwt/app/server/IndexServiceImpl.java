@@ -56,7 +56,7 @@ public class IndexServiceImpl implements IndexService {
 			logger.error("getMainListing() " + e.getMessage());
 		}
 
-		return null;
+		return Config.VAL_EMPTY;
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class IndexServiceImpl implements IndexService {
 			logger.error("getAdDesc() " + e.getMessage());
 		}
 
-		return null;
+		return Config.VAL_EMPTY;
 	}
 
 	@Override
@@ -159,16 +159,17 @@ public class IndexServiceImpl implements IndexService {
 				return toJson;
 			}
 
-			logger.info("doLogin() failed");
-			return null;
+			logger.info("doLogin() user not found");
+			return Config.STATUS_NO_SUCH_USER;
 
 		} catch (Exception e) {
 
 			logger.error("doLogin() failed " + e.getMessage());
 			e.printStackTrace();
+
 		}
 
-		return null;
+		return Config.VAL_EMPTY;
 	}
 
 	@Transactional
@@ -212,10 +213,9 @@ public class IndexServiceImpl implements IndexService {
 			}
 		} catch (Exception e) {
 
-			logger.error("doLogout() " + e.getMessage());
+			logger.error("doLogout() failed" + e.getMessage());
 		}
 
-		logger.info("doLogout() failed");
-		return null;
+		return Config.VAL_EMPTY;
 	}
 }

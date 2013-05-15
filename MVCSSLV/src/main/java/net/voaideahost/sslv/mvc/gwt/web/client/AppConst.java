@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
-	@DefaultStringValue("v5.0.6_5")
+	@DefaultStringValue("v5.0.7_1")
 	String APP_VERSION();
 
 	@DefaultStringValue("/java2/")
@@ -22,7 +22,6 @@ public interface AppConst extends Constants {
 	@DefaultIntValue(20)
 	int VAL_ADS_PER_VIEW_MODE_ALL();
 
-	// TODO Razobrat'sja s kol-vom Ads dlja User-Only-Mode - nuzhno 20!
 	@DefaultIntValue(20)
 	int VAL_ADS_PER_VIEW_MODE_USER();
 
@@ -47,8 +46,17 @@ public interface AppConst extends Constants {
 	@DefaultStringValue("View Mode: User Only")
 	String VAL_VIEW_MODE_USER();
 
+	@DefaultStringValue("information")
+	String MSG_TYPE_INFO();
+
+	@DefaultStringValue("warning")
+	String MSG_TYPE_WARN();
+
 	@DefaultStringValue("Not Logged In")
 	String STATUS_NOT_LOGGED_IN();
+
+	@DefaultStringValue("No Such User")
+	String STATUS_NO_SUCH_USER();
 
 	@DefaultStringValue("Logging In&nbsp;")
 	String STATUS_LOGGING_IN();
