@@ -38,6 +38,11 @@ div.footer {
 	background-color: white;
 }
 
+.cw-FlexTable-view-edit-box tr {
+	border: 1px solid white;
+	background-color: white;
+}
+
 .cw-FlexTable-main-list-th {
 	border-collapse: collapse;
     margin: 5px;

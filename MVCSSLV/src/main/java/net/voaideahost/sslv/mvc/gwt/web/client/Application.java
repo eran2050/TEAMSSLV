@@ -264,9 +264,8 @@ public class Application implements EntryPoint {
 				viewEditPanel.clear();
 				viewEditTable.clear();
 				viewEditTable.removeAllRows();
-				viewEditTable.addStyleName("cw-FlexTable-view-edit-box");
-				viewEditTable.setBorderWidth(0);
-				viewEditTable.setWidth("100%");
+				viewEditTable.setStyleName("cw-FlexTable-view-edit-box");
+				viewEditTable.setWidth("1008px");
 				viewEditTable.getColumnFormatter().setWidth(0, "50px");
 				viewEditTable.getColumnFormatter().setWidth(1, "300px");
 				viewEditTable.getColumnFormatter().setWidth(2, "300px");
@@ -287,6 +286,7 @@ public class Application implements EntryPoint {
 				// Separator
 				final HTML htmlSeparator1 = new HTML("<hr />");
 				viewEditTable.getFlexCellFormatter().setColSpan(getCurrentViewEditTableRow(), 0, 4);
+				htmlSeparator1.setWidth("1001px");
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator1);
 				setCurrentViewEditTableRow(1);
 
@@ -345,7 +345,7 @@ public class Application implements EntryPoint {
 				// Separator 2
 				final HTML htmlSeparator2 = new HTML("<hr />");
 				viewEditTable.getFlexCellFormatter().setColSpan(getCurrentViewEditTableRow(), 0, 4);
-				htmlSeparator2.setWidth("98%");
+				htmlSeparator2.setWidth("1001px");
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, htmlSeparator2);
 				setCurrentViewEditTableRow(1);
 
@@ -379,12 +379,14 @@ public class Application implements EntryPoint {
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 1, closeAndSaveButtonPanel);
 				viewEditPanel.add(viewEditTable);
 
+				// TODO fix css
+
 				// Flex
 				flex.insertRow(getViewAdSelectedRow());
 				flex.getFlexCellFormatter().setColSpan(getViewAdSelectedRow(), 0, 4);
-				flex.getFlexCellFormatter().setWidth(getViewAdSelectedRow(), 0, "100%");
-				flex.getRowFormatter().setStyleName(getViewAdSelectedRow(), "cw-FlexTable-view-edit-box");
 				flex.setWidget(getViewAdSelectedRow(), 0, viewEditPanel);
+				// flex.getRowFormatter().setStyleName(getViewAdSelectedRow(),
+				// "cw-FlexTable-view-edit-box");
 				viewEditPanel.setVisible(true);
 
 				// Ad Count
@@ -714,9 +716,6 @@ public class Application implements EntryPoint {
 
 				if (isLoggedIn()) {
 
-					// LOGIN PANEL
-					// setActionState(appConst.ACTION_READY());
-
 					logoutPanel.setVisible(false);
 					loginPanel.setVisible(true);
 
@@ -854,8 +853,6 @@ public class Application implements EntryPoint {
 					loginPanel.add(logoutFlexTable);
 
 				} else {
-					// LOGOUT PANEL
-					// setActionState(appConst.ACTION_READY());
 
 					loginPanel.setVisible(false);
 					logoutPanel.setVisible(true);
