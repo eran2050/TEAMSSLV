@@ -385,8 +385,6 @@ public class Application implements EntryPoint {
 				flex.insertRow(getViewAdSelectedRow());
 				flex.getFlexCellFormatter().setColSpan(getViewAdSelectedRow(), 0, 4);
 				flex.setWidget(getViewAdSelectedRow(), 0, viewEditPanel);
-				// flex.getRowFormatter().setStyleName(getViewAdSelectedRow(),
-				// "cw-FlexTable-view-edit-box");
 				viewEditPanel.setVisible(true);
 
 				// Ad Count
