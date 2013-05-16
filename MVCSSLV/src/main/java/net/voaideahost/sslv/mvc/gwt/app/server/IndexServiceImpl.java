@@ -37,19 +37,43 @@ public class IndexServiceImpl implements IndexService {
 	@Autowired
 	private AdDescDAO dDao;
 
+	@Transactional
+	public HttpSession session() {
+
+		try {
+			ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+
+			return attr.getRequest().getSession();
+		} catch (Exception e) {
+
+			logger.error("session() " + e.getMessage());
+		}
+
+		return null;
+	}
+
 	@Override
 	public String getMainListing(String viewMode, int page, String userName) {
 
 		try {
-			ArrayList<Ads> ads;
+			ArrayList<Ads> ads = new ArrayList<Ads>();
+			Ads ad = new Ads();
+
 			if (viewMode.equals(Config.VAL_VIEW_MODE_ALL)) {
-				ads = aDao.getMainListing(page);
+
+				ad.setId(aDao.getTotalAdsCount());
+				ads.add(ad);
+				ads.addAll(aDao.getMainListing(page));
+
 			} else {
-				ads = aDao.getAdsListByUserAndPage(userName, page);
+
+				ad.setId(aDao.getAdsCountByUser(userName));
+				ads.add(ad);
+				ads.addAll(aDao.getAdsListByUserAndPage(userName, page));
 			}
+
 			Gson gson = new Gson();
 			String toJson = gson.toJson(ads);
-
 			logger.info("getMainListing() viewMode=" + viewMode + ", page=" + page + ", userName=" + userName);
 
 			return toJson;
@@ -59,27 +83,6 @@ public class IndexServiceImpl implements IndexService {
 		}
 
 		return Config.VAL_EMPTY;
-	}
-
-	@Override
-	public Integer getTotalAds(String viewMode, String userName) {
-		try {
-			int num;
-			if (viewMode.equals(Config.VAL_VIEW_MODE_ALL)) {
-				num = aDao.getTotalAdsCount();
-			} else {
-				num = aDao.getAdsCountByUser(userName);
-			}
-
-			logger.info("getTotalAds() viewMode=" + viewMode + ", userName=" + userName);
-
-			return new Integer(num);
-		} catch (Exception e) {
-
-			logger.error("getTotalAds() " + e.getMessage());
-		}
-
-		return 0;
 	}
 
 	@Override
@@ -111,7 +114,11 @@ public class IndexServiceImpl implements IndexService {
 
 		try {
 			ArrayList<Users> list = new ArrayList<Users>();
-			Users user = uDao.getUserById(clientUserName);
+			Users user = new Users();
+
+			if (!clientUserName.equals(Config.VAL_EMPTY))
+				user = uDao.getUserById(clientUserName);
+
 			Gson gson = new Gson();
 			String toJson;
 
@@ -174,21 +181,6 @@ public class IndexServiceImpl implements IndexService {
 		}
 
 		return Config.VAL_EMPTY;
-	}
-
-	@Transactional
-	public HttpSession session() {
-
-		try {
-			ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-
-			return attr.getRequest().getSession();
-		} catch (Exception e) {
-
-			logger.error("session() " + e.getMessage());
-		}
-
-		return null;
 	}
 
 	@Override

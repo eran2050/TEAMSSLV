@@ -172,7 +172,6 @@ public class Application implements EntryPoint {
 
 		// MAIN CONTAINER - Page numbers
 		final FlexTable pageNumberTable = new FlexTable();
-		// TODO css table margin issue
 		pageNumberTable.addStyleName("cw-FlexTable-view-edit-box");
 		pagesPanel.add(pageNumberTable);
 		RootPanel.get("body3").add(pagesPanel);
@@ -214,25 +213,6 @@ public class Application implements EntryPoint {
 			 * 
 			 * ASYNC METHODS
 			 */
-
-			AsyncCallback<Integer> getTotalAdsFromServer = new AsyncCallback<Integer>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-
-					setIdleTime(0);
-					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
-					box.show();
-				}
-
-				@Override
-				public void onSuccess(Integer result) {
-
-					setTotalAds(result.intValue());
-					getMainListingByPageFromServer();
-				}
-
-			};
 
 			AsyncCallback<String> getAdDescFromServer = new AsyncCallback<String>() {
 
@@ -467,6 +447,11 @@ public class Application implements EntryPoint {
 				final JSONArray array = (JSONArray) JSONParser.parseStrict(json);
 				JSONObject v;
 
+				// Total Ads array[0].id
+				v = array.get(0).isObject();
+				String sTotalAds = v.get("id").isNumber().toString();
+				setTotalAds(Integer.parseInt(sTotalAds));
+
 				// Header row
 				flex.setHTML(0, 0, "<b>Id</b>");
 				flex.setHTML(0, 1, "<b>Summary</b>");
@@ -477,30 +462,30 @@ public class Application implements EntryPoint {
 				// Data rows
 				int arrayBoundary = array.size();
 
-				int i1 = 0;
-				for (i1 = 0; i1 < arrayBoundary; i1++) {
+				int i1 = 1;
+				for (i1 = 1; i1 < arrayBoundary; i1++) {
 					v = array.get(i1).isObject();
 
 					// ID
 					final String adsId = v.get("id").isNumber().toString();
-					flex.setText(i1 + 1, 0, adsId);
+					flex.setText(i1, 0, adsId);
 
 					// Name
-					flex.setWidget(i1 + 1, 1, new HTML(v.get("name").isString().stringValue()));
+					flex.setWidget(i1, 1, new HTML(v.get("name").isString().stringValue()));
 
 					// Date
 					final String dateCreatedS = v.get("created").isString().stringValue();
 					final Date dateCreatedD = DateTimeFormat.getFormat("M d, y h:m:s a").parse(dateCreatedS);
-					flex.setHTML(i1 + 1, 2, DateTimeFormat.getFormat("yyyy.MM.dd HH:mm:ss").format(dateCreatedD).toString());
+					flex.setHTML(i1, 2, DateTimeFormat.getFormat("yyyy.MM.dd HH:mm:ss").format(dateCreatedD).toString());
 
 					// Owner
-					flex.setHTML(i1 + 1, 3, v.get("owner").isString().stringValue());
+					flex.setHTML(i1, 3, v.get("owner").isString().stringValue());
 
 					// Creating Edit Click Handler
-					flex.getFlexCellFormatter().getElement(i1 + 1, 0).getStyle().setCursor(Cursor.POINTER);
-					flex.getFlexCellFormatter().getElement(i1 + 1, 1).getStyle().setCursor(Cursor.POINTER);
-					flex.getFlexCellFormatter().getElement(i1 + 1, 2).getStyle().setCursor(Cursor.POINTER);
-					flex.getFlexCellFormatter().getElement(i1 + 1, 3).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1, 0).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1, 1).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1, 2).getStyle().setCursor(Cursor.POINTER);
+					flex.getFlexCellFormatter().getElement(i1, 3).getStyle().setCursor(Cursor.POINTER);
 
 					flex.addClickHandler(new ClickHandler() {
 
@@ -513,7 +498,6 @@ public class Application implements EntryPoint {
 							setIdleTime(0);
 
 							// Disable multiple view/edit boxes
-							// TODO bugfix: prevent double method call
 							if (isButtonViewAdsPressed() || getActionState().equals(appConst.VAL_LOADING()))
 								return;
 
@@ -577,8 +561,6 @@ public class Application implements EntryPoint {
 								if (getActionState().equals(appConst.VAL_LOADING()))
 									return;
 
-								// Window.alert("1");
-
 								// General
 								setPageLoadingStartTime(getMillis());
 								setIdleTime(0);
@@ -586,10 +568,6 @@ public class Application implements EntryPoint {
 								setMainListingPageNumber(iPage);
 								setActionState(appConst.VAL_LOADING());
 								setButtonViewAdsPressed(false);
-
-								// TODO bugfix for non functioning buttons for
-								// User Only view
-								// Window.alert("2");
 
 								// Page Button
 								int n;
@@ -603,8 +581,7 @@ public class Application implements EntryPoint {
 								}
 
 								// Async call
-								// Window.alert("3");
-								getTotalAdsFromServer();
+								getMainListingByPageFromServer();
 							}
 						});
 						pageNumberTable.setWidget(0, i2, pageButton);
@@ -627,11 +604,6 @@ public class Application implements EntryPoint {
 			 * 
 			 * ASYNC METHOD CALLS
 			 */
-
-			private void getTotalAdsFromServer() {
-
-				gwtService.getTotalAds(getAppViewMode(), getLoginUserName(), getTotalAdsFromServer);
-			}
 
 			private void getMainListingByPageFromServer() {
 
@@ -1044,41 +1016,41 @@ public class Application implements EntryPoint {
 
 				int cell = menuTable.getCellForEvent(event).getCellIndex();
 				switch (cell) {
-				case 0:
+					case 0 :
 
-					// General
-					setPageLoadingStartTime(getMillis());
-					setIdleTime(0);
-					setMainListingPageNumber(1);
-					setCurrentAppPage(1);
-					setButtonViewAdsPressed(false);
+						// General
+						setPageLoadingStartTime(getMillis());
+						setIdleTime(0);
+						setMainListingPageNumber(1);
+						setCurrentAppPage(1);
+						setButtonViewAdsPressed(false);
 
-					// Prevent double call
-					if (getActionState().equals(appConst.VAL_LOADING()))
-						return;
-					setActionState(appConst.VAL_LOADING());
+						// Prevent double call
+						if (getActionState().equals(appConst.VAL_LOADING()))
+							return;
+						setActionState(appConst.VAL_LOADING());
 
-					// Async Call
-					mainButtonClickHandler.getTotalAdsFromServer();
-					break;
-				case 3:
+						// Async Call
+						mainButtonClickHandler.getMainListingByPageFromServer();
+						break;
+					case 3 :
 
-					// General
-					setPageLoadingStartTime(getMillis());
-					setIdleTime(0);
-					setCurrentAppPage(4);
+						// General
+						setPageLoadingStartTime(getMillis());
+						setIdleTime(0);
+						setCurrentAppPage(4);
 
-					// Draw Login Panel
-					loginButtonClickHandler.drawLoginPanel();
-					break;
-				default:
-					break;
+						// Draw Login Panel
+						loginButtonClickHandler.drawLoginPanel();
+						break;
+					default :
+						break;
 				}
 			}
 		});
 
 		// InitializeApp()
-		mainButtonClickHandler.getTotalAdsFromServer();
+		mainButtonClickHandler.getMainListingByPageFromServer();
 		loginButtonClickHandler.doLoginToServer(getLoginUserName(), getCookie());
 
 		// InitializeUser()
@@ -1110,28 +1082,28 @@ public class Application implements EntryPoint {
 	public void changeMenuItemColorAsSelected() {
 
 		switch (getCurrentAppPage()) {
-		case 1:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
-			loginPanel.setVisible(false);
-			logoutPanel.setVisible(false);
-			mainPanel.setVisible(true);
-			pagesPanel.setVisible(true);
-			break;
-		case 4:
-			menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
-			menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
-			loginPanel.setVisible(isLoggedIn());
-			if (isLoggedIn()) {
+			case 1 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation-current-page");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation");
+				loginPanel.setVisible(false);
 				logoutPanel.setVisible(false);
-			} else {
-				logoutPanel.setVisible(true);
-			}
-			mainPanel.setVisible(false);
-			pagesPanel.setVisible(false);
-			break;
-		default:
-			break;
+				mainPanel.setVisible(true);
+				pagesPanel.setVisible(true);
+				break;
+			case 4 :
+				menuTable.getCellFormatter().setStyleName(0, 0, "cw-FlexTable-navigation");
+				menuTable.getCellFormatter().setStyleName(0, 3, "cw-FlexTable-navigation-current-page");
+				loginPanel.setVisible(isLoggedIn());
+				if (isLoggedIn()) {
+					logoutPanel.setVisible(false);
+				} else {
+					logoutPanel.setVisible(true);
+				}
+				mainPanel.setVisible(false);
+				pagesPanel.setVisible(false);
+				break;
+			default :
+				break;
 		}
 	}
 
@@ -1240,7 +1212,8 @@ public class Application implements EntryPoint {
 
 			setLoginUserName(appConst.VAL_EMPTY());
 			setLoginState(appConst.STATUS_NOT_LOGGED_IN());
-			setActionState(json);
+			if (!json.equals(appConst.VAL_LOADING()) && !json.equals(appConst.VAL_INITIALIZING()))
+				setActionState(json);
 			setCookie(appConst.VAL_EMPTY());
 
 		} else {

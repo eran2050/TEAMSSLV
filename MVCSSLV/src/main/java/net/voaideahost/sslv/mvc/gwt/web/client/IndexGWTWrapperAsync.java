@@ -6,8 +6,6 @@ public interface IndexGWTWrapperAsync {
 
 	void getMainListing(String viewMode, int page, String userName, AsyncCallback<String> asyncCallback);
 
-	void getTotalAds(String viewMode, String userName, AsyncCallback<Integer> asyncCallback);
-
 	void getAdDesc(int adDescId, AsyncCallback<String> asyncCallback);
 
 	void doLogin(String userName, String sessionID, AsyncCallback<String> asyncCallback);

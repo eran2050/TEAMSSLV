@@ -8,8 +8,6 @@ public interface IndexGWTWrapper extends RemoteService {
 
 	String getMainListing(String viewMode, int page, String userName);
 
-	Integer getTotalAds(String viewMode, String userName);
-
 	String getAdDesc(int adDescId);
 
 	String doLogin(String userName, String sessionID);

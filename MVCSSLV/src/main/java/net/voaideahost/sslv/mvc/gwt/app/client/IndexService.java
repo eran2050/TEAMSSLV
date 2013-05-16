@@ -7,15 +7,13 @@ import org.springframework.stereotype.Component;
 @Component
 public interface IndexService {
 
-	String getMainListing(String viewMode, int page, String userName);
+	HttpSession session();
 
-	Integer getTotalAds(String viewMode, String userName);
+	String getMainListing(String viewMode, int page, String userName);
 
 	String getAdDesc(int adDescId);
 
 	String doLogin(String userName, String sessionID);
-
-	HttpSession session();
 
 	String doLogout(String userName, String sessionID);
 }

@@ -25,12 +25,6 @@ public class IndexGWTWrapperImpl extends AutoinjectingRemoteServiceServlet imple
 	}
 
 	@Override
-	public Integer getTotalAds(String viewMode, String userName) {
-
-		return service.getTotalAds(viewMode, userName);
-	}
-
-	@Override
 	public String getAdDesc(int adDescId) {
 
 		return service.getAdDesc(adDescId);
