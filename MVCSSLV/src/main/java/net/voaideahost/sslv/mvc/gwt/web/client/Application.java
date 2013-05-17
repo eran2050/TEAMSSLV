@@ -273,6 +273,7 @@ public class Application implements EntryPoint {
 
 				// Name Label
 				viewEditTable.setWidget(getCurrentViewEditTableRow(), 0, new HTML("<b>Name</b>"));
+				viewEditTable.getRowFormatter().setStyleName(getCurrentViewEditTableRow(), "cw-FlexTable-view-edit-box");
 
 				// Text Box
 				final TextBox nameTextBox = new TextBox();
@@ -1067,7 +1068,6 @@ public class Application implements EntryPoint {
 		};
 		Scheduler.get().scheduleFixedPeriod(idleTimer, appConst.VAL_SECOND_MS());
 	}
-
 	/*
 	 * 
 	 * 
@@ -1207,9 +1207,12 @@ public class Application implements EntryPoint {
 
 			setLoginUserName(appConst.VAL_EMPTY());
 			setLoginState(appConst.STATUS_NOT_LOGGED_IN());
-			if (!json.equals(appConst.VAL_LOADING()) && !json.equals(appConst.VAL_INITIALIZING()))
-				setActionState(json);
 			setCookie(appConst.VAL_EMPTY());
+
+			if (json.equals(appConst.VAL_LOADING()) || json.equals(appConst.VAL_INITIALIZING()))
+				return;
+			else
+				setActionState(json);
 
 		} else {
 
@@ -1232,7 +1235,6 @@ public class Application implements EntryPoint {
 			setCookie(id);
 		}
 	}
-
 	public String getActionState() {
 
 		return actionState;
@@ -1322,11 +1324,10 @@ public class Application implements EntryPoint {
 
 	public void setCurrentViewEditTableRow(int currentViewEditTableRow) {
 
-		if (currentViewEditTableRow == 0) {
-			this.currentViewEditTableRow = currentViewEditTableRow;
-		} else {
+		if (currentViewEditTableRow == 0)
+			this.currentViewEditTableRow = 0;
+		else
 			this.currentViewEditTableRow += currentViewEditTableRow;
-		}
 	}
 
 	public void setCookie(String cookie) {
