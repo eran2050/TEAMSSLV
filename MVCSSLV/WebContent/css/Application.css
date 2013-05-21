@@ -23,15 +23,13 @@ div.footer {
       margin: 5px;
 }
 
-.cw-FlexTable td {
-	border: 1px solid green;
-}
-
 .cw-FlexTable-view-edit-box {
 	border-collapse: collapse;
+	margin: 5px;
 }
 
 .cw-FlexTable-view-edit-box td {
+	border: 1px solid white;
 	background-color: white;
 }
 
@@ -66,6 +64,7 @@ div.footer {
 }
 
 .cw-FlexTable-navigation td {
+	border: 1px solid green;
 	text-align: center;
 }
 

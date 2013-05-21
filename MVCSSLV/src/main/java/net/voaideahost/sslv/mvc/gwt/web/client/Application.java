@@ -482,6 +482,9 @@ public class Application implements EntryPoint {
 					// Owner
 					flex.setHTML(i1, 3, v.get("owner").isString().stringValue());
 
+					// Style CSS
+					flex.getRowFormatter().setStyleName(i1, "cw-FlexTable-main-list-tr");
+
 					// Creating Edit Click Handler
 					flex.getFlexCellFormatter().getElement(i1, 0).getStyle().setCursor(Cursor.POINTER);
 					flex.getFlexCellFormatter().getElement(i1, 1).getStyle().setCursor(Cursor.POINTER);
@@ -690,7 +693,6 @@ public class Application implements EntryPoint {
 					// Alert
 					DialogBox box = alertWidget("Connection failure", SERVER_ERROR, 0, 0);
 					box.show();
-
 				}
 
 				@Override
@@ -702,7 +704,6 @@ public class Application implements EntryPoint {
 					doLogout(result);
 					drawLoginPanel();
 				}
-
 			};
 
 			/*

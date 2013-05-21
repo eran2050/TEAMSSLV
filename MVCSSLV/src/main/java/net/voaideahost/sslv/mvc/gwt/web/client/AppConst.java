@@ -4,7 +4,7 @@ import com.google.gwt.i18n.client.Constants;
 
 public interface AppConst extends Constants {
 
-	@DefaultStringValue("v5.0.7_7")
+	@DefaultStringValue("v5.0.7_9")
 	String APP_VERSION();
 
 	@DefaultStringValue("/java2/")
