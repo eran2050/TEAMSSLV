@@ -5,6 +5,8 @@ set STOPPABLE=D:\WORK\apache-tomcat-7.0.37\bin\shutdown.bat
 set WARDIR=D:\WORK\apache-tomcat-7.0.37\webapps
 set WARFILENEW=D:\WORK\Local_GIT_Hub\TEAMSSLV\MVCSSLV\target\java2.war
 
+call build.bat
+
 cd %BINDIR%
 call %STOPPABLE%
 
